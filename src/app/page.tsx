@@ -35,11 +35,41 @@ export default function Home() {
   const [screenshotsInProgress, setScreenshotsInProgress] = useState<{[key: string]: boolean}>({});
   const [analysisComplete, setAnalysisComplete] = useState(false);
   const [selectedScreenshot, setSelectedScreenshot] = useState<{pageType: string, url: string} | null>(null);
+  const [analysisInProgress, setAnalysisInProgress] = useState<{[key: string]: boolean}>({});
   const [userInfo, setUserInfo] = useState<UserInfo>({
     name: '',
     email: '',
     mobile: '',
   });
+  
+  // Timer state
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [timerActive, setTimerActive] = useState(false);
+  const [startTime, setStartTime] = useState<Date | null>(null);
+
+  // Timer effect
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    
+    if (timerActive) {
+      interval = setInterval(() => {
+        setElapsedTime(prev => prev + 1);
+      }, 1000);
+    }
+    
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [timerActive]);
+
+  // Format time function
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
 
   // Debug logging for analysisComplete state
   useEffect(() => {
@@ -70,27 +100,27 @@ export default function Home() {
     },
     'screenshot-collection': {
       description: 'Taking screenshot of the collection page...',
-      step: 2,
+      step: 3,
     },
     'search-products': {
       description: 'Searching for available products...',
-      step: 3,
+      step: 5,
     },
     'screenshot-product': {
       description: 'Taking screenshot of the product page...',
-      step: 4,
+      step: 6,
     },
     'add-cart': {
       description: 'Adding product to cart...',
-      step: 5,
+      step: 9,
     },
     'screenshot-cart': {
       description: 'Taking screenshot of the cart page...',
-      step: 6,
+      step: 10,
     },
     'cart-error': {
       description: 'Could not add product to cart',
-      step: 7,
+      step: 11,
     },
     'no-products': {
       description: 'No in-stock products found',
@@ -98,15 +128,15 @@ export default function Home() {
     },
     'analyze-homepage': {
       description: 'Analyzing home page...',
-      step: 9,
+      step: 2,
     },
     'analyze-collection': {
       description: 'Analyzing collection page...',
-      step: 10,
+      step: 4,
     },
     'analyze-product': {
       description: 'Analyzing product page...',
-      step: 11,
+      step: 7,
     },
     'analyze-cart': {
       description: 'Analyzing cart page...',
@@ -128,6 +158,12 @@ export default function Home() {
     setScreenshotUrls({});
     setScreenshotsInProgress({});
     setAnalysisComplete(false);
+    setAnalysisInProgress({});
+    
+    // Start timer
+    setElapsedTime(0);
+    setStartTime(new Date());
+    setTimerActive(true);
 
     try {
       const eventSource = new EventSource(
@@ -150,8 +186,30 @@ export default function Home() {
         try {
           const data = JSON.parse(event.data);
           console.log('[FRONTEND] Parsed data:', data);
+                      console.log('[FRONTEND] Parsed data:', data);
 
-          if (data.status) {
+            if (data.type === 'analysis') {
+              // Handle instant analysis data
+              const pageType = data.pageType;
+              const analysisData = data.data;
+              setReport(prev => ({
+                ...prev,
+                [pageType]: analysisData
+              }));
+              
+              // Mark analysis as completed for this page type
+              setAnalysisInProgress(prev => ({
+                ...prev,
+                [pageType]: false
+              }));
+              
+              // Set the first page type as active tab if not set
+              if (!activeTab) {
+                setActiveTab(pageType);
+              }
+              
+
+            } else if (data.status) {
             console.log('[FRONTEND] Status update:', data.status);
             // Check if this is a screenshot URL message
             if (data.status.startsWith('screenshot-url:')) {
@@ -168,11 +226,21 @@ export default function Home() {
                 ...prev,
                 [pageType]: false
               }));
+
             } else if (data.status.startsWith('screenshot-')) {
               // Extract page type from screenshot status
               const pageType = data.status.replace('screenshot-', '');
               console.log('[FRONTEND] Screenshot in progress for:', pageType);
               setScreenshotsInProgress(prev => ({
+                ...prev,
+                [pageType]: true
+              }));
+              setStatus(data.status);
+            } else if (data.status.startsWith('analyze-')) {
+              // Mark analysis as in progress
+              const pageType = data.status.replace('analyze-', '');
+              console.log('[FRONTEND] Analysis in progress for:', pageType);
+              setAnalysisInProgress(prev => ({
                 ...prev,
                 [pageType]: true
               }));
@@ -191,11 +259,20 @@ export default function Home() {
             console.log('[FRONTEND] Result data (analysis):', data.result);
             console.log('[FRONTEND] Screenshots data:', data.screenshots);
             // clearTimeout(timeout); // Clear timeout on success
+            
+            // Stop timer
+            setTimerActive(false);
+            
             if (data.success) {
-              console.log('[FRONTEND] Setting report data and closing connection');
-              setReport(data.result);
-              // Set the first page type as active tab
-              if (data.result && Object.keys(data.result).length > 0) {
+              console.log('[FRONTEND] Final result received, merging with instant data');
+              // Merge final result with any instant analysis data we already have
+              setReport(prev => ({
+                ...prev,
+                ...data.result
+              }));
+              
+              // Set the first page type as active tab if not already set
+              if (!activeTab && data.result && Object.keys(data.result).length > 0) {
                 const firstPageType = Object.keys(data.result)[0];
                 console.log('[FRONTEND] Setting active tab to:', firstPageType);
                 setActiveTab(firstPageType);
@@ -213,6 +290,10 @@ export default function Home() {
           } else if (data.error) {
             console.log('[FRONTEND] Error received:', data.error);
             // clearTimeout(timeout); // Clear timeout on error
+            
+            // Stop timer
+            setTimerActive(false);
+            
             setError(data.error);
             eventSource.close();
             setLoading(false);
@@ -223,6 +304,10 @@ export default function Home() {
         } catch (parseError) {
           console.error('[FRONTEND] Error parsing SSE data:', parseError);
           console.error('[FRONTEND] Raw data was:', event.data);
+          
+          // Stop timer
+          setTimerActive(false);
+          
           setError('Invalid response from server');
           eventSource.close();
           setLoading(false);
@@ -232,11 +317,18 @@ export default function Home() {
       eventSource.onerror = () => {
         console.error('[FRONTEND] EventSource failed');
         // clearTimeout(timeout); // Clear timeout on error
+        
+        // Stop timer
+        setTimerActive(false);
+        
         setError('Connection failed. Please try again.');
         eventSource.close();
         setLoading(false);
       };
     } catch (err) {
+      // Stop timer
+      setTimerActive(false);
+      
       setError(err instanceof Error ? err.message : 'An error occurred');
       setLoading(false);
     }
@@ -366,6 +458,7 @@ export default function Home() {
 
         <main className="space-y-8">
           <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
+
             <div className="flex gap-3 bg-white rounded-xl shadow-sm border border-gray-200 p-2">
               <input
                 type="url"
@@ -392,6 +485,8 @@ export default function Home() {
               </button>
             </div>
           </form>
+          
+
 
           {error && (
             <div className="max-w-2xl mx-auto bg-red-50 border border-red-200 rounded-lg p-4" role="alert">
@@ -404,9 +499,17 @@ export default function Home() {
 
           {analysisComplete && !loading && report && (
             <div className="max-w-2xl mx-auto bg-green-50 border border-green-200 rounded-lg p-4" role="alert">
-              <div className="flex items-center gap-2 text-green-800">
-                <span className="text-green-500">🎉</span>
-                Analysis completed successfully! Your CRO report is ready below.
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-green-800">
+                  <span className="text-green-500">🎉</span>
+                  Analysis completed successfully! Your CRO report is ready below.
+                </div>
+                <div className="text-center">
+                  <div className="text-lg font-mono font-bold text-green-800">
+                    {formatTime(elapsedTime)}
+                  </div>
+                  <div className="text-xs text-green-600">Total Time</div>
+                </div>
               </div>
             </div>
           )}
@@ -508,21 +611,104 @@ export default function Home() {
                       `Step ${statusMessages[status]?.step || 0} of ${Object.keys(statusMessages).length}`
                     )}
                   </div>
+                  
+                  {/* Page Progress Indicator */}
+                  {!analysisComplete && (
+                    <div className="mt-3">
+                      <div className="flex items-center gap-2 text-xs text-gray-600 mb-1">
+                        <span>Page Progress:</span>
+                        <span className="font-medium">
+                          {Object.keys(report || {}).length}/4 analyzed
+                        </span>
+                      </div>
+                      <div className="flex gap-1">
+                        {['homepage', 'collection', 'product', 'cart'].map((pageType) => (
+                          <div
+                            key={pageType}
+                            className={`flex-1 h-2 rounded-full ${
+                              report?.[pageType] 
+                                ? 'bg-green-500' 
+                                : analysisInProgress[pageType]
+                                ? 'bg-purple-500 animate-pulse'
+                                : 'bg-gray-200'
+                            }`}
+                            title={`${pageType}: ${
+                              report?.[pageType] 
+                                ? 'Complete' 
+                                : analysisInProgress[pageType]
+                                ? 'Analyzing...'
+                                : 'Pending'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {/* Timer Display */}
+                <div className="flex-shrink-0">
+                  <div className="text-center">
+                    <div className="text-2xl font-mono font-bold text-gray-900">
+                      {formatTime(elapsedTime)}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {timerActive ? 'Elapsed' : 'Total Time'}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           )}
 
-          {report && (
+          {/* Show timer even when no status but analysis is in progress */}
+          {loading && !status && (
+            <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                  <div>
+                    <div className="text-gray-700 font-medium">Initializing analysis...</div>
+                    <div className="text-sm text-gray-500">Preparing to capture screenshots</div>
+                  </div>
+                </div>
+                <div className="flex-shrink-0">
+                  <div className="text-center">
+                    <div className="text-2xl font-mono font-bold text-gray-900">
+                      {formatTime(elapsedTime)}
+                    </div>
+                    <div className="text-xs text-gray-500">Elapsed</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {(report && Object.keys(report).length > 0) && (
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                <h2 className="text-2xl font-bold text-gray-900">Analysis Report</h2>
-                <button
-                  className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2"
-                  onClick={() => setShowModal(true)}
-                >
-                  ⬇️ Download Report
-                </button>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Analysis Report
+                  {!analysisComplete && (
+                    <span className="ml-2 text-sm font-normal text-gray-500">
+                      (Live updates in progress...)
+                    </span>
+                  )}
+                  {!analysisComplete && report && Object.keys(report).length > 0 && (
+                    <div className="mt-2 text-sm text-gray-600">
+                      {Object.keys(report).length} of 4 pages analyzed
+                    </div>
+                  )}
+                </h2>
+                {analysisComplete && (
+                  <button
+                    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2"
+                    onClick={() => setShowModal(true)}
+                  >
+                    ⬇️ Download Report
+                  </button>
+                )}
               </div>
               
               <div className="border-b border-gray-200">
@@ -540,12 +726,22 @@ export default function Home() {
                       {pageType.charAt(0).toUpperCase() + pageType.slice(1)} Page
                       {screenshotsInProgress[pageType] && (
                         <span className="text-blue-500 animate-spin" title="Taking screenshot...">
-                          ⏳
+                          📸
                         </span>
                       )}
                       {screenshotUrls[pageType] && !screenshotsInProgress[pageType] && (
                         <span className="text-green-500" title="Screenshot available">
-                          📸
+                          ✅
+                        </span>
+                      )}
+                      {analysisInProgress[pageType] && (
+                        <span className="text-purple-500 animate-spin" title="Analyzing...">
+                          🔍
+                        </span>
+                      )}
+                      {report[pageType] && !analysisInProgress[pageType] && (
+                        <span className="text-green-500" title="Analysis complete">
+                          📊
                         </span>
                       )}
                     </button>
@@ -553,21 +749,39 @@ export default function Home() {
                 </div>
               </div>
               
-              {activeTab && report[activeTab] && (
+              {activeTab && (
                 <div className="p-6">
-                  <div className="space-y-4">
-                    {Array.isArray(report[activeTab]) ? (
-                      report[activeTab].map((item, index) => (
-                        <div key={index}>
-                          {renderAnalysisItem(item, index)}
-                        </div>
-                      ))
-                    ) : (
-                      <div className="text-center text-gray-500 py-8">
-                        No analysis data available for this page type.
+                  {analysisInProgress[activeTab] ? (
+                    <div className="text-center py-12">
+                      <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                       </div>
-                    )}
-                  </div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Analyzing {activeTab} page...</h3>
+                      <p className="text-gray-600">Our AI is examining the page structure and identifying conversion opportunities.</p>
+                    </div>
+                  ) : report[activeTab] ? (
+                    <div className="space-y-4">
+                      {Array.isArray(report[activeTab]) ? (
+                        report[activeTab].map((item, index) => (
+                          <div key={index}>
+                            {renderAnalysisItem(item, index)}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center text-gray-500 py-8">
+                          No analysis data available for this page type.
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <div className="w-16 h-16 bg-gradient-to-r from-gray-400 to-gray-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span className="text-white text-2xl">⏳</span>
+                      </div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Waiting for {activeTab} analysis...</h3>
+                      <p className="text-gray-600">This page will be analyzed after the screenshot is captured.</p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
