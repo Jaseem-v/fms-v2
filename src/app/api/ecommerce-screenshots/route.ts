@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
 
   try {
     // Proxy the request to the backend server
-    const backendUrl = process.env.BACKEND_URL || 'http://localhost:3001';
+    const backendUrl = process.env.BACKEND_URL || 'http://localhost:4000';
     const response = await fetch(`${backendUrl}/api/ecommerce-screenshots?domain=${encodeURIComponent(domain)}`, {
       method: 'GET',
       headers: {

@@ -95,11 +95,11 @@ export default function Home() {
 
   const statusMessages: Record<string, StatusMessage> = {
     'screenshot-homepage': {
-      description: 'Taking screenshot of the home page...',
+      description: 'Checking the home page...',
       step: 1,
     },
     'screenshot-collection': {
-      description: 'Taking screenshot of the collection page...',
+      description: 'Checking the collection page...',
       step: 3,
     },
     'search-products': {
@@ -107,7 +107,7 @@ export default function Home() {
       step: 5,
     },
     'screenshot-product': {
-      description: 'Taking screenshot of the product page...',
+      description: 'Checking the product page...',
       step: 6,
     },
     'add-cart': {
@@ -115,7 +115,7 @@ export default function Home() {
       step: 9,
     },
     'screenshot-cart': {
-      description: 'Taking screenshot of the cart page...',
+      description: 'Checking the cart page...',
       step: 10,
     },
     'cart-error': {
@@ -337,13 +337,13 @@ export default function Home() {
   const handleUserInfoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Show success message immediately
+      // Show loading message
       setShowModal(false);
       setError(null);
-      setSuccessMessage('Your report will be sent to your email shortly!');
+      setSuccessMessage('Generating your PDF report...');
 
-      // Send the request without waiting for response
-      fetch('/api/send-report', {
+      // Fetch the PDF from the API
+      const response = await fetch('http://localhost:4000/api/download-report', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -353,13 +353,39 @@ export default function Home() {
           url,
           userInfo,
         }),
-      }).catch(() => {
-        console.error('Error sending report');
-        setSuccessMessage(null);
-        setError('Failed to send report. Please try again.');
       });
-    } catch {
-      setError('Failed to process your request. Please try again.');
+
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF');
+      }
+
+      // Get the PDF blob
+      const pdfBlob = await response.blob();
+
+      // Create a download link
+      const downloadUrl = window.URL.createObjectURL(pdfBlob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = `cro-analysis-report-${Date.now()}.pdf`;
+      
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up the URL
+      window.URL.revokeObjectURL(downloadUrl);
+
+      // Show success message
+      setSuccessMessage('Your PDF report has been downloaded successfully!');
+      
+      // Clear success message after 5 seconds
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 5000);
+    } catch (error) {
+      console.error('Error downloading report:', error);
+      setError('Failed to download report. Please try again.');
     }
   };
 
@@ -457,7 +483,7 @@ export default function Home() {
         </header>
 
         <main className="space-y-8">
-          <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
+          <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
 
             <div className="flex gap-3 bg-white rounded-xl shadow-sm border border-gray-200 p-2">
               <input
@@ -489,7 +515,7 @@ export default function Home() {
 
 
           {error && (
-            <div className="max-w-2xl mx-auto bg-red-50 border border-red-200 rounded-lg p-4" role="alert">
+            <div className="max-w-4xl mx-auto bg-red-50 border border-red-200 rounded-lg p-4" role="alert">
               <div className="flex items-center gap-2 text-red-800">
                 <span className="text-red-500">⚠️</span>
                 {error}
@@ -498,7 +524,7 @@ export default function Home() {
           )}
 
           {analysisComplete && !loading && report && (
-            <div className="max-w-2xl mx-auto bg-green-50 border border-green-200 rounded-lg p-4" role="alert">
+            <div className="max-w-4xl mx-auto bg-green-50 border border-green-200 rounded-lg p-4" role="alert">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-green-800">
                   <span className="text-green-500">🎉</span>
@@ -515,7 +541,7 @@ export default function Home() {
           )}
 
           {successMessage && (
-            <div className="max-w-2xl mx-auto bg-green-50 border border-green-200 rounded-lg p-4" role="alert">
+            <div className="max-w-4xl mx-auto bg-green-50 border border-green-200 rounded-lg p-4" role="alert">
               <div className="flex items-center gap-2 text-green-800">
                 <span className="text-green-500">✓</span>
                 {successMessage}
@@ -525,7 +551,7 @@ export default function Home() {
 
           {/* Screenshot Display - Show immediately when available */}
           {Object.keys(screenshotUrls).length > 0 && (
-            <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden ">
               <div className="p-6 border-b border-gray-200">
                 <h2 className="text-2xl font-bold text-gray-900">Screenshots</h2>
                 <p className="text-gray-600 mt-1">Real-time screenshots as they're captured</p>
@@ -580,7 +606,7 @@ export default function Home() {
           )}
 
           {status && (
-            <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                   {status === 'cleanup' || status.includes('Analysis complete') ? (
@@ -662,7 +688,7 @@ export default function Home() {
 
           {/* Show timer even when no status but analysis is in progress */}
           {loading && !status && (
-            <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
@@ -686,7 +712,7 @@ export default function Home() {
           )}
 
           {(report && Object.keys(report).length > 0) && (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden max-w-4xl mx-auto">
               <div className="flex items-center justify-between p-6 border-b border-gray-200">
                 <h2 className="text-2xl font-bold text-gray-900">
                   Analysis Report
@@ -786,6 +812,203 @@ export default function Home() {
               )}
             </div>
           )}
+
+          {/* Overall Summary Section */}
+          {report && Object.keys(report).length > 0 && (
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden max-w-4xl mx-auto">
+              <div className="p-6 border-b border-gray-200">
+                <h2 className="text-2xl font-bold text-gray-900">Overall Summary</h2>
+                <p className="text-gray-600 mt-1">Complete analysis overview and performance metrics</p>
+              </div>
+              
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                  {/* Pages Analyzed */}
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+                        <span className="text-white text-xl">📊</span>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-blue-900">
+                          {Object.keys(report).length}/4
+                        </div>
+                        <div className="text-sm text-blue-700">Pages Analyzed</div>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      {['homepage', 'collection', 'product', 'cart'].map((pageType) => (
+                        <div key={pageType} className="flex items-center justify-between text-sm">
+                          <span className="capitalize text-blue-800">{pageType}</span>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            report[pageType] 
+                              ? 'bg-green-100 text-green-800' 
+                              : analysisInProgress[pageType]
+                              ? 'bg-purple-100 text-purple-800'
+                              : 'bg-gray-100 text-gray-600'
+                          }`}>
+                            {report[pageType] 
+                              ? '✓ Complete' 
+                              : analysisInProgress[pageType]
+                              ? '⏳ Analyzing'
+                              : '⏸️ Pending'
+                            }
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Total Problems Found */}
+                  <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 border border-red-200">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center">
+                        <span className="text-white text-xl">⚠️</span>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-red-900">
+                          {Object.values(report).reduce((total, pageAnalysis) => {
+                            return total + (Array.isArray(pageAnalysis) ? pageAnalysis.length : 0);
+                          }, 0)}
+                        </div>
+                        <div className="text-sm text-red-700">Problems Found</div>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      {Object.entries(report).map(([pageType, analysis]) => (
+                        <div key={pageType} className="flex items-center justify-between text-sm">
+                          <span className="capitalize text-red-800">{pageType}</span>
+                          <span className="px-2 py-1 bg-red-200 text-red-800 rounded-full text-xs font-medium">
+                            {Array.isArray(analysis) ? analysis.length : 0} issues
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Performance Score */}
+                  <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+                        <span className="text-white text-xl">🎯</span>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-green-900">
+                          {(() => {
+                            const totalProblems = Object.values(report).reduce((total, pageAnalysis) => {
+                              return total + (Array.isArray(pageAnalysis) ? pageAnalysis.length : 0);
+                            }, 0);
+                            const score = Math.max(0, 100 - (totalProblems * 1.5)); // 5 points per problem
+                            return Math.round(score);
+                          })()}%
+                        </div>
+                        <div className="text-sm text-green-700">Performance Score</div>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-green-800">Conversion Rate</span>
+                        <span className="px-2 py-1 bg-green-200 text-green-800 rounded-full text-xs font-medium">
+                          {(() => {
+                            const totalProblems = Object.values(report).reduce((total, pageAnalysis) => {
+                              return total + (Array.isArray(pageAnalysis) ? pageAnalysis.length : 0);
+                            }, 0);
+                            if (totalProblems <= 10) return 'Excellent';
+                            if (totalProblems <= 15) return 'Good';
+                            if (totalProblems <= 20) return 'Fair';
+                            return 'Needs Work';
+                          })()}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-green-800">User Experience</span>
+                        <span className="px-2 py-1 bg-green-200 text-green-800 rounded-full text-xs font-medium">
+                          {(() => {
+                            const totalProblems = Object.values(report).reduce((total, pageAnalysis) => {
+                              return total + (Array.isArray(pageAnalysis) ? pageAnalysis.length : 0);
+                            }, 0);
+                            if (totalProblems <= 5) return 'A+';
+                            if (totalProblems <= 10) return 'B+';
+                            if (totalProblems <= 15) return 'C+';
+                            return 'D';
+                          })()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Overall Problems Summary */}
+                <div className="bg-gray-50 rounded-xl p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <span className="text-red-500">🔍</span>
+                    Overall Problems Summary
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {Object.entries(report).map(([pageType, analysis]) => (
+                      <div key={pageType} className="bg-white rounded-lg p-4 border border-gray-200">
+                        <div className="flex items-center gap-2 mb-3">
+                          <h4 className="font-semibold text-gray-900 capitalize">{pageType} Page</h4>
+                          <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                            {Array.isArray(analysis) ? analysis.length : 0} issues
+                          </span>
+                        </div>
+                        {Array.isArray(analysis) && analysis.length > 0 ? (
+                          <div className="space-y-2">
+                            {analysis.slice(0, 3).map((item, index) => (
+                              <div key={index} className="text-sm text-gray-700 bg-gray-50 rounded p-2">
+                                <div className="font-medium text-red-600 mb-1">Problem {index + 1}:</div>
+                                <div className="text-gray-600">{item.problem.substring(0, 100)}...</div>
+                              </div>
+                            ))}
+                            {analysis.length > 3 && (
+                              <div className="text-xs text-gray-500 text-center py-2">
+                                +{analysis.length - 3} more problems identified
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="text-sm text-gray-500 text-center py-4">
+                            No problems identified yet
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Action Items */}
+                <div className="mt-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-200">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <span className="text-blue-500">🚀</span>
+                    Recommended Actions
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-white rounded-lg p-4 border border-blue-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-red-500">🔥</span>
+                        <span className="font-semibold text-gray-900">High Priority</span>
+                      </div>
+                      <p className="text-sm text-gray-600">
+                        Focus on fixing the most critical conversion barriers first, especially on product and cart pages.
+                      </p>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-blue-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-yellow-500">📈</span>
+                        <span className="font-semibold text-gray-900">Quick Wins</span>
+                      </div>
+                      <p className="text-sm text-gray-600">
+                        Implement simple fixes like clear CTAs, better product images, and streamlined checkout process.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          
         </main>
       </div>
 
@@ -794,7 +1017,7 @@ export default function Home() {
           <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
             <div className="text-center mb-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Please enter your information</h2>
-              <p className="text-gray-600">We will send you a copy of the report to your email.</p>
+              <p className="text-gray-600">We'll generate a personalized PDF report for you to download.</p>
             </div>
             <form onSubmit={handleUserInfoSubmit} className="space-y-4">
               <input
@@ -805,7 +1028,7 @@ export default function Home() {
                 value={userInfo.name}
                 onChange={handleUserInfoChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-black"
               />
               <input
                 type="email"
@@ -815,7 +1038,7 @@ export default function Home() {
                 value={userInfo.email}
                 onChange={handleUserInfoChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-black"
               />
               <input
                 type="tel"
@@ -824,7 +1047,7 @@ export default function Home() {
                 placeholder="Mobile (optional)"
                 value={userInfo.mobile}
                 onChange={handleUserInfoChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-black"
               />
               <div className="flex gap-3 pt-4">
                 <button

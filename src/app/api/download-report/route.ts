@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
 
     // Proxy the request to the backend server
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:4000';
-    const response = await fetch(`${backendUrl}/api/send-report`, {
+    const response = await fetch(`${backendUrl}/api/download-report`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -27,12 +27,22 @@ export async function POST(request: NextRequest) {
       throw new Error(errorData.error || `Backend responded with status: ${response.status}`);
     }
 
-    const result = await response.json();
-    return NextResponse.json(result);
+    // Get the PDF buffer from the backend
+    const pdfBuffer = await response.arrayBuffer();
+
+    // Return the PDF as a downloadable file
+    return new NextResponse(pdfBuffer, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="cro-analysis-report-${Date.now()}.pdf"`,
+        'Content-Length': pdfBuffer.byteLength.toString(),
+      },
+    });
   } catch (error) {
-    console.error('Error sending report:', error);
+    console.error('Error downloading report:', error);
     return NextResponse.json(
-      { error: 'Failed to send report' },
+      { error: 'Failed to download report' },
       { status: 500 }
     );
   }
