@@ -145,7 +145,7 @@ export default function Home() {
             formatTime={formatTime}
           />}
 
-          {analysisComplete && report && Object.keys(report).length > 0 && (
+          {report && Object.keys(report).length > 0 && (
             <OverallSummary
               report={report}
               analysisInProgress={analysisInProgress}

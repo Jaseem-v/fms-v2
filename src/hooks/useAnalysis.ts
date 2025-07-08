@@ -48,6 +48,7 @@ export function useAnalysis() {
   // Use refs to track current state for completion checking
   const reportRef = useRef<Report | null>(null);
   const analysisInProgressRef = useRef<{[key: string]: boolean}>({});
+  const completedJobsRef = useRef<Set<string>>(new Set());
   
   // Update refs when state changes
   useEffect(() => {
@@ -109,6 +110,9 @@ export function useAnalysis() {
     setAnalysisComplete(false);
     setAnalysisInProgress({});
     
+    // Reset completed jobs tracking
+    completedJobsRef.current.clear();
+    
     // Start timer
     setElapsedTime(0);
     setStartTime(new Date());
@@ -122,143 +126,161 @@ export function useAnalysis() {
     try {
       const domain = new URL(url).hostname;
       
-      // Start all analyses in parallel
+      // Start all analyses in parallel using polling
       const pageTypes = ['homepage', 'collection', 'product', 'cart'];
-      const eventSources = pageTypes.map(pageType => {
-        switch (pageType) {
-          case 'homepage':
-            return analysisService.analyzeHomepage(domain);
-          case 'collection':
-            return analysisService.analyzeCollection(domain);
-          case 'product':
-            return analysisService.analyzeProduct(domain);
-          case 'cart':
-            return analysisService.analyzeCart(domain);
-          default:
-            throw new Error(`Unknown page type: ${pageType}`);
-        }
-      });
+      const jobIds: { [key: string]: string } = {};
 
-      // Handle each event source
-      eventSources.forEach((eventSource, index) => {
-        const pageType = pageTypes[index];
-        
-        eventSource.onmessage = (event) => {
-          console.log(`[${pageType.toUpperCase()}] Received SSE data:`, event.data);
+      // Start analysis for each page type
+      for (const pageType of pageTypes) {
+        try {
+          let jobId: string;
+          switch (pageType) {
+            case 'homepage':
+              const homepageResult = await analysisService.startHomepageAnalysis(domain);
+              jobId = homepageResult.jobId;
+              break;
+            case 'collection':
+              const collectionResult = await analysisService.startCollectionAnalysis(domain);
+              jobId = collectionResult.jobId;
+              break;
+            case 'product':
+              const productResult = await analysisService.startProductAnalysis(domain);
+              jobId = productResult.jobId;
+              break;
+            case 'cart':
+              const cartResult = await analysisService.startCartAnalysis(domain);
+              jobId = cartResult.jobId;
+              break;
+            default:
+              throw new Error(`Unknown page type: ${pageType}`);
+          }
           
-          try {
-            const data = JSON.parse(event.data);
-            
-            if (data.type === 'analysis') {
-              // Handle instant analysis data
-              const analysisData = data.data;
-              setReport(prev => ({
-                ...prev,
-                [pageType]: analysisData
-              }));
-              
-              // Mark analysis as completed for this page type
-              setAnalysisInProgress(prev => ({
-                ...prev,
-                [pageType]: false
-              }));
-              
+          jobIds[pageType] = jobId;
+          console.log(`[${pageType.toUpperCase()}] Started analysis with jobId:`, jobId);
+        } catch (error) {
+          console.error(`[${pageType.toUpperCase()}] Failed to start analysis:`, error);
+          setError(`Failed to start ${pageType} analysis`);
+          return;
+        }
+      }
 
+      // Poll for results
+      const pollInterval = setInterval(async () => {
+        try {
+          for (const pageType of pageTypes) {
+            const jobId = jobIds[pageType];
+            if (!jobId) continue;
+
+            const status = await analysisService.getAnalysisStatus(pageType, jobId);
+            console.log(`[${pageType.toUpperCase()}] Status:`, status);
+
+            if (status.error) {
+              console.error(`[${pageType.toUpperCase()}] Analysis error:`, status.error);
+              setError(`Analysis failed for ${pageType}: ${status.error}`);
+              clearInterval(pollInterval);
+              return;
+            }
+
+            // Update status
+            if (status.status) {
+              setStatus(status.status);
               
-              // Set the first page type as active tab if not set
-              if (!activeTab) {
-                setActiveTab(pageType);
-              }
-            } else if (data.status) {
-              // Handle status updates
-              if (data.status.startsWith('screenshot-url:')) {
-                const parts = data.status.split(':');
-                const url = parts.slice(2).join(':');
+              // Handle screenshot URL
+              if (status.screenshotUrl) {
                 setScreenshotUrls(prev => ({
                   ...prev,
-                  [pageType]: url
+                  [pageType]: status.screenshotUrl
                 }));
                 setScreenshotsInProgress(prev => ({
                   ...prev,
                   [pageType]: false
                 }));
-              } else if (data.status.startsWith('screenshot-')) {
+              }
+
+              // Handle screenshot progress
+              if (status.status.startsWith('screenshot-')) {
                 setScreenshotsInProgress(prev => ({
                   ...prev,
                   [pageType]: true
                 }));
-                setStatus(data.status);
-              } else if (data.status.startsWith('analyze-')) {
+              }
+
+              // Handle analysis progress
+              if (status.status.startsWith('analyze-')) {
                 setAnalysisInProgress(prev => ({
                   ...prev,
                   [pageType]: true
                 }));
-                setStatus(data.status);
               }
-            } else if (data.success !== undefined) {
-              // Handle final result
-              setTimerActive(false);
-              
-              if (data.success) {
-                setReport(prev => ({
-                  ...prev,
-                  [pageType]: data.analysis
-                }));
-                
-
-                
-                if (!activeTab) {
-                  setActiveTab(pageType);
-                }
-              } else {
-                setError(data.error || 'Analysis failed');
-              }
-              
-              eventSource.close();
-            } else if (data.error) {
-              setTimerActive(false);
-              setError(data.error);
-              eventSource.close();
             }
-          } catch (parseError) {
-            console.error(`[${pageType.toUpperCase()}] Error parsing SSE data:`, parseError);
-            setTimerActive(false);
-            setError('Invalid response from server');
-            eventSource.close();
+
+            // Check if analysis is complete
+            if (status.complete && status.analysis) {
+              setReport(prev => ({
+                ...prev,
+                [pageType]: status.analysis
+              }));
+              
+              // Clear analysis progress for this page type
+              setAnalysisInProgress(prev => ({
+                ...prev,
+                [pageType]: false
+              }));
+
+              // Track completion
+              completedJobsRef.current.add(pageType);
+
+              // Set the first page type as active tab if not set
+              if (!activeTab) {
+                setActiveTab(pageType);
+              }
+
+              console.log(`[${pageType.toUpperCase()}] Analysis completed`);
+            } else if (status.complete && status.error) {
+              // Handle error completion
+              setAnalysisInProgress(prev => ({
+                ...prev,
+                [pageType]: false
+              }));
+              
+              // Track completion even for errors
+              completedJobsRef.current.add(pageType);
+              
+              console.log(`[${pageType.toUpperCase()}] Analysis failed:`, status.error);
+            }
           }
-        };
 
-        eventSource.onerror = () => {
-          console.error(`[${pageType.toUpperCase()}] EventSource failed`);
-          setTimerActive(false);
-          setError('Connection failed. Please try again.');
-          eventSource.close();
-        };
-      });
-
-      // Check if all analyses are complete
-      const checkCompletion = () => {
-        const currentReport = reportRef.current;
-        const currentAnalysisInProgress = analysisInProgressRef.current;
-        
-        const allComplete = pageTypes.every(pageType => 
-          currentReport?.[pageType] && !currentAnalysisInProgress[pageType]
-        );
-        
-        if (allComplete) {
-          setAnalysisComplete(true);
-          setLoading(false);
-          clearInterval(completionInterval);
+          // Check if all analyses are complete
+          const allComplete = pageTypes.every(pageType => 
+            completedJobsRef.current.has(pageType)
+          );
+          
+          console.log('Completion check:', {
+            completedJobs: Array.from(completedJobsRef.current),
+            allComplete,
+            pageTypes
+          });
+          
+          if (allComplete) {
+            clearInterval(pollInterval);
+            setAnalysisComplete(true);
+            setLoading(false);
+            setTimerActive(false);
+            console.log('All analyses completed!');
+          }
+        } catch (error) {
+          console.error('Error polling for status:', error);
+          setError('Failed to check analysis status');
+          clearInterval(pollInterval);
         }
-      };
+      }, 2000); // Poll every 2 seconds
 
-      // Check completion every 2 seconds
-      const completionInterval = setInterval(checkCompletion, 2000);
-      
-      // Cleanup interval after 5 minutes
+      // Cleanup interval after 10 minutes
       setTimeout(() => {
-        clearInterval(completionInterval);
-      }, 300000);
+        clearInterval(pollInterval);
+      }, 600000);
+
+
 
     } catch (err) {
       setTimerActive(false);
@@ -280,7 +302,12 @@ export function useAnalysis() {
       const downloadUrl = window.URL.createObjectURL(pdfBlob);
       const link = document.createElement('a');
       link.href = downloadUrl;
-      link.download = `cro-analysis-report-${Date.now()}.pdf`;
+      
+      // Create filename with website URL and "audit report"
+      const domain = new URL(url).hostname;
+      const cleanDomain = domain.replace(/[^a-zA-Z0-9.-]/g, '-');
+      const timestamp = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+      link.download = `${cleanDomain}-audit-report-${timestamp}.pdf`;
       
       // Trigger download
       document.body.appendChild(link);

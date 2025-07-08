@@ -30,12 +30,18 @@ export async function POST(request: NextRequest) {
     // Get the PDF buffer from the backend
     const pdfBuffer = await response.arrayBuffer();
 
+    // Create filename with website URL and "audit report"
+    const domain = new URL(url).hostname;
+    const cleanDomain = domain.replace(/[^a-zA-Z0-9.-]/g, '-');
+    const timestamp = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+    const filename = `${cleanDomain}-audit-report-${timestamp}.pdf`;
+
     // Return the PDF as a downloadable file
     return new NextResponse(pdfBuffer, {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="cro-analysis-report-${Date.now()}.pdf"`,
+        'Content-Disposition': `attachment; filename="${filename}"`,
         'Content-Length': pdfBuffer.byteLength.toString(),
       },
     });
