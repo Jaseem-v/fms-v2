@@ -10,7 +10,15 @@ interface AnalysisResult {
 }
 
 export class AnalysisService {
-  private baseUrl = 'http://localhost:4000/api';
+  private baseUrl: string;
+
+  constructor() {
+    // Try to get the backend URL from environment, fallback to localhost
+    this.baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000/api';
+    
+    // Log the base URL for debugging
+    console.log('AnalysisService initialized with baseUrl:', this.baseUrl);
+  }
 
   analyzeHomepage(domain: string): EventSource {
     return new EventSource(`${this.baseUrl}/analyze/homepage?domain=${encodeURIComponent(domain)}`);
