@@ -27,17 +27,29 @@ export default function StatusDisplay({
     <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <div className="flex items-center gap-4">
         <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-          {status === 'cleanup' || status?.includes('Analysis complete') ? (
+          {status === 'all-steps-complete' ? (
             <span className="text-white text-xl">✓</span>
+          ) : status === 'wait-between-steps' ? (
+            <span className="text-white text-xl">⏳</span>
+          ) : status === 'error-occurred' ? (
+            <span className="text-white text-xl">❌</span>
           ) : (
             <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
           )}
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            {status === 'cleanup' || status?.includes('Analysis complete') ? (
+            {status === 'all-steps-complete' || status?.includes('complete') ? (
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                 ✅ Complete
+              </span>
+            ) : status === 'wait-between-steps' ? (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                ⏳ Waiting
+              </span>
+            ) : status === 'error-occurred' ? (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                ❌ Error
               </span>
             ) : (
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -49,15 +61,19 @@ export default function StatusDisplay({
             {status ? statusMessages[status]?.description || status : 'Initializing analysis...'}
           </div>
           <div className="text-sm text-gray-500">
-            {status === 'cleanup' || status?.includes('Analysis complete') ? (
-              'Finalizing results...'
+            {status === 'all-steps-complete' ? (
+              'All steps completed successfully!'
+            ) : status === 'wait-between-steps' ? (
+              'Taking a short break between steps...'
+            ) : status === 'error-occurred' ? (
+              'Please try again or contact support'
             ) : (
-              `Step ${status ? statusMessages[status]?.step || 0 : 0} of ${Object.keys(statusMessages).length}`
+              `Step ${status ? statusMessages[status]?.step || 0 : 0} of 4`
             )}
           </div>
           
           {/* Page Progress Indicator */}
-          {!analysisComplete && (
+          {!analysisComplete && status !== 'all-steps-complete' && (
             <div className="mt-3">
               <div className="flex items-center gap-2 text-xs text-gray-600 mb-1">
                 <span>Page Progress:</span>

@@ -60,19 +60,37 @@ export function useAnalysis() {
   }, [analysisInProgress]);
 
   const statusMessages: Record<string, StatusMessage> = {
-    'screenshot-homepage': { description: 'Checking the home page...', step: 1 },
-    'screenshot-collection': { description: 'Checking the collection page...', step: 3 },
-    'search-products': { description: 'Searching for available products...', step: 5 },
-    'screenshot-product': { description: 'Checking the product page...', step: 6 },
-    'add-cart': { description: 'Adding product to cart...', step: 9 },
-    'screenshot-cart': { description: 'Checking the cart page...', step: 10 },
-    'cart-error': { description: 'Could not add product to cart', step: 11 },
-    'no-products': { description: 'No in-stock products found', step: 8 },
-    'analyze-homepage': { description: 'Analyzing home page...', step: 2 },
-    'analyze-collection': { description: 'Analyzing collection page...', step: 4 },
-    'analyze-product': { description: 'Analyzing product page...', step: 7 },
-    'analyze-cart': { description: 'Analyzing cart page...', step: 12 },
-    cleanup: { description: 'Cleaning up temporary files...', step: 13 },
+    // Sequential step-by-step process messages
+    'step-1-homepage-start': { description: '🚀 Starting Step 1: Homepage Analysis', step: 1 },
+    'step-1-homepage-complete': { description: '✅ Step 1 Complete: Homepage Analysis', step: 1 },
+    'step-2-collection-start': { description: '🚀 Starting Step 2: Collection Page Analysis', step: 2 },
+    'step-2-collection-complete': { description: '✅ Step 2 Complete: Collection Page Analysis', step: 2 },
+    'step-3-product-start': { description: '🚀 Starting Step 3: Product Page Analysis', step: 3 },
+    'step-3-product-complete': { description: '✅ Step 3 Complete: Product Page Analysis', step: 3 },
+    'step-4-cart-start': { description: '🚀 Starting Step 4: Cart Page Analysis', step: 4 },
+    'step-4-cart-complete': { description: '✅ Step 4 Complete: Cart Page Analysis', step: 4 },
+    'wait-between-steps': { description: '⏳ Waiting between steps...', step: 0 },
+    'wait-for-previous-analyses': { description: '⏳ Waiting for previous analyses to complete...', step: 0 },
+    'fallback-to-puppeteer': { description: '🔄 External API failed, using local screenshot...', step: 0 },
+    'all-steps-complete': { description: '🎉 All Analysis Steps Completed!', step: 5 },
+    'error-occurred': { description: '❌ An error occurred during analysis', step: 0 },
+    'starting': { description: '🚀 Initializing sequential analysis...', step: 0 },
+    'complete': { description: '✅ Analysis completed successfully!', step: 5 },
+    
+    // Individual process messages
+    'screenshot-homepage': { description: '📸 Taking homepage screenshot...', step: 1 },
+    'screenshot-collection': { description: '📸 Taking collection page screenshot...', step: 2 },
+    'search-product-page': { description: '🔍 Searching for product page...', step: 3 },
+    'screenshot-product': { description: '📸 Taking product page screenshot...', step: 3 },
+    'add-cart': { description: '🛒 Adding product to cart...', step: 4 },
+    'screenshot-cart': { description: '📸 Taking cart page screenshot...', step: 4 },
+    'cart-error': { description: '❌ Could not add product to cart', step: 4 },
+    'no-products': { description: '❌ No in-stock products found', step: 3 },
+    'analyze-homepage': { description: '🧠 Analyzing home page...', step: 1 },
+    'analyze-collection': { description: '🧠 Analyzing collection page...', step: 2 },
+    'analyze-product': { description: '🧠 Analyzing product page...', step: 3 },
+    'analyze-cart': { description: '🧠 Analyzing cart page...', step: 4 },
+    'cleanup': { description: '🧹 Cleaning up temporary files...', step: 5 },
   };
 
   // Timer effect
@@ -126,152 +144,110 @@ export function useAnalysis() {
     try {
       const domain = new URL(url).hostname;
       
-      // Start all analyses in parallel using polling
-      const pageTypes = ['homepage', 'collection', 'product', 'cart'];
-      const jobIds: { [key: string]: string } = {};
+      console.log('[SEQUENTIAL] Starting sequential analysis for domain:', domain);
+      
+      // Start sequential analysis
+      const result = await analysisService.startSequentialAnalysis(domain);
+      const jobId = result.jobId;
+      
+      console.log('[SEQUENTIAL] Started with jobId:', jobId);
 
-      // Start analysis for each page type
-      for (const pageType of pageTypes) {
-        try {
-          let jobId: string;
-          switch (pageType) {
-            case 'homepage':
-              const homepageResult = await analysisService.startHomepageAnalysis(domain);
-              jobId = homepageResult.jobId;
-              break;
-            case 'collection':
-              const collectionResult = await analysisService.startCollectionAnalysis(domain);
-              jobId = collectionResult.jobId;
-              break;
-            case 'product':
-              const productResult = await analysisService.startProductAnalysis(domain);
-              jobId = productResult.jobId;
-              break;
-            case 'cart':
-              const cartResult = await analysisService.startCartAnalysis(domain);
-              jobId = cartResult.jobId;
-              break;
-            default:
-              throw new Error(`Unknown page type: ${pageType}`);
-          }
-          
-          jobIds[pageType] = jobId;
-          console.log(`[${pageType.toUpperCase()}] Started analysis with jobId:`, jobId);
-        } catch (error) {
-          console.error(`[${pageType.toUpperCase()}] Failed to start analysis:`, error);
-          setError(`Failed to start ${pageType} analysis`);
-          return;
-        }
-      }
-
-      // Poll for results
+      // Poll for sequential analysis results
       const pollInterval = setInterval(async () => {
         try {
-          for (const pageType of pageTypes) {
-            const jobId = jobIds[pageType];
-            if (!jobId) continue;
+          const status = await analysisService.getSequentialAnalysisStatus(jobId);
+          console.log('[SEQUENTIAL] Status:', status);
 
-            const status = await analysisService.getAnalysisStatus(pageType, jobId);
-            console.log(`[${pageType.toUpperCase()}] Status:`, status);
+          if (status.error) {
+            console.error('[SEQUENTIAL] Analysis error:', status.error);
+            setError(`Analysis failed: ${status.error}`);
+            clearInterval(pollInterval);
+            return;
+          }
 
-            if (status.error) {
-              console.error(`[${pageType.toUpperCase()}] Analysis error:`, status.error);
-              setError(`Analysis failed for ${pageType}: ${status.error}`);
-              clearInterval(pollInterval);
-              return;
-            }
-
-            // Update status
-            if (status.status) {
-              setStatus(status.status);
-              
-              // Handle screenshot URL
-              if (status.screenshotUrl) {
+          // Update status
+          if (status.status) {
+            setStatus(status.status);
+            
+            // Handle screenshot URL updates
+            if (status.status.startsWith('screenshot-url:')) {
+              const [_, pageType, screenshotUrl] = status.status.split(':');
+              if (pageType && screenshotUrl) {
                 setScreenshotUrls(prev => ({
                   ...prev,
-                  [pageType]: status.screenshotUrl
+                  [pageType]: screenshotUrl
                 }));
                 setScreenshotsInProgress(prev => ({
                   ...prev,
                   [pageType]: false
                 }));
               }
-
-              // Handle screenshot progress
-              if (status.status.startsWith('screenshot-')) {
-                setScreenshotsInProgress(prev => ({
-                  ...prev,
-                  [pageType]: true
-                }));
-              }
-
-              // Handle analysis progress
-              if (status.status.startsWith('analyze-')) {
-                setAnalysisInProgress(prev => ({
-                  ...prev,
-                  [pageType]: true
-                }));
-              }
             }
 
-            // Check if analysis is complete
-            if (status.complete && status.analysis) {
-              setReport(prev => ({
+            // Handle screenshot progress
+            if (status.status.startsWith('screenshot-') && !status.status.startsWith('screenshot-url:')) {
+              const pageType = status.status.replace('screenshot-', '');
+              setScreenshotsInProgress(prev => ({
                 ...prev,
-                [pageType]: status.analysis
+                [pageType]: true
               }));
-              
-              // Clear analysis progress for this page type
+            }
+
+            // Handle analysis progress
+            if (status.status.startsWith('analyze-')) {
+              const pageType = status.status.replace('analyze-', '');
               setAnalysisInProgress(prev => ({
                 ...prev,
-                [pageType]: false
+                [pageType]: true
               }));
-
-              // Track completion
-              completedJobsRef.current.add(pageType);
-
-              // Set the first page type as active tab if not set
-              if (!activeTab) {
-                setActiveTab(pageType);
-              }
-
-              console.log(`[${pageType.toUpperCase()}] Analysis completed`);
-            } else if (status.complete && status.error) {
-              // Handle error completion
-              setAnalysisInProgress(prev => ({
-                ...prev,
-                [pageType]: false
-              }));
-              
-              // Track completion even for errors
-              completedJobsRef.current.add(pageType);
-              
-              console.log(`[${pageType.toUpperCase()}] Analysis failed:`, status.error);
             }
           }
 
-          // Check if all analyses are complete
-          const allComplete = pageTypes.every(pageType => 
-            completedJobsRef.current.has(pageType)
-          );
-          
-          console.log('Completion check:', {
-            completedJobs: Array.from(completedJobsRef.current),
-            allComplete,
-            pageTypes
-          });
-          
-          if (allComplete) {
+          // Check if analysis is complete
+          if (status.complete && status.analysis) {
+            setReport(status.analysis);
+            
+            // Clear all analysis progress
+            setAnalysisInProgress({
+              homepage: false,
+              collection: false,
+              product: false,
+              cart: false
+            });
+
+            // Set the first page type as active tab
+            const pageTypes = Object.keys(status.analysis);
+            if (pageTypes.length > 0 && !activeTab) {
+              setActiveTab(pageTypes[0]);
+            }
+
             clearInterval(pollInterval);
             setAnalysisComplete(true);
             setLoading(false);
             setTimerActive(false);
-            console.log('All analyses completed!');
+            console.log('[SEQUENTIAL] All analyses completed!');
+          } else if (status.complete && status.error) {
+            // Handle error completion
+            setAnalysisInProgress({
+              homepage: false,
+              collection: false,
+              product: false,
+              cart: false
+            });
+            
+            clearInterval(pollInterval);
+            setError(`Analysis failed: ${status.error}`);
+            setLoading(false);
+            setTimerActive(false);
+            
+            console.log('[SEQUENTIAL] Analysis failed:', status.error);
           }
         } catch (error) {
-          console.error('Error polling for status:', error);
+          console.error('[SEQUENTIAL] Error polling for status:', error);
           setError('Failed to check analysis status');
           clearInterval(pollInterval);
+          setLoading(false);
+          setTimerActive(false);
         }
       }, 2000); // Poll every 2 seconds
 

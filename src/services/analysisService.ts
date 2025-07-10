@@ -57,6 +57,21 @@ export class AnalysisService {
     return response.json();
   }
 
+  // Sequential analysis methods
+  async startSequentialAnalysis(domain: string): Promise<{ jobId: string }> {
+    const response = await fetch(`${this.baseUrl}/analyze/sequential`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ domain })
+    });
+    return response.json();
+  }
+
+  async getSequentialAnalysisStatus(jobId: string): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/analyze/sequential/status?jobId=${jobId}`);
+    return response.json();
+  }
+
   async getAnalysisStatus(pageType: string, jobId: string): Promise<any> {
     const response = await fetch(`${this.baseUrl}/analyze/${pageType}/status?jobId=${jobId}`);
     return response.json();
