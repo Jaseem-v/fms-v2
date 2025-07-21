@@ -60,6 +60,9 @@ export default function Home() {
     statusMessages,
   } = useAnalysis();
 
+  // Debug log for report
+  console.log('Report data:', report);
+
   // Keyboard support for screenshot modal
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -152,16 +155,14 @@ export default function Home() {
             />
           )}
 
-          <AnalysisReport
-            report={report}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            analysisComplete={analysisComplete}
-            setShowModal={setShowModal}
-            screenshotsInProgress={screenshotsInProgress}
-            screenshotUrls={screenshotUrls}
-            analysisInProgress={analysisInProgress}
-          />
+          {report && Object.keys(report).length > 0 && (
+            <AnalysisReport
+              report={report}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              setShowModal={setShowModal}
+            />
+          )}
         </main>
       </div>
 

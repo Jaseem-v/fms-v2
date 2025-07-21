@@ -242,6 +242,24 @@ export function useAnalysis() {
             
             console.log('[SEQUENTIAL] Analysis failed:', status.error);
           }
+
+          // Update report incrementally if analysis data is available
+          if (status.analysis && Object.keys(status.analysis).length > 0) {
+            console.log('[SEQUENTIAL] Updating report with:', status.analysis);
+            setReport(prevReport => {
+              const newReport = { ...prevReport, ...status.analysis };
+              console.log('[SEQUENTIAL] New report state:', newReport);
+              return newReport;
+            });
+            
+            // Set active tab only if not already set by user
+            if (!activeTab || activeTab === '') {
+              const pageTypes = Object.keys(status.analysis);
+              if (pageTypes.length > 0) {
+                setActiveTab(pageTypes[0]);
+              }
+            }
+          }
         } catch (error) {
           console.error('[SEQUENTIAL] Error polling for status:', error);
           setError('Failed to check analysis status');

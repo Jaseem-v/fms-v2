@@ -1,6 +1,19 @@
+'use client';
+
+import { useState } from 'react';
+
+interface AIChunk {
+  id: string;
+  imageUrl: string;
+  useCases: string;
+  uploadDate: string;
+  fileName: string;
+}
+
 interface AnalysisItem {
   problem: string;
   solution: string;
+  relevantChunks?: AIChunk[];
 }
 
 interface Report {
@@ -11,155 +24,158 @@ interface AnalysisReportProps {
   report: Report | null;
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  analysisComplete: boolean;
   setShowModal: (show: boolean) => void;
-  screenshotsInProgress: {[key: string]: boolean};
-  screenshotUrls: {[key: string]: string};
-  analysisInProgress: {[key: string]: boolean};
 }
 
-const renderAnalysisItem = (item: AnalysisItem, index: number) => {
-  return (
-    <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 mb-4">
-      <div className="flex items-start gap-4">
-        <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">
-          {index + 1}
-        </div>
-        <div className="flex-1 space-y-4">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                🤔 Problem
-              </span>
-            </div>
-            <p className="text-gray-700">{item.problem}</p>
-          </div>
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                💡 Solution
-              </span>
-            </div>
-            <p className="text-gray-700">{item.solution}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '');
+
+const PAGE_TITLES: Record<string, string> = {
+  homepage: 'Homepage',
+  collection: 'Collection Page',
+  product: 'Product Page',
+  cart: 'Cart Page',
 };
 
-export default function AnalysisReport({
-  report,
-  activeTab,
-  setActiveTab,
-  analysisComplete,
-  setShowModal,
-  screenshotsInProgress,
-  screenshotUrls,
-  analysisInProgress
-}: AnalysisReportProps) {
-  if (!report || Object.keys(report).length === 0) return null;
+export default function AnalysisReport({ report, activeTab, setActiveTab, setShowModal }: AnalysisReportProps) {
+  const [selectedChunk, setSelectedChunk] = useState<AIChunk | null>(null);
 
-  return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden max-w-4xl mx-auto">
-      <div className="flex items-center justify-between p-6 border-b border-gray-200">
-        <h2 className="text-2xl font-bold text-gray-900">
-          Analysis Report
-          {!analysisComplete && (
-            <span className="ml-2 text-sm font-normal text-gray-500">
-              (Live updates in progress...)
-            </span>
-          )}
-          {!analysisComplete && report && Object.keys(report).length > 0 && (
-            <div className="mt-2 text-sm text-gray-600">
-              {Object.keys(report).length} of 4 pages analyzed
-            </div>
-          )}
-        </h2>
-        {analysisComplete && (
-          <button
-            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2"
-            onClick={() => setShowModal(true)}
-          >
-            ⬇️ Download Report
-          </button>
-        )}
-      </div>
-      
-            <div className="border-b border-gray-200">
-        <div className="flex overflow-x-auto">
-          {['homepage', 'collection', 'product', 'cart'].map((pageType) => {
-            if (!report[pageType]) return null;
-            return (
-              <button
-                key={pageType}
-                className={`px-6 py-4 font-medium text-sm border-b-2 transition-colors whitespace-nowrap flex items-center gap-2 ${
-                  activeTab === pageType
-                    ? 'border-blue-500 text-blue-600 bg-blue-50'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-                }`}
-                onClick={() => setActiveTab(pageType)}
-              >
-                {pageType.charAt(0).toUpperCase() + pageType.slice(1)} Page
-                {screenshotsInProgress[pageType] && (
-                  <span className="text-blue-500 animate-spin" title="Taking screenshot...">
-                    📸
-                  </span>
-                )}
-                {screenshotUrls[pageType] && !screenshotsInProgress[pageType] && (
-                  <span className="text-green-500" title="Screenshot available">
-                    ✅
-                  </span>
-                )}
-                {analysisInProgress[pageType] && (
-                  <span className="text-purple-500 animate-spin" title="Analyzing...">
-                    🔍
-                  </span>
-                )}
-                {report[pageType] && !analysisInProgress[pageType] && (
-                  <span className="text-green-500" title="Analysis complete">
-                    📊
-                  </span>
-                )}
-              </button>
-            );
-          })}
+  // Get available page types with data
+  const availablePages = report ? Object.keys(report).filter((key) => report[key] && report[key].length > 0) : [];
+
+  // If no data at all, show message
+  if (!report || availablePages.length === 0) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="text-center py-12">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No analysis available</h3>
+          <p className="text-gray-500">Please upload a screenshot to get started with the analysis.</p>
         </div>
       </div>
-      
-      {activeTab && (
-        <div className="p-6">
-          {analysisInProgress[activeTab] ? (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Analyzing {activeTab} page...</h3>
-              <p className="text-gray-600">Our AI is examining the page structure and identifying conversion opportunities.</p>
-            </div>
-          ) : report[activeTab] ? (
-            <div className="space-y-4">
-              {Array.isArray(report[activeTab]) ? (
-                report[activeTab].map((item, index) => (
-                  <div key={index}>
-                    {renderAnalysisItem(item, index)}
+    );
+  }
+
+  // Use activeTab if it's available, otherwise default to first available
+  const currentTab = availablePages.includes(activeTab) ? activeTab : availablePages[0];
+  const analysis = report[currentTab] || [];
+
+  return (
+    <div className="space-y-6">
+      {/* Header with Download Button */}
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold text-gray-900">Analysis Report</h2>
+        <button
+          onClick={() => setShowModal(true)}
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+        >
+          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Download Report
+        </button>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-2 mb-4">
+        {availablePages.map((page) => (
+          <button
+            key={page}
+            className={`px-4 py-2 rounded-t-lg font-medium border-b-2 transition-colors ${
+              currentTab === page
+                ? 'border-blue-600 text-blue-700 bg-blue-50'
+                : 'border-transparent text-gray-600 bg-gray-100 hover:bg-gray-200'
+            }`}
+            onClick={() => setActiveTab(page)}
+          >
+            {PAGE_TITLES[page] || page}
+          </button>
+        ))}
+      </div>
+
+      {/* Analysis for current tab */}
+      {analysis.map((item, index) => (
+        <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Problem {index + 1}
+            </h3>
+            <p className="text-gray-700 mb-3">{item.problem}</p>
+            <h4 className="text-md font-medium text-gray-900 mb-2">Solution</h4>
+            <p className="text-gray-700">{item.solution}</p>
+          </div>
+
+          {/* Relevant Chunks */}
+          {item.relevantChunks && item.relevantChunks.length > 0 && (
+            <div className="mt-6">
+              <h4 className="text-md font-medium text-gray-900 mb-3">
+                Relevant Examples ({item.relevantChunks.length})
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {item.relevantChunks.map((chunk) => (
+                  <div
+                    key={chunk.id}
+                    className="border border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                    onClick={() => setSelectedChunk(chunk)}
+                  >
+                    <div className="aspect-video bg-gray-100">
+                      <img
+                        src={`${backendUrl}${chunk.imageUrl}`}
+                        alt="Relevant example"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik02MCAxMDBDNjAgODguOTU0MyA2OC45NTQzIDgwIDgwIDgwQzkxLjA0NTcgODAgMTAwIDg4Ljk1NDMgMTAwIDEwMEMxMDAgMTExLjA0NiA5MS4wNDU3IDEyMCA4MCAxMjBDNjguOTU0MyAxMjAgNjAgMTExLjA0NiA2MCAxMDBaIiBmaWxsPSIjOUI5QkEwIi8+CjxwYXRoIGQ9Ik04MCAxNDBDNjguOTU0MyAxNDAgNjAgMTMxLjA0NiA2MCAxMjBMMTAwIDEyMEMxMDAgMTMxLjA0NiA5MS4wNDU3IDE0MCA4MCAxNDBaIiBmaWxsPSIjOUI5QkEwIi8+Cjwvc3ZnPgo=';
+                        }}
+                      />
+                    </div>
+                    <div className="p-3">
+                      <p className="text-sm text-gray-700 line-clamp-2">
+                        {chunk.useCases.length > 80 
+                          ? `${chunk.useCases.substring(0, 80)}...` 
+                          : chunk.useCases
+                        }
+                      </p>
+                    </div>
                   </div>
-                ))
-              ) : (
-                <div className="text-center text-gray-500 py-8">
-                  No analysis data available for this page type.
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 bg-gradient-to-r from-gray-400 to-gray-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-white text-2xl">⏳</span>
+                ))}
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Waiting for {activeTab} analysis...</h3>
-              <p className="text-gray-600">This page will be analyzed after the screenshot is captured.</p>
             </div>
           )}
+        </div>
+      ))}
+
+      {/* Modal for chunk details */}
+      {selectedChunk && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Example Details</h3>
+                <button
+                  onClick={() => setSelectedChunk(null)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Image */}
+              <div className="mb-4">
+                <img
+                  src={`${backendUrl}${selectedChunk.imageUrl}`}
+                  alt="Example"
+                  className="w-full rounded-lg"
+                />
+              </div>
+
+              {/* Use Cases */}
+              <div>
+                <h4 className="text-sm font-medium text-gray-900 mb-1">Use Cases</h4>
+                <p className="text-sm text-gray-700 whitespace-pre-wrap">{selectedChunk.useCases}</p>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
