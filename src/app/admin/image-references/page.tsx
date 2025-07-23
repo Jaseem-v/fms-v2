@@ -23,6 +23,7 @@ export default function ImageReferencesPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [resetUpload, setResetUpload] = useState(false);
 
   const fetchImages = async () => {
     setLoading(true);
@@ -39,6 +40,17 @@ export default function ImageReferencesPage() {
   useEffect(() => {
     fetchImages();
   }, []);
+
+  // Reset the resetUpload flag after ImageUpload component has been reset
+  useEffect(() => {
+    if (resetUpload) {
+      // Reset the flag after a short delay to ensure the ImageUpload component has processed the reset
+      const timer = setTimeout(() => {
+        setResetUpload(false);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [resetUpload]);
 
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
@@ -70,6 +82,7 @@ export default function ImageReferencesPage() {
       setSelectedFile(null);
       setUseCases([]);
       setUseCaseInput('');
+      setResetUpload(true); // Trigger reset of ImageUpload component
       
       // Refresh the images list
       fetchImages();
@@ -158,7 +171,7 @@ export default function ImageReferencesPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Upload Image
               </label>
-              <ImageUpload onUpload={handleFileSelect} />
+              <ImageUpload onUpload={handleFileSelect} reset={resetUpload} />
             </div>
 
             {/* Use Cases Input */}

@@ -4,9 +4,10 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 
 interface ImageUploadProps {
   onUpload: (file: File) => void;
+  reset?: boolean; // Add reset prop
 }
 
-export default function ImageUpload({ onUpload }: ImageUploadProps) {
+export default function ImageUpload({ onUpload, reset = false }: ImageUploadProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -30,6 +31,7 @@ export default function ImageUpload({ onUpload }: ImageUploadProps) {
       URL.revokeObjectURL(previewUrl);
       setPreviewUrl(null);
     }
+    setSelectedFile(null);
   }, [previewUrl]);
 
   // Cleanup preview URL when component unmounts
@@ -40,6 +42,13 @@ export default function ImageUpload({ onUpload }: ImageUploadProps) {
       }
     };
   }, [previewUrl]);
+
+  // Reset state when reset prop changes to true
+  useEffect(() => {
+    if (reset) {
+      clearPreview();
+    }
+  }, [reset, clearPreview]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
