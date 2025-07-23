@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 
 interface ImageUploadProps {
   onUpload: (file: File) => void;
@@ -9,14 +9,37 @@ interface ImageUploadProps {
 export default function ImageUpload({ onUpload }: ImageUploadProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = useCallback((file: File) => {
     if (file && file.type.startsWith('image/')) {
       setSelectedFile(file);
+      
+      // Create preview URL
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+      
       onUpload(file);
     }
   }, [onUpload]);
+
+  // Cleanup preview URL when component unmounts or file changes
+  const clearPreview = useCallback(() => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+    }
+  }, [previewUrl]);
+
+  // Cleanup preview URL when component unmounts
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -95,54 +118,101 @@ export default function ImageUpload({ onUpload }: ImageUploadProps) {
   };
 
   return (
-    <div
-      className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-        isDragOver 
-          ? 'border-blue-500 bg-blue-50' 
-          : selectedFile
-          ? 'border-green-500 bg-green-50'
-          : 'border-gray-300 hover:border-gray-400'
-      }`}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
-      onPaste={handlePaste}
-    >
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        onChange={handleFileInputChange}
-        className="hidden"
-      />
-      
-      <div className="space-y-4">
-        <div className="mx-auto w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-          {getStatusIcon()}
+    <div>
+      {/* Image Preview - Show when image is selected */}
+      {previewUrl && (
+        <div className="relative">
+          <div className="bg-gray-100 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-medium text-gray-900">Image Preview</h3>
+              <button
+                type="button"
+                onClick={() => {
+                  clearPreview();
+                  setSelectedFile(null);
+                }}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+                title="Remove image"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="relative">
+              <img
+                src={previewUrl}
+                alt="Preview"
+                className="max-w-full h-auto max-h-64 mx-auto rounded-lg shadow-sm object-contain"
+                onLoad={() => {
+                  // Image loaded successfully
+                }}
+                onError={() => {
+                  console.error('Failed to load image preview');
+                }}
+              />
+            </div>
+            {selectedFile && (
+              <div className="mt-2 text-xs text-gray-500 text-center">
+                <p>File: {selectedFile.name}</p>
+                <p>Size: {(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                <p>Type: {selectedFile.type}</p>
+              </div>
+            )}
+          </div>
         </div>
-        
-        <div>
-          <p className="text-sm font-medium text-gray-900">
-            {getStatusText()}
-          </p>
-          <p className="text-xs text-gray-500 mt-1">
-            {!selectedFile ? 'Drag and drop, click to browse, or paste from clipboard' : 'File ready for analysis'}
-          </p>
-        </div>
-        
-        <button
-          type="button"
-          onClick={handleClick}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+      )}
+
+      {/* Upload Area - Only show when no image is selected */}
+      {!previewUrl && (
+        <div
+          className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+            isDragOver 
+              ? 'border-blue-500 bg-blue-50' 
+              : 'border-gray-300 hover:border-gray-400'
+          }`}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onPaste={handlePaste}
         >
-          {selectedFile ? 'Change File' : 'Choose File'}
-        </button>
-      </div>
-      
-      <div className="mt-4 text-xs text-gray-500">
-        <p>Supported formats: JPG, PNG, GIF, WebP</p>
-        <p>Max file size: 10MB</p>
-      </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFileInputChange}
+            className="hidden"
+          />
+          
+          <div className="space-y-4">
+            <div className="mx-auto w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+              {getStatusIcon()}
+            </div>
+            
+            <div>
+              <p className="text-sm font-medium text-gray-900">
+                Upload an image
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                Drag and drop, click to browse, or paste from clipboard
+              </p>
+            </div>
+            
+            <button
+              type="button"
+              onClick={handleClick}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+            >
+              Choose File
+            </button>
+          </div>
+          
+          <div className="mt-4 text-xs text-gray-500">
+            <p>Supported formats: JPG, PNG, GIF, WebP</p>
+            <p>Max file size: 10MB</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 } 
