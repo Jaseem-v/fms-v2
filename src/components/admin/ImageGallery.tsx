@@ -101,6 +101,8 @@ export default function ImageGallery({ chunks, onDeleteChunk }: ImageGalleryProp
     return pages;
   };
 
+  console.log("chunks", chunks);
+
   if (chunks.length === 0) {
     return (
       <div className="text-center py-12">

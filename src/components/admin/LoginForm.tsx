@@ -20,11 +20,11 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
     setError('');
 
     try {
-      const success = await login(email, password);
-      if (success) {
+      const result = await login(email, password);
+      if (result.success) {
         onSuccess?.();
       } else {
-        setError('Invalid email or password');
+        setError(result.message);
       }
     } catch (err) {
       setError('An error occurred during login');
@@ -41,7 +41,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
             🔐 Admin Access
           </h2>
           <p className="text-gray-600">
-            Please sign in to access the Image References management
+            Please sign in to access the admin dashboard
           </p>
         </div>
       </div>
@@ -121,7 +121,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
             </div>
           </form>
 
-          {/* <div className="mt-6">
+          <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-300" />
@@ -136,7 +136,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
                 Password: <span className="font-mono">admin123</span>
               </p>
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
     </div>
