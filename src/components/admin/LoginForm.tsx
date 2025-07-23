@@ -41,7 +41,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
             🔐 Admin Access
           </h2>
           <p className="text-gray-600">
-            Please sign in to access the AI Chunks management
+            Please sign in to access the Image References management
           </p>
         </div>
       </div>

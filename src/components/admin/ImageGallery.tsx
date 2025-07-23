@@ -2,23 +2,25 @@
 
 import { useState } from 'react';
 
-interface AIChunk {
+interface ImageReference {
   id: string;
   imageUrl: string;
-  useCases: string;
+  useCases: string[];
   uploadDate: string;
   fileName: string;
 }
 
-interface ChunkGalleryProps {
-  chunks: AIChunk[];
+interface ImageGalleryProps {
+  chunks: ImageReference[];
+  onDeleteChunk?: (imageId: string) => Promise<void>;
 }
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '');
 
-export default function ChunkGallery({ chunks }: ChunkGalleryProps) {
-  const [selectedChunk, setSelectedChunk] = useState<AIChunk | null>(null);
+export default function ImageGallery({ chunks, onDeleteChunk }: ImageGalleryProps) {
+  const [selectedImage, setSelectedImage] = useState<ImageReference | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [deletingChunkId, setDeletingChunkId] = useState<string | null>(null);
   const itemsPerPage = 12; // Show 12 items per page (3 rows of 4 on xl screens)
 
   const formatDate = (dateString: string) => {
@@ -40,7 +42,27 @@ export default function ChunkGallery({ chunks }: ChunkGalleryProps) {
   // Handle page changes
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    setSelectedChunk(null); // Close modal when changing pages
+    setSelectedImage(null); // Close modal when changing pages
+  };
+
+  // Handle image deletion
+  const handleDeleteImage = async (imageId: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent opening the modal
+    
+    if (!onDeleteChunk) return;
+    
+    const confirmed = window.confirm('Are you sure you want to delete this image reference? This action cannot be undone.');
+    if (!confirmed) return;
+    
+    setDeletingChunkId(imageId);
+    try {
+      await onDeleteChunk(imageId);
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      alert('Failed to delete image. Please try again.');
+    } finally {
+      setDeletingChunkId(null);
+    }
   };
 
   // Generate page numbers for pagination
@@ -87,8 +109,8 @@ export default function ChunkGallery({ chunks }: ChunkGalleryProps) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
         </div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No chunks found</h3>
-        <p className="text-gray-500">Upload some images to get started with AI chunks.</p>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">No image references found</h3>
+        <p className="text-gray-500">Upload some images to get started with image references.</p>
       </div>
     );
   }
@@ -98,7 +120,7 @@ export default function ChunkGallery({ chunks }: ChunkGalleryProps) {
       {/* Results count */}
       <div className="mb-6">
         <p className="text-sm text-gray-600">
-          Showing {startIndex + 1}-{Math.min(endIndex, chunks.length)} of {chunks.length} chunks
+          Showing {startIndex + 1}-{Math.min(endIndex, chunks.length)} of {chunks.length} image references
         </p>
       </div>
 
@@ -107,27 +129,48 @@ export default function ChunkGallery({ chunks }: ChunkGalleryProps) {
           <div
             key={chunk.id}
             className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-            onClick={() => setSelectedChunk(chunk)}
+            onClick={() => setSelectedImage(chunk)}
           >
             {/* Image Preview */}
-            <div className="aspect-square bg-gray-100 relative overflow-hidden">
+            <div className="aspect-square bg-gray-100 relative overflow-hidden group">
               <img
                 src={`${backendUrl}${chunk.imageUrl}`}
-                alt="AI Chunk"
+                alt="Image Reference"
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik02MCAxMDBDNjAgODguOTU0MyA2OC45NTQzIDgwIDgwIDgwQzkxLjA0NTcgODAgMTAwIDg4Ljk1NDMgMTAwIDEwMEMxMDAgMTExLjA0NiA5MS4wNDU3IDEyMCA4MCAxMjBDNjguOTU0MyAxMjAgNjAgMTExLjA0NiA2MCAxMDBaIiBmaWxsPSIjOUI5QkEwIi8+CjxwYXRoIGQ9Ik04MCAxNDBDNjguOTU0MyAxNDAgNjAgMTMxLjA0NiA2MCAxMjBMMTAwIDEyMEMxMDAgMTMxLjA0NiA5MS4wNDU3IDE0MCA4MCAxNDBaIiBmaWxsPSIjOUI5QkEwIi8+Cjwvc3ZnPgo=';
                 }}
               />
+              
+              {/* Delete Button - Only show on hover */}
+              {onDeleteChunk && (
+                <button
+                  onClick={(e) => handleDeleteImage(chunk.id, e)}
+                  disabled={deletingChunkId === chunk.id}
+                  className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Delete image reference"
+                >
+                  {deletingChunkId === chunk.id ? (
+                    <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  )}
+                </button>
+              )}
             </div>
 
             {/* Content */}
             <div className="p-4">
               <p className="text-sm text-gray-900 font-medium mb-2 line-clamp-2">
-                {chunk.useCases.length > 100 
-                  ? `${chunk.useCases.substring(0, 100)}...` 
-                  : chunk.useCases
+                {chunk.useCases.join(', ').length > 100 
+                  ? `${chunk.useCases.join(', ').substring(0, 100)}...` 
+                  : chunk.useCases.join(', ')
                 }
               </p>
               
@@ -186,14 +229,14 @@ export default function ChunkGallery({ chunks }: ChunkGalleryProps) {
       )}
 
       {/* Modal for detailed view */}
-      {selectedChunk && (
+      {selectedImage && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-start mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Chunk Details</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Image Reference Details</h3>
                 <button
-                  onClick={() => setSelectedChunk(null)}
+                  onClick={() => setSelectedImage(null)}
                   className="text-gray-400 hover:text-gray-600"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -205,8 +248,8 @@ export default function ChunkGallery({ chunks }: ChunkGalleryProps) {
               {/* Image */}
               <div className="mb-4">
                 <img
-                  src={`${backendUrl}${selectedChunk.imageUrl}`}
-                  alt="AI Chunk"
+                  src={`${backendUrl}${selectedImage.imageUrl}`}
+                  alt="Image Reference"
                   className="w-full rounded-lg"
                 />
               </div>
@@ -215,17 +258,24 @@ export default function ChunkGallery({ chunks }: ChunkGalleryProps) {
               <div className="space-y-4">
                 <div>
                   <h4 className="text-sm font-medium text-gray-900 mb-1">Use Cases</h4>
-                  <p className="text-sm text-gray-700 whitespace-pre-wrap">{selectedChunk.useCases}</p>
+                  <ul className="text-sm text-gray-700 space-y-1">
+                    {selectedImage.useCases.map((useCase: string, index: number) => (
+                      <li key={index} className="flex items-start">
+                        <span className="text-blue-600 mr-2">•</span>
+                        <span>{useCase}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
 
                 <div>
                   <h4 className="text-sm font-medium text-gray-900 mb-1">Upload Date</h4>
-                  <p className="text-sm text-gray-700">{formatDate(selectedChunk.uploadDate)}</p>
+                  <p className="text-sm text-gray-700">{formatDate(selectedImage.uploadDate)}</p>
                 </div>
 
                 <div>
                   <h4 className="text-sm font-medium text-gray-900 mb-1">File Name</h4>
-                  <p className="text-sm text-gray-700 font-mono">{selectedChunk.fileName}</p>
+                  <p className="text-sm text-gray-700 font-mono">{selectedImage.fileName}</p>
                 </div>
               </div>
             </div>

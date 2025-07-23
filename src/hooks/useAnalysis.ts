@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import analysisService from '../services/analysisService';
+import shopifyValidationService from '../services/shopifyValidationService';
 
 interface UserInfo {
   name: string;
@@ -10,6 +11,7 @@ interface UserInfo {
 interface AnalysisItem {
   problem: string;
   solution: string;
+  screenshotUrl?: string; // Add screenshot URL to analysis items
 }
 
 interface Report {
@@ -39,6 +41,10 @@ export function useAnalysis() {
     email: '',
     mobile: '',
   });
+  
+  // Shopify validation state
+  const [validatingShopify, setValidatingShopify] = useState(false);
+  const [shopifyValidationError, setShopifyValidationError] = useState<string | null>(null);
   
   // Timer state
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -120,6 +126,7 @@ export function useAnalysis() {
   const resetState = useCallback(() => {
     setLoading(true);
     setError(null);
+    setShopifyValidationError(null); // Clear any previous validation errors
     setReport(null);
     setActiveTab('');
     setStatus(null);
@@ -142,6 +149,23 @@ export function useAnalysis() {
     resetState();
 
     try {
+      // First, validate if it's a Shopify site
+      setValidatingShopify(true);
+      console.log('[SHOPIFY VALIDATION] Starting validation for URL:', url);
+      
+      const validationResult = await shopifyValidationService.validateShopifySite(url);
+      
+      if (!validationResult.isShopify) {
+        setShopifyValidationError(validationResult.message || 'This does not appear to be a Shopify site');
+        setValidatingShopify(false);
+        setLoading(false); // Stop the loading state
+        setTimerActive(false); // Stop the timer
+        return;
+      }
+      
+      console.log('[SHOPIFY VALIDATION] ✅ Validated as Shopify site');
+      setValidatingShopify(false);
+
       const domain = new URL(url).hostname;
       
       console.log('[SEQUENTIAL] Starting sequential analysis for domain:', domain);
@@ -171,8 +195,11 @@ export function useAnalysis() {
             
             // Handle screenshot URL updates
             if (status.status.startsWith('screenshot-url:')) {
-              const [_, pageType, screenshotUrl] = status.status.split(':');
-              if (pageType && screenshotUrl) {
+              const parts = status.status.split(':');
+              if (parts.length >= 4) {
+                const pageType = parts[1];
+                const screenshotUrl = parts.slice(2).join(':'); // Rejoin the URL parts
+                console.log('[SCREENSHOT] Received URL for', pageType, ':', screenshotUrl);
                 setScreenshotUrls(prev => ({
                   ...prev,
                   [pageType]: screenshotUrl
@@ -205,7 +232,35 @@ export function useAnalysis() {
 
           // Check if analysis is complete
           if (status.complete && status.analysis) {
-            setReport(status.analysis);
+            console.log('[COMPLETE] Final analysis data:', status.analysis);
+            console.log('[COMPLETE] Screenshot URLs:', screenshotUrls);
+            console.log('[COMPLETE] Screenshots from backend:', status.screenshots);
+            
+            // Add screenshot URLs to final analysis data
+            const finalReport = { ...status.analysis };
+            Object.keys(status.analysis).forEach(pageType => {
+              // Try to get screenshot URL from backend screenshots first, then fallback to status updates
+              let screenshotUrl = null;
+              if (status.screenshots && status.screenshots[pageType]) {
+                const backendBaseUrl = process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '') || 'http://localhost:4000';
+                screenshotUrl = `${backendBaseUrl}/screenshots/${status.screenshots[pageType].filename}`;
+                console.log(`[COMPLETE] Using backend screenshot for ${pageType}:`, screenshotUrl);
+              } else {
+                screenshotUrl = screenshotUrls[pageType];
+                console.log(`[COMPLETE] Using status screenshot for ${pageType}:`, screenshotUrl);
+              }
+              
+              if (screenshotUrl && status.analysis[pageType]) {
+                // Add screenshot URL to each analysis item
+                finalReport[pageType] = status.analysis[pageType].map((item: any) => ({
+                  ...item,
+                  screenshotUrl: screenshotUrl
+                }));
+              }
+            });
+            
+            console.log('[COMPLETE] Final report with screenshots:', finalReport);
+            setReport(finalReport);
             
             // Clear all analysis progress
             setAnalysisInProgress({
@@ -246,9 +301,36 @@ export function useAnalysis() {
           // Update report incrementally if analysis data is available
           if (status.analysis && Object.keys(status.analysis).length > 0) {
             console.log('[SEQUENTIAL] Updating report with:', status.analysis);
+            console.log('[SCREENSHOT] Current screenshot URLs:', screenshotUrls);
+            console.log('[SCREENSHOT] Backend screenshots:', status.screenshots);
             setReport(prevReport => {
-              const newReport = { ...prevReport, ...status.analysis };
-              console.log('[SEQUENTIAL] New report state:', newReport);
+              const newReport = { ...prevReport };
+              
+              // Add screenshot URLs to analysis data
+              Object.keys(status.analysis).forEach(pageType => {
+                // Try to get screenshot URL from backend screenshots first, then fallback to status updates
+                let screenshotUrl = null;
+                if (status.screenshots && status.screenshots[pageType]) {
+                  const backendBaseUrl = process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '') || 'http://localhost:4000';
+                  screenshotUrl = `${backendBaseUrl}/screenshots/${status.screenshots[pageType].filename}`;
+                  console.log(`[SCREENSHOT] Using backend screenshot for ${pageType}:`, screenshotUrl);
+                } else {
+                  screenshotUrl = screenshotUrls[pageType];
+                  console.log(`[SCREENSHOT] Using status screenshot for ${pageType}:`, screenshotUrl);
+                }
+                
+                if (screenshotUrl && status.analysis[pageType]) {
+                  // Add screenshot URL to each analysis item
+                  newReport[pageType] = status.analysis[pageType].map((item: any) => ({
+                    ...item,
+                    screenshotUrl: screenshotUrl
+                  }));
+                } else {
+                  newReport[pageType] = status.analysis[pageType];
+                }
+              });
+              
+              console.log('[SEQUENTIAL] New report state with screenshots:', newReport);
               return newReport;
             });
             
@@ -278,7 +360,14 @@ export function useAnalysis() {
 
     } catch (err) {
       setTimerActive(false);
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setValidatingShopify(false);
+      
+      // Check if it's a validation error
+      if (err instanceof Error && err.message.includes('Shopify')) {
+        setShopifyValidationError(err.message);
+      } else {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      }
       setLoading(false);
     }
   }, [url, activeTab, report, analysisInProgress, resetState]);
@@ -332,6 +421,14 @@ export function useAnalysis() {
     }));
   }, []);
 
+  const handleUrlChange = useCallback((newUrl: string) => {
+    setUrl(newUrl);
+    // Clear validation errors when user starts typing a new URL
+    if (shopifyValidationError) {
+      setShopifyValidationError(null);
+    }
+  }, [shopifyValidationError]);
+
   return {
     // State
     url,
@@ -352,11 +449,14 @@ export function useAnalysis() {
     userInfo,
     elapsedTime,
     timerActive,
+    validatingShopify,
+    shopifyValidationError,
     
     // Functions
     handleSubmit,
     handleUserInfoSubmit,
     handleUserInfoChange,
+    handleUrlChange,
     formatTime,
     statusMessages,
   };

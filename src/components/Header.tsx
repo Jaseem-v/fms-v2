@@ -17,16 +17,16 @@ export default function Header() {
             🏠 Analysis
           </a>
           <a
-            href="/ai-chunks"
+                            href="/image-references"
             className={`px-4 py-2 text-sm font-medium transition-colors ${
               isAuthenticated 
                 ? 'text-gray-700 hover:text-gray-900 hover:bg-white rounded-md' 
                 : 'text-gray-400 cursor-not-allowed opacity-50'
             }`}
             onClick={!isAuthenticated ? (e) => e.preventDefault() : undefined}
-            title={!isAuthenticated ? 'Login required to access AI Chunks' : ''}
+            title={!isAuthenticated ? 'Login required to access Image References' : ''}
           >
-            🎯 AI Chunks {!isAuthenticated && '🔒'}
+            🎯 Image References {!isAuthenticated && '🔒'}
           </a>
         </div>
       </nav>
@@ -47,14 +47,14 @@ export default function Header() {
       <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
         <span className="relative inline-block">
           <span className="relative z-10 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            CRO Analysis
+            Shopify CRO Analysis
           </span>
           <div className="absolute inset-0 bg-gradient-to-r from-blue-100 to-purple-100 transform rotate-1 rounded-lg"></div>
         </span>{' '}
-        for Your Online Store
+        for Your Store
       </h1>
       <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-        Why aren&apos;t your visitors buying? Get{' '}
+        Why aren&apos;t your Shopify visitors buying? Get{' '}
         <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent font-semibold">
           clear answers
         </span>{' '}
@@ -68,13 +68,13 @@ export default function Header() {
         </span>
         .{' '}
         <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent font-semibold">
-          No guesswork
+          Shopify-specific
         </span>{' '}
-        - just{' '}
+        analysis with{' '}
         <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent font-semibold">
-          straightforward solutions
+          actionable solutions
         </span>{' '}
-        to boost your sales and grow your business.
+        to boost your store&apos;s conversion rate.
       </p>
       </div>
     </header>

@@ -53,9 +53,12 @@ export default function Home() {
     userInfo,
     elapsedTime,
     timerActive,
+    validatingShopify,
+    shopifyValidationError,
     handleSubmit,
     handleUserInfoSubmit,
     handleUserInfoChange,
+    handleUrlChange,
     formatTime,
     statusMessages,
   } = useAnalysis();
@@ -91,10 +94,23 @@ export default function Home() {
         <main className="space-y-8">
           <UrlForm
             url={url}
-            setUrl={setUrl}
+            setUrl={handleUrlChange}
             loading={loading}
+            validatingShopify={validatingShopify}
             onSubmit={handleSubmit}
           />
+
+          {shopifyValidationError && (
+            <div className="max-w-4xl mx-auto bg-orange-50 border border-orange-200 rounded-lg p-4" role="alert">
+              <div className="flex items-center gap-2 text-orange-800">
+                <span className="text-orange-500">🛒</span>
+                <div>
+                  <div className="font-semibold">Shopify Site Required</div>
+                  <div>{shopifyValidationError}</div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {error && (
             <div className="max-w-4xl mx-auto bg-red-50 border border-red-200 rounded-lg p-4" role="alert">
@@ -131,36 +147,41 @@ export default function Home() {
             </div>
           )}
 
-          <ScreenshotDisplay
-            screenshotUrls={screenshotUrls}
-            setSelectedScreenshot={setSelectedScreenshot}
-          />
+          {!shopifyValidationError && (
+            <ScreenshotDisplay
+              screenshotUrls={screenshotUrls}
+              setSelectedScreenshot={setSelectedScreenshot}
+            />
+          )}
 
-          {!analysisComplete && !report && <StatusDisplay
-            status={status}
-            loading={loading}
-            elapsedTime={elapsedTime}
-            timerActive={timerActive}
-            analysisComplete={analysisComplete}
-            report={report}
-            analysisInProgress={analysisInProgress}
-            statusMessages={statusMessages}
-            formatTime={formatTime}
-          />}
+          {!shopifyValidationError && !analysisComplete && !report && (
+            <StatusDisplay
+              status={status}
+              loading={loading}
+              elapsedTime={elapsedTime}
+              timerActive={timerActive}
+              analysisComplete={analysisComplete}
+              report={report}
+              analysisInProgress={analysisInProgress}
+              statusMessages={statusMessages}
+              formatTime={formatTime}
+            />
+          )}
 
-          {report && Object.keys(report).length > 0 && (
+          {!shopifyValidationError && report && Object.keys(report).length > 0 && (
             <OverallSummary
               report={report}
               analysisInProgress={analysisInProgress}
             />
           )}
 
-          {report && Object.keys(report).length > 0 && (
+          {!shopifyValidationError && report && Object.keys(report).length > 0 && (
             <AnalysisReport
               report={report}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
               setShowModal={setShowModal}
+
             />
           )}
         </main>
