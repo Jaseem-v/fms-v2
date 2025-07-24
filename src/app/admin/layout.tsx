@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminNavbar from '@/components/admin/AdminNavbar';
 import ProtectedRoute from '@/components/ProtectedRoute';
@@ -11,6 +11,16 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Add data-admin attribute to body when component mounts
+  React.useEffect(() => {
+    document.body.setAttribute('data-admin', 'true');
+    
+    // Cleanup when component unmounts
+    return () => {
+      document.body.removeAttribute('data-admin');
+    };
+  }, []);
 
   return (
     <ProtectedRoute>

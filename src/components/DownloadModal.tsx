@@ -22,7 +22,7 @@ export default function DownloadModal({
   if (!showModal) return null;
 
   return (
-            <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 ">
       <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
         <div className="text-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Please enter your information</h2>
@@ -61,7 +61,7 @@ export default function DownloadModal({
           <div className="flex gap-3 pt-4">
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+              className="flex-1 download-button"
             >
               Download Report
             </button>

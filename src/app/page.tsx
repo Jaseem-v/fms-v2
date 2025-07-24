@@ -9,7 +9,12 @@ import AnalysisReport from '../components/AnalysisReport';
 import OverallSummary from '../components/OverallSummary';
 import DownloadModal from '../components/DownloadModal';
 import ScreenshotModal from '../components/ScreenshotModal';
+import FormModal from '../components/FormModal';
 import { useAnalysis } from '../hooks/useAnalysis';
+import HeroArea from '@/components/ui/HeroArea';
+import ReportLoading from '@/components/ui/ReportLoading';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import authService from '../services/authService';
 
 interface UserInfo {
   name: string;
@@ -33,6 +38,9 @@ interface Report {
 
 export default function Home() {
   const [selectedScreenshot, setSelectedScreenshot] = useState<{ pageType: string, url: string } | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [showFormModal, setShowFormModal] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   const {
     url,
@@ -63,8 +71,118 @@ export default function Home() {
     statusMessages,
   } = useAnalysis();
 
+  // Check authentication status on component mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const result = await authService.verifyToken();
+        setIsAuthenticated(result.valid);
+      } catch (error) {
+        console.error('Auth check error:', error);
+        setIsAuthenticated(false);
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  // Calculate progress percentage based on status
+  const calculateProgress = () => {
+    if (!status) return 0;
+
+    const currentStatus = statusMessages[status];
+    if (!currentStatus) return 0;
+
+    // Handle special status cases
+    if (status === 'complete' || status === 'all-steps-complete') {
+      return 100;
+    }
+
+    if (status === 'error-occurred') {
+      return 0;
+    }
+
+    // Define step progress mapping for more granular control
+    const stepProgressMap: Record<string, number> = {
+      // Step 1: Homepage (0-20%)
+      'step-1-homepage-start': 5,
+      'screenshot-homepage': 10,
+      'analyze-homepage': 15,
+      'step-1-homepage-complete': 20,
+
+      // Step 2: Collection (20-40%)
+      'step-2-collection-start': 25,
+      'screenshot-collection': 30,
+      'analyze-collection': 35,
+      'step-2-collection-complete': 40,
+
+      // Step 3: Product (40-60%)
+      'step-3-product-start': 45,
+      'search-product-page': 50,
+      'screenshot-product': 55,
+      'analyze-product': 60,
+      'step-3-product-complete': 65,
+
+      // Step 4: Cart (60-80%)
+      'step-4-cart-start': 70,
+      'add-cart': 75,
+      'screenshot-cart': 80,
+      'analyze-cart': 85,
+      'step-4-cart-complete': 90,
+
+      // Final steps (90-95%)
+      'cleanup': 95,
+      'wait-between-steps': 0,
+      'wait-for-previous-analyses': 0,
+      'fallback-to-puppeteer': 0,
+      'starting': 0,
+    };
+
+    // Check if we have a specific progress mapping for this status
+    if (stepProgressMap[status] !== undefined) {
+      return stepProgressMap[status];
+    }
+
+    // Fallback to step-based calculation
+    const totalSteps = 5;
+    const currentStep = currentStatus.step;
+
+    // If step is 0, it's a waiting or error state, return 0
+    if (currentStep === 0) return 0;
+
+    // Calculate percentage: (currentStep / totalSteps) * 100
+    let progress = Math.round((currentStep / totalSteps) * 100);
+
+    // Add extra progress for specific status types
+    if (status.includes('-complete')) {
+      // If a step is complete, add 10% more to show progress within the step
+      progress += 10;
+    } else if (status.includes('-start')) {
+      // If a step just started, add 5% to show initial progress
+      progress += 5;
+    }
+
+    // Cap at 95% until analysis is complete
+    return Math.min(progress, 95);
+  };
+
   // Debug log for report
   console.log('Report data:', report);
+
+  // Wrapper function to handle form submission with authentication check
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (isAuthenticated) {
+      // If authenticated, proceed with analysis
+      handleSubmit(e);
+    } else {
+      // If not authenticated, show form modal
+      setShowFormModal(true);
+    }
+  };
 
   // Keyboard support for screenshot modal
   useEffect(() => {
@@ -89,17 +207,35 @@ export default function Home() {
       <div className="absolute left-1/2 bottom-0 transform -translate-x-1/2 translate-y-80 w-[1000px] h-[500px] bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full blur-[200px] opacity-20"></div>
 
       <div className="relative z-10 container mx-auto px-4 py-12 max-w-6xl min-h-screen flex flex-col justify-center">
-        <Header />
 
-        <main className="space-y-8">
-          <UrlForm
+        {isCheckingAuth ? (
+          <div className="flex items-center justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <span className="ml-3 text-gray-600">Checking authentication...</span>
+          </div>
+        ) : (
+          !loading && <HeroArea
             url={url}
             setUrl={handleUrlChange}
             loading={loading}
             validatingShopify={validatingShopify}
-            onSubmit={handleSubmit}
+            onSubmit={handleFormSubmit}
           />
+        )}
 
+        {loading && <DotLottieReact
+          src="https://lottie.host/f07caaa9-f21f-4d9d-bbd4-3c5dea5e1bcf/n7lmfwCeYx.lottie"
+          loop
+          autoplay={true}
+        />}
+
+        {loading && <ReportLoading
+          message={status ? statusMessages[status]?.description || status : 'Initializing analysis...'}
+          showProgress={true}
+          progress={calculateProgress()}
+        />}
+
+        {report && <main className="space-y-8">
           {shopifyValidationError && (
             <div className="max-w-4xl mx-auto bg-orange-50 border border-orange-200 rounded-lg p-4" role="alert">
               <div className="flex items-center gap-2 text-orange-800">
@@ -121,57 +257,18 @@ export default function Home() {
             </div>
           )}
 
-          {analysisComplete && !loading && report && (
-            <div className="max-w-4xl mx-auto bg-green-50 border border-green-200 rounded-lg p-4" role="alert">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-green-800">
-                  <span className="text-green-500">🎉</span>
-                  Analysis completed successfully! Your CRO report is ready below.
-                </div>
-                <div className="text-center">
-                  <div className="text-lg font-mono font-bold text-green-800">
-                    {formatTime(elapsedTime)}
-                  </div>
-                  <div className="text-xs text-green-600">Total Time</div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {successMessage && (
-            <div className="max-w-4xl mx-auto bg-green-50 border border-green-200 rounded-lg p-4" role="alert">
-              <div className="flex items-center gap-2 text-green-800">
-                <span className="text-green-500">✓</span>
-                {successMessage}
-              </div>
-            </div>
-          )}
-
-          {!shopifyValidationError && (
-            <ScreenshotDisplay
-              screenshotUrls={screenshotUrls}
-              setSelectedScreenshot={setSelectedScreenshot}
-            />
-          )}
-
-          {!shopifyValidationError && !analysisComplete && !report && (
-            <StatusDisplay
-              status={status}
-              loading={loading}
-              elapsedTime={elapsedTime}
-              timerActive={timerActive}
-              analysisComplete={analysisComplete}
-              report={report}
-              analysisInProgress={analysisInProgress}
-              statusMessages={statusMessages}
-              formatTime={formatTime}
-            />
-          )}
+          {<ReportLoading
+            message={status ? statusMessages[status]?.description || status : 'Initializing analysis...'}
+            showProgress={true}
+            progress={analysisComplete ? 100 : calculateProgress()}
+            report={report}
+          />}
 
           {!shopifyValidationError && report && Object.keys(report).length > 0 && (
             <OverallSummary
               report={report}
               analysisInProgress={analysisInProgress}
+              setShowModal={setShowModal}
             />
           )}
 
@@ -181,10 +278,9 @@ export default function Home() {
               activeTab={activeTab}
               setActiveTab={setActiveTab}
               setShowModal={setShowModal}
-
             />
           )}
-        </main>
+        </main>}
       </div>
 
       <DownloadModal
@@ -199,6 +295,12 @@ export default function Home() {
         selectedScreenshot={selectedScreenshot}
         setSelectedScreenshot={setSelectedScreenshot}
       />
+
+      <FormModal
+        isOpen={showFormModal}
+        onClose={() => setShowFormModal(false)}
+        websiteUrl={url}
+      />
     </div>
   );
-}
+} 

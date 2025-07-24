@@ -1,0 +1,972 @@
+.hero {
+
+    &__content {
+        display: flex;
+        width: 775px;
+        flex-direction: column;
+        align-items: center;
+        gap: 66px;
+
+        margin: auto;
+
+        position: relative;
+    }
+
+    &__details {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        align-self: stretch;
+
+        z-index: 2;
+
+        &-trust {
+            display: flex;
+            // width: 373px;
+            padding: 4px 6px 4px 6px;
+            // flex-direction: column;
+            align-items: center;
+            gap: 10px;
+
+            border-radius: 100px;
+            border: 0.5px solid rgba(0, 0, 0, 0.15);
+            background: #FCEBE5;
+
+            &-text {
+                color: #101314;
+                font-family: "Instrument Sans";
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 123%;
+                /* 19.68px */
+            }
+
+            &-icon {
+                display: flex;
+                align-items: center;
+                // gap: -8.209px;
+
+                img {
+                    margin-right: -8.209px;
+
+                    &:first-child {
+                        margin-right: 0;
+                    }
+                }
+            }
+        }
+
+        &-title {
+            color: #101314;
+            text-align: center;
+            font-family: "Instrument Serif";
+            font-size: 107.594px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 100%;
+            /* 107.594px */
+
+            align-self: stretch;
+        }
+
+        &-description {
+            color: #101314;
+            text-align: center;
+            font-family: "Instrument Sans";
+            font-size: 22px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 123%;
+            /* 27.06px */
+        }
+    }
+
+    &__input {
+
+        &-container {
+            display: flex;
+            width: 774px;
+            height: 90px;
+            padding: 10px;
+            align-items: center;
+            gap: 10px;
+
+            padding-left: 38px;
+
+            border-radius: 100px;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            background: #FFF;
+
+            z-index: 2;
+        }
+
+        &-field {
+            border: none;
+            outline: none;
+            background: transparent;
+            width: 100%;
+            height: 100%;
+            font-size: 22px;
+            font-weight: 400;
+        }
+
+        &-button {
+            display: flex;
+            height: 70px;
+            padding: 21px 18px;
+            // flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+
+            border-radius: 100px;
+            background: #1F1F1F;
+
+            color: #FFF;
+            text-align: center;
+            font-family: "Instrument Sans";
+            font-size: 22px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 123%;
+            /* 27.06px */
+            text-transform: capitalize;
+
+            cursor: pointer;
+
+            &:hover {
+                background: #1f1f1fc7;
+            }
+        }
+    }
+
+
+    &__gradient-bg {
+        width: 715px;
+        height: 27px;
+        flex-shrink: 0;
+        border-radius: 100px;
+        background: #E65A2B;
+        filter: blur(100px);
+
+        position: absolute;
+        // bottom: -10px;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        margin: auto;
+        content: '';
+
+
+        display: block;
+
+        bottom: 50%;
+
+
+    }
+
+    &__pages {
+
+        &-list {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+
+        }
+
+        &-item {
+            display: flex;
+            max-width: 197px;
+            width: 100%;
+            // height: 182px;
+            transform: rotate(-4deg);
+            padding: 37px 30px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+
+            border-radius: 21px;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            background: linear-gradient(0deg, #FFF 0%, #FFF 100%), #FFF;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+
+            margin-left: -78.209px;
+
+            transition: all 0.3s ease;
+
+            cursor: pointer;
+
+            &:first-child {
+                margin-left: 0;
+            }
+
+            &:nth-child(even) {
+                transform: rotate(4deg);
+            }
+
+            &:nth-child(odd) {
+                transform: rotate(-4deg);
+            }
+
+
+            &.active {
+                border-radius: 21px;
+                border: 1px solid rgba(230, 90, 43, 0.50);
+                background: #FFF;
+                box-shadow: 0px 0px 37.8px 0px rgba(230, 90, 43, 0.45);
+                z-index: 2;
+            }
+
+            &-icon {
+                color: #101314;
+                text-align: center;
+                font-family: "Instrument Sans";
+                font-size: 40px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 123%;
+                /* 49.2px */
+            }
+
+            &-text {
+                color: #101314;
+                text-align: center;
+                font-family: "Instrument Sans";
+                font-size: 18px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 123%;
+                /* 22.14px */
+            }
+        }
+    }
+}
+
+// Overall Summary Component Styles
+.overall-summary {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    //   max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: "Instrument Sans", sans-serif;
+
+    width: max-content;
+}
+
+// Performance Score Section
+.performance-score-section {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.performance-gauge {
+    position: relative;
+    width: 300px;
+    height: 300px;
+}
+
+.gauge-circle {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: white;
+    border: 8px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gauge-progress {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    width: calc(100% + 16px);
+    height: calc(100% + 16px);
+    border-radius: 50%;
+    background: conic-gradient(#E65A2B 0deg calc(var(--progress) * 3.6deg),
+            transparent calc(var(--progress) * 3.6deg) 360deg);
+    mask: radial-gradient(circle at center, transparent 85px, black 86px);
+    -webkit-mask: radial-gradient(circle at center, transparent 85px, black 86px);
+    filter: drop-shadow(0 0 10px rgba(230, 90, 43, 0.3));
+}
+
+.gauge-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    z-index: 2;
+}
+
+.score-number {
+    font-size: 48px;
+    font-weight: 700;
+    color: #101314;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.score-label {
+    font-size: 16px;
+    color: #101314;
+    font-weight: 400;
+    margin-bottom: 4px;
+}
+
+.website-name {
+    font-size: 14px;
+    color: #101314;
+    font-weight: 400;
+    opacity: 0.7;
+}
+
+// Problems Summary Section
+.problems-summary-section {
+    width: 100%;
+}
+
+.problems-card {
+    background: white;
+    border-radius: 16px;
+    padding: 52px 71px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+
+    display: flex;
+    //   flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    border-radius: 30px;
+    border: 1px solid rgba(16, 19, 20, 0.15);
+    background: #FFF;
+    box-shadow: 0px 97px 27px 0px rgba(0, 0, 0, 0.00), 0px 62px 25px 0px rgba(0, 0, 0, 0.01), 0px 35px 21px 0px rgba(0, 0, 0, 0.05), 0px 16px 16px 0px rgba(0, 0, 0, 0.09), 0px 4px 9px 0px rgba(0, 0, 0, 0.10);
+
+    padding: 30px;
+}
+
+.problems-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    //   margin-bottom: 20px;
+}
+
+.warning-icon {
+    color: #101314;
+    font-family: "Instrument Serif";
+    font-size: 50px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 50px;
+    /* 100% */
+}
+
+.problems-count {
+    color: #101314;
+    font-family: "Instrument Serif";
+    font-size: 50px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 50px;
+    /* 100% */
+}
+
+.problems-breakdown {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    // gap: 20px;
+}
+
+.problems-column {
+    display: flex;
+    flex-direction: column;
+    // gap: 12px;
+
+    &.right {
+        .problem-item {
+            border-left: 1px solid rgba(16, 19, 20, 0.15);
+            border-right: none;
+            padding-left: 20px;
+            padding-right: 0;
+
+        }
+    }
+}
+
+.problem-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 17px 10px;
+
+    border-bottom: 1px solid rgba(16, 19, 20, 0.15);
+    border-top: 1px solid rgba(16, 19, 20, 0.15);
+    // border-left: 1px solid rgba(16, 19, 20, 0.15);
+    border-right: 1px solid rgba(16, 19, 20, 0.15);
+
+    padding-right: 20px;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    &:first-child {
+        border-top: none;
+    }
+}
+
+.page-icon {
+    color: #101314;
+    font-family: "Instrument Sans";
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.page-info {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    color: #101314;
+}
+
+.page-name {
+    color: #101314;
+    font-family: "Instrument Sans";
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.page-count {
+    color: #101314;
+    font-family: "Instrument Sans";
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+// Download Section
+.download-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.download-button {
+    background: #1F1F1F;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 32px;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: "Instrument Sans", sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(31, 31, 31, 0.2);
+    min-width: 200px;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.5s;
+    }
+
+    &:hover {
+        background: #2a2a2a;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(31, 31, 31, 0.3);
+
+        &::before {
+            left: 100%;
+        }
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+
+
+.report {
+
+    &__tabs {
+        display: flex;
+        align-items: center;
+        // gap: 10px;
+    }
+
+    &__tab {
+        border: 1px solid rgba(16, 19, 20, 0.15);
+        // background: #FFDFD5;
+
+        color: #101314;
+        font-family: "Instrument Serif";
+        font-size: 28px;
+        font-style: italic;
+        font-weight: 400;
+        line-height: normal;
+
+        padding: 23px;
+
+        flex: 1 0 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #FFF;
+        cursor: pointer;
+
+        &.active,
+        &:hover {
+            background: #FFDFD5;
+            color: #E65A2B;
+        }
+
+    }
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+
+        width: 100%;
+
+
+
+    }
+
+    &__item {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+
+        &-number {
+            color: #E65A2B;
+            -webkit-text-stroke-width: 1px;
+            -webkit-text-stroke-color: rgba(16, 19, 20, 0.15);
+            font-family: "Instrument Sans";
+            font-size: 50px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+
+            margin-right: 30px;
+        }
+
+
+        &-content {
+            border-radius: 30px;
+            border: 2px solid rgba(16, 19, 20, 0.15);
+            background: #FFF;
+            overflow: hidden;
+            width: 100%;
+            // display: flex;
+        }
+
+        &-element {
+            padding: 10px 0;
+            // display: flex;
+            flex: 1 0 0;
+            width: 100%;
+            // width: ;
+
+            // flex-direction: column;
+            // gap: 10px;
+
+            &:first-child {
+                padding-bottom: 0px;
+            }
+
+
+        }
+
+        &-title {
+
+            &-container {
+                background: #FFD9D9;
+                width: max-content;
+                padding: 10px 50px;
+                clip-path: polygon(75% 0%, 100% 50%, 75% 100%, 0% 100%, 0 51%, 0% 0%);
+                // padding: ;
+
+                // stroke-width: 0.5px;
+                // stroke: rgba(0, 0, 0, 0.10);
+
+                &--solution {
+                    background: #DBFFD1;
+                }
+
+                &--referance {
+                    background: #FFFBC7;
+                    // clip-path: none;
+
+                    padding-right: 80px;
+
+                }
+
+                &--app {
+                    background: #dedefb;
+                    padding-right: 90px;
+
+                    // clip-path: none;
+                }
+
+                // width: max-content;
+
+            }
+
+
+
+            color: #1F1F1F;
+            font-family: "Inter";
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: 1.3;
+            /* 19.68px */
+            text-transform: capitalize;
+
+
+        }
+
+        &-description {
+            color: #101314;
+            font-family: "Inter";
+            font-size: 20px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 1.5;
+
+            padding: 15px 50px;
+
+            display: flex;
+            align-items: center;
+            // justify-content: center;
+        }
+
+        &-images {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+
+            padding: 15px 50px;
+
+            border-radius: 30px;
+        }
+    }
+}
+
+
+// Report Loading Component Styles
+.report-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    // min-height: 60vh;
+    position: relative;
+    font-family: "Instrument Sans", sans-serif;
+
+    &__container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+        z-index: 2;
+        max-width: 600px;
+        text-align: center;
+    }
+
+    &__icon {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #E65A2B, #ff7a4a);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 20px 40px rgba(230, 90, 43, 0.3);
+        animation: pulse 2s ease-in-out infinite;
+
+        &-inner {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: rotate 3s linear infinite;
+        }
+
+        &-text {
+            font-size: 40px;
+            animation: bounce 1.5s ease-in-out infinite;
+        }
+    }
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+    }
+
+    &__title {
+        color: #101314;
+        font-family: "Instrument Serif", serif;
+        font-size: 48px;
+        font-weight: 400;
+        line-height: 1.2;
+        margin: 0;
+    }
+
+    &__message {
+        color: #101314;
+        font-size: 20px;
+        font-weight: 400;
+        line-height: 1.4;
+        margin: 0;
+        opacity: 0.8;
+    }
+
+    &__progress {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        width: 100%;
+        max-width: 400px;
+
+        &-bar {
+            flex: 1;
+            height: 8px;
+            background: rgba(16, 19, 20, 0.1);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        &-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #E65A2B, #ff7a4a);
+            border-radius: 100px;
+            transition: width 0.3s ease;
+            box-shadow: 0 2px 8px rgba(230, 90, 43, 0.3);
+        }
+
+        &-text {
+            color: #101314;
+            font-size: 16px;
+            font-weight: 600;
+            min-width: 40px;
+        }
+    }
+
+    &__steps {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    &__step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 16px 20px;
+        border-radius: 16px;
+        border: 1px solid rgba(16, 19, 20, 0.15);
+        background: white;
+        transition: all 0.3s ease;
+        animation: fadeInUp 0.6s ease-out;
+        animation-fill-mode: both;
+
+        &:nth-child(1) { animation-delay: 0.1s; }
+        &:nth-child(2) { animation-delay: 0.2s; }
+        &:nth-child(3) { animation-delay: 0.3s; }
+        &:nth-child(4) { animation-delay: 0.4s; }
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-color: rgba(230, 90, 43, 0.3);
+        }
+
+        &--complete {
+            background: #f49271e2;
+            color: #FFF;
+            .report-loading__step-text{
+                // color: #FFF;
+            }
+        }
+
+        &-icon {
+            font-size: 24px;
+            animation: wiggle 2s ease-in-out infinite;
+
+          
+        }
+
+        &-text {
+            color: #101314;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+        }
+    }
+
+    &__dots {
+        display: flex;
+        gap: 8px;
+        margin-top: 20px;
+    }
+
+    &__dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #E65A2B;
+        animation: dotPulse 1.4s ease-in-out infinite both;
+
+        &:nth-child(1) { animation-delay: 0s; }
+        &:nth-child(2) { animation-delay: 0.2s; }
+        &:nth-child(3) { animation-delay: 0.4s; }
+    }
+
+    &__gradient {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 400px;
+        height: 400px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(230, 90, 43, 0.1) 0%, transparent 70%);
+        filter: blur(60px);
+        z-index: 1;
+        animation: gradientFloat 4s ease-in-out infinite;
+    }
+}
+
+// Animations
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 20px 40px rgba(230, 90, 43, 0.3);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 25px 50px rgba(230, 90, 43, 0.4);
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes wiggle {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-5deg);
+    }
+    75% {
+        transform: rotate(5deg);
+    }
+}
+
+@keyframes dotPulse {
+    0%, 80%, 100% {
+        transform: scale(0.8);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes gradientFloat {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+// Only apply to the main landing page, not admin pages
+body:not([data-admin="true"]) main {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background: #fff;
+    padding: 40px 200px;
+    overflow-y: scroll;
+}
