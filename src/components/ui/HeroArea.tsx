@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Link from 'next/link'
 
 interface HeroAreaProps {
     url: string;
@@ -71,6 +72,24 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                     </svg>
                 </button>
             </form>
+
+            <div className="hero__payment-section">
+                <div className="hero__payment-info">
+                    <span className="hero__payment-price">$99.99</span>
+                    <span className="hero__payment-text">for comprehensive analysis</span>
+                </div>
+                <Link 
+                    href={`/payment?url=${encodeURIComponent(url)}`}
+                    className="hero__payment-button"
+                >
+                    Pay & Get Analysis
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                </Link>
+            </div>
 
             <div className="hero__gradient-bg">
 

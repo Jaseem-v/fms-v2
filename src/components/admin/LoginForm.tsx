@@ -20,11 +20,11 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
     setError('');
 
     try {
-      const result = await login(email, password);
-      if (result.success) {
+      const success = await login(email, password);
+      if (success) {
         onSuccess?.();
       } else {
-        setError(result.message);
+        setError('Invalid email or password');
       }
     } catch (err) {
       setError('An error occurred during login');
