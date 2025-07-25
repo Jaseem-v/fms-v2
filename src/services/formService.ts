@@ -1,4 +1,4 @@
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000/api';
+const BACKEND_URL = '/api'; // Use Next.js API route instead of direct backend URL
 
 export interface FormData {
   name: string;
