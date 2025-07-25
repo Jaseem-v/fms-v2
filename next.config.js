@@ -7,12 +7,12 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: `${process.env.BACKEND_URL || 'https://cro-audit-server.conversionab.com'}/api/:path*`,
+        destination: `${process.env.BACKEND_URL || 'https://server.fixmystore.com'}/api/:path*`,
       },
     ];
   },
   env: {
-    NEXT_PUBLIC_BACKEND_URL: process.env.BACKEND_URL || 'https://cro-audit-server.conversionab.com/api',
+    NEXT_PUBLIC_BACKEND_URL: process.env.BACKEND_URL || 'https://server.fixmystore.com/api',
   },
 };
 

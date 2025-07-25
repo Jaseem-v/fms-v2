@@ -1,4 +1,4 @@
-const BACKEND_URL = '/api'; // Use Next.js API route instead of direct backend URL
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://server.fixmystore.com/api';
 
 export interface FormData {
   name: string;
