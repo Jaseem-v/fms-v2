@@ -228,7 +228,7 @@ export default function Home() {
         )}
 
         {loading && <DotLottieReact
-          src="https://lottie.host/f07caaa9-f21f-4d9d-bbd4-3c5dea5e1bcf/n7lmfwCeYx.lottie"
+          src="https://lottie.host/a1b1eddc-5bf6-4259-bfe0-17b695d57e6f/X7bQ4xuwAv.lottie"
           loop
           autoplay={true}
         />}
