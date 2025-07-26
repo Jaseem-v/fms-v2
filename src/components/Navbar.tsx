@@ -16,9 +16,7 @@ export default function Navbar() {
 
   const navItems = [
     { name: 'Home', href: '/' },
-    { name: 'Pricing', href: '/pricing' },
-    { name: 'Privacy Policy', href: '/privacy' },
-    { name: 'Terms', href: '/terms' }
+    { name: 'Pricing', href: '/pricing' }
   ];
 
   const isActive = (href: string) => {
@@ -35,16 +33,13 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
-              {/* <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center mr-2">
-                <span className="text-white font-bold text-sm">F</span>
-              </div> */}
               <span className="text-xl font-bold text-gray-900">FixMyStore</span>
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - Center */}
           <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
+            <div className="flex items-baseline space-x-8">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
@@ -59,6 +54,16 @@ export default function Navbar() {
                 </Link>
               ))}
             </div>
+          </div>
+
+          {/* Login Button */}
+          <div className="hidden md:block">
+            <Link
+              href="/login"
+              className="bg-black text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors"
+            >
+              Login
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -122,6 +127,13 @@ export default function Navbar() {
                 {item.name}
               </Link>
             ))}
+            <Link
+              href="/login"
+              className="block px-3 py-2 rounded-md text-base font-medium bg-black text-white hover:bg-gray-800 transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Login
+            </Link>
           </div>
         </div>
       )}
