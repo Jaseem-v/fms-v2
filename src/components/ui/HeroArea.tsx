@@ -73,7 +73,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                 </button>
             </form>
 
-            <div className="hero__payment-section">
+            {/* <div className="hero__payment-section">
                 <div className="hero__payment-info">
                     <span className="hero__payment-price">$99.99</span>
                     <span className="hero__payment-text">for comprehensive analysis</span>
@@ -89,7 +89,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                         <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                 </Link>
-            </div>
+            </div> */}
 
             <div className="hero__gradient-bg">
 

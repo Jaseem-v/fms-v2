@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Header from '../components/Header';
-import UrlForm from '../components/UrlForm';
+import UrlForm from '../components/ui/UrlForm';
 import StatusDisplay from '../components/StatusDisplay';
 import ScreenshotDisplay from '../components/ScreenshotDisplay';
 import AnalysisReport from '../components/AnalysisReport';
@@ -12,9 +12,13 @@ import ScreenshotModal from '../components/ScreenshotModal';
 import FormModal from '../components/FormModal';
 import { useAnalysis } from '../hooks/useAnalysis';
 import HeroArea from '@/components/ui/HeroArea';
-import ReportLoading from '@/components/ui/ReportLoading';
+import ReportLoading from '@/components/ReportLoading';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import authService from '../services/authService';
+import PricingSection from '../components/ui/PricingSection';
+import WhatYouGetSection from '../components/ui/WhatYouGetSection';
+import AboutSections from '../components/ui/AboutSections';
+import FAQSection from '../components/ui/FAQSection';
 
 interface UserInfo {
   name: string;
@@ -199,7 +203,7 @@ export default function Home() {
   }, [selectedScreenshot]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 relative overflow-hidden">
+    <div className="min-h-screen bg-green-50 relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=&quot;25&quot; height=&quot;25&quot; viewBox=&quot;0 0 25 25&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cpath d=&quot;M1 1h1v1H1V1zm0 23h1v1H1v-1zm23 0h1v1h-1v-1zm0-23h1v1h-1V1z&quot; stroke=&quot;%23e5e7eb&quot; stroke-width=&quot;0.5&quot;/%3E%3C/svg%3E')] opacity-30"></div>
 
@@ -234,6 +238,15 @@ export default function Home() {
           showProgress={true}
           progress={calculateProgress()}
         />}
+
+        {!loading && !report && (
+          <>
+            <WhatYouGetSection />
+            <AboutSections />
+            <PricingSection />
+            <FAQSection />
+          </>
+        )}
 
         {report && <main className="space-y-8">
           {shopifyValidationError && (
