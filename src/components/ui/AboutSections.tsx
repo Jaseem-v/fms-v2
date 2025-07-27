@@ -89,7 +89,7 @@ const AboutSections: React.FC = () => {
               Who we are?
             </h2>
           </div>
-          
+
           <div className="flex flex-col lg:flex-row items-center gap-8">
             <div className="flex-1 text-center lg:text-left">
               <p className="text-lg text-gray-700 mb-6 leading-relaxed">
@@ -98,7 +98,7 @@ const AboutSections: React.FC = () => {
               <p className="text-lg text-gray-700 mb-8 leading-relaxed">
                 We also own Final Apps where we build Shopify apps to ease up the store management.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-8 justify-center lg:justify-start">
                 <div className="text-center">
                   <div className="text-4xl font-bold text-gray-900 mb-2">30K+</div>
@@ -110,13 +110,14 @@ const AboutSections: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="flex flex-col gap-4">
               <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center text-white text-xl font-bold">
-                AZ
+                <img src="/conversionAb.png" alt="AZ" />
               </div>
               <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white text-xl font-bold">
-                U
+                <img src="/final-apps.png" alt="AZ" />
+
               </div>
             </div>
           </div>
@@ -124,7 +125,7 @@ const AboutSections: React.FC = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-16 bg-white">
+      {/* <section className="py-16 ">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="text-5xl font-serif text-gray-900 mb-8">
@@ -175,7 +176,7 @@ const AboutSections: React.FC = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Who is this for? Section */}
       <section className="py-16">
@@ -185,7 +186,7 @@ const AboutSections: React.FC = () => {
               Who is this for?
             </h2>
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-6">
             {targetAudience.map((item, index) => (
               <div key={index} className="bg-green-100 border border-green-200 rounded-xl p-6 text-center">
@@ -210,7 +211,7 @@ const AboutSections: React.FC = () => {
               Risk-Free Purchase
             </h2>
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-6">
             {riskFreeFeatures.map((item, index) => (
               <div key={index} className="bg-green-100 border border-green-200 rounded-xl p-6 text-center">
