@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ report, url, userInfo }),
+      body: JSON.stringify({ report, url : "https://sitteer.com", userInfo }),
     });
 
     if (!response.ok) {

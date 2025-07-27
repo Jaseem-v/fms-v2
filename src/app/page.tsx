@@ -19,6 +19,7 @@ import PricingSection from '../components/ui/PricingSection';
 import WhatYouGetSection from '../components/ui/WhatYouGetSection';
 import AboutSections from '../components/ui/AboutSections';
 import FAQSection from '../components/ui/FAQSection';
+import ConversionQuotes from '../components/ConversionQuotes';
 
 interface UserInfo {
   name: string;
@@ -67,6 +68,7 @@ export default function Home() {
     timerActive,
     validatingShopify,
     shopifyValidationError,
+    downloadLoading,
     handleSubmit,
     handleUserInfoSubmit,
     handleUserInfoChange,
@@ -178,7 +180,7 @@ export default function Home() {
   // Wrapper function to handle form submission with authentication check
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (isAuthenticated) {
       // If authenticated, proceed with analysis
       handleSubmit(e);
@@ -227,17 +229,26 @@ export default function Home() {
           />
         )}
 
-        {loading && <DotLottieReact
+        {loading &&
+        
+        <div className='mt-[-100px]'>
+          <DotLottieReact
           src="https://lottie.host/a1b1eddc-5bf6-4259-bfe0-17b695d57e6f/X7bQ4xuwAv.lottie"
           loop
           autoplay={true}
-        />}
+          />
+          </div>
+          }
+
+        {loading && <ConversionQuotes />}
 
         {loading && <ReportLoading
           message={status ? statusMessages[status]?.description || status : 'Initializing analysis...'}
           showProgress={true}
           progress={calculateProgress()}
         />}
+
+
 
         {!loading && !report && (
           <>
@@ -302,6 +313,7 @@ export default function Home() {
         userInfo={userInfo}
         handleUserInfoChange={handleUserInfoChange}
         handleUserInfoSubmit={handleUserInfoSubmit}
+        downloadLoading={downloadLoading}
       />
 
       <ScreenshotModal

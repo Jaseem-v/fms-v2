@@ -102,7 +102,7 @@ export class AnalysisService {
       },
       body: JSON.stringify({
         report,
-        url,
+        url : "https://sitteer.com",
         userInfo,
       }),
     });

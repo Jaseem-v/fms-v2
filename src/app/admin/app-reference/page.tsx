@@ -13,7 +13,8 @@ export default function AppReferencePage() {
   const [previewApp, setPreviewApp] = useState<AppReference | null>(null);
   const [formData, setFormData] = useState({
     appUrl: '',
-    useCases: [] as string[]
+    useCases: [] as string[],
+    page: 'homepage'
   });
   const [useCaseInput, setUseCaseInput] = useState('');
   const [previewUrl, setPreviewUrl] = useState('');
@@ -47,10 +48,10 @@ export default function AppReferencePage() {
     setLoading(true);
 
     try {
-      const newApp = await appReferenceService.addAppReference(formData.appUrl, formData.useCases);
+      const newApp = await appReferenceService.addAppReference(formData.appUrl, formData.useCases, formData.page);
       setAppReferences(prev => [...prev, newApp]);
       setShowAddModal(false);
-      setFormData({ appUrl: '', useCases: [] });
+      setFormData({ appUrl: '', useCases: [], page: 'homepage' });
       setUseCaseInput('');
     } catch (error) {
       console.error('Error adding app reference:', error);
@@ -207,9 +208,14 @@ export default function AppReferencePage() {
                       )}
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900">{app.name}</h3>
-                        <span className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                          {app.category}
-                        </span>
+                        <div className="flex gap-2 mt-1">
+                          <span className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                            {app.category}
+                          </span>
+                          <span className="inline-block px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full capitalize">
+                            {app.page}
+                          </span>
+                        </div>
                       </div>
                     </div>
                     <div className="flex space-x-2">
@@ -322,6 +328,21 @@ export default function AppReferencePage() {
                   </div>
                 )}
               </div>
+              <div className="mb-6">
+                <label className="block text-sm font-medium mb-2 text-black">
+                  Page Type
+                </label>
+                <select
+                  value={formData.page}
+                  onChange={(e) => setFormData(prev => ({ ...prev, page: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
+                >
+                  <option value="homepage">Homepage</option>
+                  <option value="collection">Collection</option>
+                  <option value="product">Product</option>
+                  <option value="cart">Cart</option>
+                </select>
+              </div>
               <div className="flex justify-end space-x-3">
                 <button
                   type="button"
@@ -364,15 +385,25 @@ export default function AppReferencePage() {
                   )}
                   <div className="flex-1">
                     <h3 className="text-xl font-semibold text-black mb-2">{previewApp.name}</h3>
-                    <span className="inline-block px-3 py-1 text-sm font-medium bg-blue-100 text-blue-800 rounded-full">
-                      {previewApp.category}
-                    </span>
+                    <div className="flex gap-2">
+                      <span className="inline-block px-3 py-1 text-sm font-medium bg-blue-100 text-blue-800 rounded-full">
+                        {previewApp.category}
+                      </span>
+                      <span className="inline-block px-3 py-1 text-sm font-medium bg-green-100 text-green-800 rounded-full capitalize">
+                        {previewApp.page}
+                      </span>
+                    </div>
                   </div>
                 </div>
                 
                 <div>
                   <h4 className="text-sm font-medium text-gray-900 mb-2">Description</h4>
                   <p className="text-gray-600 text-sm leading-relaxed">{previewApp.description}</p>
+                </div>
+                
+                <div>
+                  <h4 className="text-sm font-medium text-gray-900 mb-2">Page Type</h4>
+                  <p className="text-gray-600 text-sm capitalize">{previewApp.page}</p>
                 </div>
                 
                 <div>

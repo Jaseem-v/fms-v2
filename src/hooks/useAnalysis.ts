@@ -740,6 +740,9 @@ export function useAnalysis() {
   const [timerActive, setTimerActive] = useState(false);
   const [startTime, setStartTime] = useState<Date | null>(null);
 
+  // Download loading state
+  const [downloadLoading, setDownloadLoading] = useState(false);
+
   // Use refs to track current state for completion checking
   const reportRef = useRef<Report | null>(null);
   const analysisInProgressRef = useRef<{ [key: string]: boolean }>({});
@@ -1069,7 +1072,7 @@ export function useAnalysis() {
   const handleUserInfoSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      setShowModal(false);
+      setDownloadLoading(true);
       setError(null);
       setSuccessMessage('Generating your PDF report...');
 
@@ -1096,6 +1099,8 @@ export function useAnalysis() {
 
       // Show success message
       setSuccessMessage('Your PDF report has been downloaded successfully!');
+      setDownloadLoading(false);
+      setShowModal(false);
 
       // Clear success message after 5 seconds
       setTimeout(() => {
@@ -1104,6 +1109,7 @@ export function useAnalysis() {
     } catch (error) {
       console.error('Error downloading report:', error);
       setError('Failed to download report. Please try again.');
+      setDownloadLoading(false);
     }
   }, [report, url, userInfo]);
 
@@ -1145,6 +1151,7 @@ export function useAnalysis() {
     timerActive,
     validatingShopify,
     shopifyValidationError,
+    downloadLoading,
 
     // Functions
     handleSubmit,

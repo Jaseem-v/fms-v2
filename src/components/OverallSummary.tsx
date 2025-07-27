@@ -24,6 +24,14 @@ export default function OverallSummary({ report, analysisInProgress, setShowModa
   // Calculate performance score (100 - problems * 1.5, minimum 0)
   const performanceScore = Math.max(0, Math.round(100 - (totalProblems * 1.5)));
 
+  // Get background color based on performance score
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return '#22C55E'; // Green for excellent
+    if (score >= 60) return '#F59E0B'; // Yellow for good
+    if (score >= 40) return '#F97316'; // Orange for fair
+    return '#EF4444'; // Red for poor
+  };
+
   // Get problems by page type
   const problemsByPage = {
     homepage: report.homepage ? report.homepage.length : 0,
@@ -38,11 +46,11 @@ export default function OverallSummary({ report, analysisInProgress, setShowModa
       <div className="performance-score-section">
         <div className="performance-gauge">
           <div className="gauge-circle">
-            <div className="gauge-progress" style={{ background: `conic-gradient(#E65A2B ${performanceScore}%, transparent ${performanceScore}% 360deg)` } as React.CSSProperties}></div>
+            <div className="gauge-progress" style={{ background: `conic-gradient(${getScoreColor(performanceScore)} ${performanceScore}%, transparent ${performanceScore}% 360deg)` } as React.CSSProperties}></div>
             <div className="gauge-content">
               <div className="score-number">{performanceScore}</div>
               <div className="score-label">Performance Score</div>
-              <div className="website-name">website name.</div>
+              {/* <div className="website-name">website name.</div> */}
             </div>
           </div>
         </div>

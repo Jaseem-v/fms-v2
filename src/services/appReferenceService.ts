@@ -4,6 +4,7 @@ interface AppReference {
   iconUrl: string;
   description: string;
   useCases: string[];
+  page: string;
   shopifyAppUrl: string;
   category: string;
   scrapedAt: string;
@@ -45,7 +46,7 @@ class AppReferenceService {
     }
   }
 
-  async addAppReference(appUrl: string, useCases: string[]): Promise<AppReference> {
+  async addAppReference(appUrl: string, useCases: string[], page: string): Promise<AppReference> {
     try {
       const response = await fetch(`${this.baseUrl}/app-references`, {
         method: 'POST',
@@ -54,7 +55,8 @@ class AppReferenceService {
         },
         body: JSON.stringify({
           appUrl,
-          useCases
+          useCases,
+          page
         }),
       });
 
@@ -133,6 +135,28 @@ class AppReferenceService {
     } catch (error) {
       console.error('Error scraping app data:', error);
       throw error;
+    }
+  }
+
+  async getRelevantAppReferences(problem: string, solution: string, page?: string): Promise<AppReference[]> {
+    try {
+      const response = await fetch(`${this.baseUrl}/app-references/relevant`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          problem,
+          solution,
+          page,
+        }),
+      });
+
+      const data = await response.json();
+      return data.apps || [];
+    } catch (error) {
+      console.error('Error getting relevant app references:', error);
+      return [];
     }
   }
 

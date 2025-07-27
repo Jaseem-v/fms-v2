@@ -2,6 +2,8 @@ interface ImageReference {
   id: string;
   imageUrl: string;
   useCases: string[];
+  page: string;
+  industry: string;
   uploadDate: string;
   fileName: string;
 }
@@ -35,14 +37,36 @@ export class ImageReferenceService {
     return response.ok;
   }
 
+  async updateImage(id: string, updates: { useCases?: string[]; page?: string; industry?: string }): Promise<ImageReference> {
+    const response = await fetch(`${this.baseUrl}/image-references/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updates),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Update failed');
+    }
+
+    const data = await response.json();
+    return data.image;
+  }
+
   async uploadImage(
     file: File, 
     useCases: string[], 
+    page: string,
+    industry: string,
     onProgress?: (progress: number) => void
   ): Promise<ImageReference> {
     const formData = new FormData();
     formData.append('image', file);
     formData.append('useCases', JSON.stringify(useCases));
+    formData.append('page', page);
+    formData.append('industry', industry);
 
     const response = await fetch(`${this.baseUrl}/image-references/upload`, {
       method: 'POST',
@@ -64,7 +88,7 @@ export class ImageReferenceService {
     return data.images || [];
   }
 
-  async getRelevantImages(problem: string, solution: string): Promise<ImageReference[]> {
+  async getRelevantImages(problem: string, solution: string, page?: string): Promise<ImageReference[]> {
     const response = await fetch(`${this.baseUrl}/image-references/relevant`, {
       method: 'POST',
       headers: {
@@ -73,6 +97,7 @@ export class ImageReferenceService {
       body: JSON.stringify({
         problem,
         solution,
+        page,
       }),
     });
 

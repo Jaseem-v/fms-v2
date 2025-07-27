@@ -6,12 +6,162 @@ import ImageGallery from '@/components/admin/ImageGallery';
 import ChunkSearch from '@/components/admin/ChunkSearch';
 import imageReferenceService from '@/services/imageReferenceService';
 
+interface EditImageFormProps {
+  image: ImageReference;
+  onSave: (updates: { useCases: string[]; page: string; industry: string }) => void;
+  onCancel: () => void;
+}
+
+function EditImageForm({ image, onSave, onCancel }: EditImageFormProps) {
+  const [useCases, setUseCases] = useState<string[]>(image.useCases);
+  const [page, setPage] = useState<string>(image.page);
+  const [industry, setIndustry] = useState<string>(image.industry);
+  const [useCaseInput, setUseCaseInput] = useState<string>('');
+
+  const handleAddUseCase = () => {
+    const trimmedInput = useCaseInput.trim();
+    if (trimmedInput && !useCases.includes(trimmedInput)) {
+      setUseCases(prev => [...prev, trimmedInput]);
+      setUseCaseInput('');
+    }
+  };
+
+  const handleRemoveUseCase = (index: number) => {
+    setUseCases(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddUseCase();
+    }
+  };
+
+  const handleSave = () => {
+    if (useCases.length === 0) {
+      alert('Please enter at least one use case');
+      return;
+    }
+    onSave({ useCases, page, industry });
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Use Cases */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Use Cases & Problems This Solves
+        </label>
+        
+        {/* Use Cases Tags */}
+        {useCases.length > 0 && (
+          <div className="mb-3 flex flex-wrap gap-2">
+            {useCases.map((useCase, index) => (
+              <span
+                key={index}
+                className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800"
+              >
+                {useCase}
+                <button
+                  type="button"
+                  onClick={() => handleRemoveUseCase(index)}
+                  className="ml-2 text-blue-600 hover:text-blue-800"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
+        
+        {/* Input Field */}
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={useCaseInput}
+            onChange={(e) => setUseCaseInput(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Type a use case and press Enter to add..."
+            className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
+          />
+          <button
+            type="button"
+            onClick={handleAddUseCase}
+            disabled={!useCaseInput.trim()}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Add
+          </button>
+        </div>
+      </div>
+
+      {/* Page Selection */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Page Type
+        </label>
+        <select
+          value={page}
+          onChange={(e) => setPage(e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
+        >
+          <option value="homepage">Homepage</option>
+          <option value="collection">Collection</option>
+          <option value="product">Product</option>
+          <option value="cart">Cart</option>
+        </select>
+      </div>
+
+      {/* Industry Selection */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Industry
+        </label>
+        <select
+          value={industry}
+          onChange={(e) => setIndustry(e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
+        >
+          <option value="Beauty & Personal Care">Beauty & Personal Care</option>
+          <option value="Apparel">Apparel</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Watches & Jewellery">Watches & Jewellery</option>
+          <option value="Automobile">Automobile</option>
+        </select>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex justify-end space-x-3 pt-4">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={useCases.length === 0}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Save Changes
+        </button>
+      </div>
+    </div>
+  );
+}
+
 interface ImageReference {
   id: string;
   imageUrl: string;
   useCases: string[];
   uploadDate: string;
   fileName: string;
+  page: string;
+  industry: string;
 }
 
 export default function ImageReferencesPage() {
@@ -20,10 +170,14 @@ export default function ImageReferencesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [useCases, setUseCases] = useState<string[]>([]);
   const [useCaseInput, setUseCaseInput] = useState<string>('');
+  const [selectedPage, setSelectedPage] = useState<string>('homepage');
+  const [selectedIndustry, setSelectedIndustry] = useState<string>('Beauty & Personal Care');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [resetUpload, setResetUpload] = useState(false);
+  const [editingImage, setEditingImage] = useState<ImageReference | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const fetchImages = async () => {
     setLoading(true);
@@ -74,16 +228,18 @@ export default function ImageReferencesPage() {
       const handleProgress = (progress: number) => {
         setUploadProgress(progress);
       };
-      
-      const result = await imageReferenceService.uploadImage(selectedFile, useCases, handleProgress);
+
+              const result = await imageReferenceService.uploadImage(selectedFile, useCases, selectedPage, selectedIndustry, handleProgress);
       console.log('Upload successful:', result);
-      
+
       // Reset form
       setSelectedFile(null);
       setUseCases([]);
       setUseCaseInput('');
+      setSelectedPage('homepage');
+      setSelectedIndustry('Beauty & Personal Care');
       setResetUpload(true); // Trigger reset of ImageUpload component
-      
+
       // Refresh the images list
       fetchImages();
     } catch (error) {
@@ -132,6 +288,32 @@ export default function ImageReferencesPage() {
     }
   };
 
+  const handleEditImage = (image: ImageReference) => {
+    setEditingImage(image);
+    setShowEditModal(true);
+  };
+
+  const handleUpdateImage = async (updates: { useCases: string[]; page: string; industry: string }) => {
+    if (!editingImage) return;
+
+    try {
+      const updatedImage = await imageReferenceService.updateImage(editingImage.id, updates);
+      
+      // Update the image in the local state
+      setImages(prevImages => 
+        prevImages.map(image => 
+          image.id === editingImage.id ? updatedImage : image
+        )
+      );
+      
+      setShowEditModal(false);
+      setEditingImage(null);
+    } catch (error) {
+      console.error('Error updating image:', error);
+      alert('Failed to update image. Please try again.');
+    }
+  };
+
   const handleAddUseCase = () => {
     const trimmedInput = useCaseInput.trim();
     if (trimmedInput && !useCases.includes(trimmedInput)) {
@@ -153,7 +335,7 @@ export default function ImageReferencesPage() {
 
   return (
     <div className="py-6">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto ">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Image References</h1>
           <p className="text-gray-600">
@@ -164,7 +346,7 @@ export default function ImageReferencesPage() {
         {/* Upload Section */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Upload New Image Reference</h2>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Image Upload */}
             <div>
@@ -179,7 +361,7 @@ export default function ImageReferencesPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Use Cases & Problems This Solves
               </label>
-              
+
               {/* Use Cases Tags */}
               {useCases.length > 0 && (
                 <div className="mb-3 flex flex-wrap gap-2">
@@ -203,7 +385,7 @@ export default function ImageReferencesPage() {
                   ))}
                 </div>
               )}
-              
+
               {/* Input Field */}
               <div className="flex gap-2">
                 <input
@@ -227,51 +409,121 @@ export default function ImageReferencesPage() {
               <p className="text-xs text-gray-500 mt-1">
                 Type use cases and press Enter or click Add. Each use case will be stored as a separate item.
               </p>
+
+                             {/* Page Selection */}
+               <div className="mt-6">
+                 <label className="block text-sm font-medium text-gray-700 mb-2">
+                   Page Type
+                 </label>
+                 <select
+                   value={selectedPage}
+                   onChange={(e) => setSelectedPage(e.target.value)}
+                   disabled={uploading}
+                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
+                 >
+                   <option value="homepage">Homepage</option>
+                   <option value="collection">Collection</option>
+                   <option value="product">Product</option>
+                   <option value="cart">Cart</option>
+                 </select>
+                 <p className="text-xs text-gray-500 mt-1">
+                   Select the page type where this image reference applies.
+                 </p>
+               </div>
+
+               {/* Industry Selection */}
+               <div className="mt-6">
+                 <label className="block text-sm font-medium text-gray-700 mb-2">
+                   Industry
+                 </label>
+                 <select
+                   value={selectedIndustry}
+                   onChange={(e) => setSelectedIndustry(e.target.value)}
+                   disabled={uploading}
+                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
+                 >
+                   <option value="Beauty & Personal Care">Beauty & Personal Care</option>
+                   <option value="Apparel">Apparel</option>
+                   <option value="Electronics">Electronics</option>
+                   <option value="Watches & Jewellery">Watches & Jewellery</option>
+                   <option value="Automobile">Automobile</option>
+                 </select>
+                 <p className="text-xs text-gray-500 mt-1">
+                   Select the industry this image reference belongs to.
+                 </p>
+               </div>
             </div>
+
+
           </div>
 
-          {/* Upload Button */}
-          <div className="mt-6">
-            <button
-              onClick={handleAnalyzeAndSave}
-              disabled={!selectedFile || useCases.length === 0 || uploading}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {uploading ? (
-                <>
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Uploading... {uploadProgress}%
-                </>
-              ) : (
-                'Upload Image Reference'
-              )}
-            </button>
-          </div>
+
         </div>
 
-        {/* Search Section */}
-        <div className="mb-6">
-          <ChunkSearch onSearch={handleSearch} onClear={handleClearSearch} />
-        </div>
-
-        {/* Gallery Section */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            {searchQuery ? `Search Results for "${searchQuery}"` : 'All Image References'}
-          </h2>
-          
-          {loading ? (
-            <div className="flex justify-center items-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            </div>
-          ) : (
-            <ImageGallery chunks={images} onDeleteChunk={handleDeleteImage} />
-          )}
+        {/* Upload Button */}
+        <div className="my-6">
+          <button
+            onClick={handleAnalyzeAndSave}
+            disabled={!selectedFile || useCases.length === 0 || uploading}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {uploading ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Uploading... {uploadProgress}%
+              </>
+            ) : (
+              'Upload Image Reference'
+            )}
+          </button>
         </div>
       </div>
+
+      {/* Search Section */}
+      <div className="mb-6">
+        <ChunkSearch onSearch={handleSearch} onClear={handleClearSearch} />
+      </div>
+
+      {/* Gallery Section */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          {searchQuery ? `Search Results for "${searchQuery}"` : 'All Image References'}
+        </h2>
+
+        {loading ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          </div>
+                  ) : (
+            <ImageGallery 
+              chunks={images} 
+              onDeleteChunk={handleDeleteImage} 
+              onEditChunk={handleEditImage}
+            />
+          )}
+      </div>
+
+      {/* Edit Modal */}
+      {showEditModal && editingImage && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <h2 className="text-xl font-semibold mb-4 text-black">Edit Image Reference</h2>
+            
+            <EditImageForm 
+              image={editingImage}
+              onSave={handleUpdateImage}
+              onCancel={() => {
+                setShowEditModal(false);
+                setEditingImage(null);
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
+    // </div >
   );
 } 

@@ -10,6 +10,7 @@ interface DownloadModalProps {
   userInfo: UserInfo;
   handleUserInfoChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleUserInfoSubmit: (e: React.FormEvent) => void;
+  downloadLoading: boolean;
 }
 
 export default function DownloadModal({
@@ -17,7 +18,8 @@ export default function DownloadModal({
   setShowModal,
   userInfo,
   handleUserInfoChange,
-  handleUserInfoSubmit
+  handleUserInfoSubmit,
+  downloadLoading
 }: DownloadModalProps) {
   if (!showModal) return null;
 
@@ -61,13 +63,22 @@ export default function DownloadModal({
           <div className="flex gap-3 pt-4">
             <button
               type="submit"
-              className="flex-1 download-button"
+              disabled={downloadLoading}
+              className="flex-1 download-button disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Download Report
+              {downloadLoading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Generating PDF...</span>
+                </div>
+              ) : (
+                'Download Report'
+              )}
             </button>
             <button
               type="button"
-              className="px-4 py-2 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-colors"
+              disabled={downloadLoading}
+              className="px-4 py-2 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => setShowModal(false)}
             >
               Cancel

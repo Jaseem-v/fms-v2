@@ -6,6 +6,8 @@ interface ImageReference {
   id: string;
   imageUrl: string;
   useCases: string[];
+  page: string;
+  industry: string;
   uploadDate: string;
   fileName: string;
 }
@@ -13,11 +15,12 @@ interface ImageReference {
 interface ImageGalleryProps {
   chunks: ImageReference[];
   onDeleteChunk?: (imageId: string) => Promise<void>;
+  onEditChunk?: (image: ImageReference) => void;
 }
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '');
 
-export default function ImageGallery({ chunks, onDeleteChunk }: ImageGalleryProps) {
+export default function ImageGallery({ chunks, onDeleteChunk, onEditChunk }: ImageGalleryProps) {
   const [selectedImage, setSelectedImage] = useState<ImageReference | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [deletingChunkId, setDeletingChunkId] = useState<string | null>(null);
@@ -145,40 +148,64 @@ export default function ImageGallery({ chunks, onDeleteChunk }: ImageGalleryProp
                 }}
               />
               
-              {/* Delete Button - Only show on hover */}
-              {onDeleteChunk && (
-                <button
-                  onClick={(e) => handleDeleteImage(chunk.id, e)}
-                  disabled={deletingChunkId === chunk.id}
-                  className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  title="Delete image reference"
-                >
-                  {deletingChunkId === chunk.id ? (
-                    <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                  ) : (
+              {/* Action Buttons - Only show on hover */}
+              <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                {onEditChunk && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEditChunk(chunk);
+                    }}
+                    className="bg-blue-500 hover:bg-blue-600 text-white rounded-full p-1.5 transition-colors"
+                    title="Edit image reference"
+                  >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
-                  )}
-                </button>
-              )}
+                  </button>
+                )}
+                {onDeleteChunk && (
+                  <button
+                    onClick={(e) => handleDeleteImage(chunk.id, e)}
+                    disabled={deletingChunkId === chunk.id}
+                    className="bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    title="Delete image reference"
+                  >
+                    {deletingChunkId === chunk.id ? (
+                      <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    ) : (
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    )}
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Content */}
             <div className="p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex gap-1">
+                  <span className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full capitalize">
+                    {chunk.page}
+                  </span>
+                  <span className="inline-block px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                    {chunk.industry}
+                  </span>
+                </div>
+                <p className="text-xs text-gray-500">
+                  {formatDate(chunk.uploadDate)}
+                </p>
+              </div>
               <p className="text-sm text-gray-900 font-medium mb-2 line-clamp-2">
                 {chunk.useCases.join(', ').length > 100 
                   ? `${chunk.useCases.join(', ').substring(0, 100)}...` 
                   : chunk.useCases.join(', ')
                 }
-              </p>
-              
-              {/* Upload Date */}
-              <p className="text-xs text-gray-500">
-                {formatDate(chunk.uploadDate)}
               </p>
             </div>
           </div>
@@ -258,6 +285,16 @@ export default function ImageGallery({ chunks, onDeleteChunk }: ImageGalleryProp
 
               {/* Details */}
               <div className="space-y-4">
+                <div>
+                  <h4 className="text-sm font-medium text-gray-900 mb-1">Page Type</h4>
+                  <p className="text-sm text-gray-700 capitalize">{selectedImage.page}</p>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-medium text-gray-900 mb-1">Industry</h4>
+                  <p className="text-sm text-gray-700">{selectedImage.industry}</p>
+                </div>
+
                 <div>
                   <h4 className="text-sm font-medium text-gray-900 mb-1">Use Cases</h4>
                   <ul className="text-sm text-gray-700 space-y-1">

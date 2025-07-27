@@ -52,7 +52,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                     </div>
                 </div>
                 <h1 className='hero__details-title'>
-                    Fix Your Store
+                    Fix My Store
                 </h1>
                 <p className='hero__details-description'>
                     Simple fixes to turn visitors into buyers!
