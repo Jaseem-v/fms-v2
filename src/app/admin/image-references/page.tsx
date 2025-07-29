@@ -493,11 +493,11 @@ export default function ImageReferencesPage() {
                   disabled={uploading}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
                 >
+                  <option value="Clothing & Fashion">Clothing & Fashion</option>
                   <option value="Beauty & Personal Care">Beauty & Personal Care</option>
-                  <option value="Apparel">Apparel</option>
-                  <option value="Electronics">Electronics</option>
-                  <option value="Watches & Jewellery">Watches & Jewellery</option>
-                  <option value="Automobile">Automobile</option>
+                  <option value="Health & Wellness">Health & Wellness</option>
+                  <option value="Home & Garden">Home & Garden</option>
+                  <option value="Consumer Electronics & Accessories">Consumer Electronics & Accessories</option>
                 </select>
                 <p className="text-xs text-gray-500 mt-1">
                   Select the industry this image reference belongs to.
