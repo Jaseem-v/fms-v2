@@ -11,7 +11,8 @@ import {
   ChartBarIcon, 
   CogIcon,
   UserGroupIcon,
-  DocumentTextIcon
+  DocumentTextIcon,
+  BuildingOfficeIcon
 } from '@heroicons/react/24/outline';
 
 interface AdminSidebarProps {
@@ -23,6 +24,7 @@ const navigation = [
   { name: 'Dashboard', href: '/admin', icon: HomeIcon },
           { name: 'Image Reference', href: '/admin/image-references', icon: PhotoIcon },
   { name: 'App Reference', href: '/admin/app-reference', icon: PhotoIcon },
+  { name: 'Industry Management', href: '/admin/industries', icon: BuildingOfficeIcon },
   { name: 'Analytics', href: '/#', icon: ChartBarIcon },
   { name: 'Users', href: '/#', icon: UserGroupIcon },
   { name: 'Reports', href: '/#', icon: DocumentTextIcon },

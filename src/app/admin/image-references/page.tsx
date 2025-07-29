@@ -5,15 +5,17 @@ import ImageUpload from '@/components/admin/ImageUpload';
 import ImageGallery from '@/components/admin/ImageGallery';
 import ChunkSearch from '@/components/admin/ChunkSearch';
 import imageReferenceService from '@/services/imageReferenceService';
+import industryService, { Industry } from '@/services/industryService';
 import countriesData from '@/config/countries.json';
 
 interface EditImageFormProps {
   image: ImageReference;
+  industries: Industry[];
   onSave: (updates: { useCases: string[]; page: string; industry: string; country: string; url?: string }) => void;
   onCancel: () => void;
 }
 
-function EditImageForm({ image, onSave, onCancel }: EditImageFormProps) {
+function EditImageForm({ image, industries, onSave, onCancel }: EditImageFormProps) {
   const [useCases, setUseCases] = useState<string[]>(image.useCases);
   const [page, setPage] = useState<string>(image.page);
   const [industry, setIndustry] = useState<string>(image.industry);
@@ -127,11 +129,11 @@ function EditImageForm({ image, onSave, onCancel }: EditImageFormProps) {
           onChange={(e) => setIndustry(e.target.value)}
           className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
         >
-          <option value="Beauty & Personal Care">Beauty & Personal Care</option>
-          <option value="Apparel">Apparel</option>
-          <option value="Electronics">Electronics</option>
-          <option value="Watches & Jewellery">Watches & Jewellery</option>
-          <option value="Automobile">Automobile</option>
+          {industries.map((industryOption) => (
+            <option key={industryOption.id} value={industryOption.name}>
+              {industryOption.name}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -209,12 +211,13 @@ interface ImageReference {
 
 export default function ImageReferencesPage() {
   const [images, setImages] = useState<ImageReference[]>([]);
+  const [industries, setIndustries] = useState<Industry[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [useCases, setUseCases] = useState<string[]>([]);
   const [useCaseInput, setUseCaseInput] = useState<string>('');
   const [selectedPage, setSelectedPage] = useState<string>('homepage');
-  const [selectedIndustry, setSelectedIndustry] = useState<string>('Beauty & Personal Care');
+  const [selectedIndustry, setSelectedIndustry] = useState<string>('');
   const [selectedCountry, setSelectedCountry] = useState<string>('IN');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [url, setUrl] = useState<string>('');
@@ -236,8 +239,22 @@ export default function ImageReferencesPage() {
     }
   };
 
+  const fetchIndustries = async () => {
+    try {
+      const industriesData = await industryService.getAllIndustries();
+      setIndustries(industriesData);
+      // Set default industry if available
+      if (industriesData.length > 0 && !selectedIndustry) {
+        setSelectedIndustry(industriesData[0].name);
+      }
+    } catch (error) {
+      console.error('Error fetching industries:', error);
+    }
+  };
+
   useEffect(() => {
     fetchImages();
+    fetchIndustries();
   }, []);
 
   // Reset the resetUpload flag after ImageUpload component has been reset
@@ -282,7 +299,7 @@ export default function ImageReferencesPage() {
       setUseCases([]);
       setUseCaseInput('');
       setSelectedPage('homepage');
-      setSelectedIndustry('Beauty & Personal Care');
+      setSelectedIndustry(industries.length > 0 ? industries[0].name : '');
       setSelectedCountry('IN');
       setUrl('');
       setResetUpload(true); // Trigger reset of ImageUpload component
@@ -493,11 +510,11 @@ export default function ImageReferencesPage() {
                   disabled={uploading}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
                 >
-                  <option value="Clothing & Fashion">Clothing & Fashion</option>
-                  <option value="Beauty & Personal Care">Beauty & Personal Care</option>
-                  <option value="Health & Wellness">Health & Wellness</option>
-                  <option value="Home & Garden">Home & Garden</option>
-                  <option value="Consumer Electronics & Accessories">Consumer Electronics & Accessories</option>
+                  {industries.map((industry) => (
+                    <option key={industry.id} value={industry.name}>
+                      {industry.name}
+                    </option>
+                  ))}
                 </select>
                 <p className="text-xs text-gray-500 mt-1">
                   Select the industry this image reference belongs to.
@@ -605,6 +622,7 @@ export default function ImageReferencesPage() {
 
             <EditImageForm
               image={editingImage}
+              industries={industries}
               onSave={handleUpdateImage}
               onCancel={() => {
                 setShowEditModal(false);

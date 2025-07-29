@@ -23,7 +23,7 @@ class PaymentService {
   private baseUrl: string;
 
   constructor() {
-    this.baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
+    this.baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
   }
 
   async createPayment(paymentData: PaymentRequest): Promise<PaymentResponse> {

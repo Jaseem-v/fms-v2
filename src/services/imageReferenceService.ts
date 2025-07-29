@@ -14,7 +14,7 @@ export class ImageReferenceService {
   private baseUrl: string;
 
   constructor() {
-    this.baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001/api';
+    this.baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000/api';
   }
 
   async getAllImages(): Promise<ImageReference[]> {
