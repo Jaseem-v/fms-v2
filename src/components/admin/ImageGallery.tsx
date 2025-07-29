@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { getCountryName } from '@/utils/countryUtils';
 
 interface ImageReference {
   id: string;
@@ -8,6 +9,7 @@ interface ImageReference {
   useCases: string[];
   page: string;
   industry: string;
+  country: string;
   url?: string;
   uploadDate: string;
   fileName: string;
@@ -52,12 +54,12 @@ export default function ImageGallery({ chunks, onDeleteChunk, onEditChunk }: Ima
   // Handle image deletion
   const handleDeleteImage = async (imageId: string, e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent opening the modal
-    
+
     if (!onDeleteChunk) return;
-    
+
     const confirmed = window.confirm('Are you sure you want to delete this image reference? This action cannot be undone.');
     if (!confirmed) return;
-    
+
     setDeletingChunkId(imageId);
     try {
       await onDeleteChunk(imageId);
@@ -73,7 +75,7 @@ export default function ImageGallery({ chunks, onDeleteChunk, onEditChunk }: Ima
   const getPageNumbers = () => {
     const pages = [];
     const maxVisiblePages = 5;
-    
+
     if (totalPages <= maxVisiblePages) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
@@ -101,11 +103,10 @@ export default function ImageGallery({ chunks, onDeleteChunk, onEditChunk }: Ima
         pages.push(totalPages);
       }
     }
-    
+
     return pages;
   };
 
-  console.log("chunks", chunks);
 
   if (chunks.length === 0) {
     return (
@@ -131,86 +132,94 @@ export default function ImageGallery({ chunks, onDeleteChunk, onEditChunk }: Ima
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {currentChunks.map((chunk) => (
-          <div
-            key={chunk.id}
-            className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-            onClick={() => setSelectedImage(chunk)}
-          >
-            {/* Image Preview */}
-            <div className="aspect-square bg-gray-100 relative overflow-hidden group">
-              <img
-                src={`${backendUrl}${chunk.imageUrl}`}
-                alt="Image Reference"
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik02MCAxMDBDNjAgODguOTU0MyA2OC45NTQzIDgwIDgwIDgwQzkxLjA0NTcgODAgMTAwIDg4Ljk1NDMgMTAwIDEwMEMxMDAgMTExLjA0NiA5MS4wNDU3IDEyMCA4MCAxMjBDNjguOTU0MyAxMjAgNjAgMTExLjA0NiA2MCAxMDBaIiBmaWxsPSIjOUI5QkEwIi8+CjxwYXRoIGQ9Ik04MCAxNDBDNjguOTU0MyAxNDAgNjAgMTMxLjA0NiA2MCAxMjBMMTAwIDEyMEMxMDAgMTMxLjA0NiA5MS4wNDU3IDE0MCA4MCAxNDBaIiBmaWxsPSIjOUI5QkEwIi8+Cjwvc3ZnPgo=';
-                }}
-              />
-              
-              {/* Action Buttons - Only show on hover */}
-              <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                {onEditChunk && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onEditChunk(chunk);
-                    }}
-                    className="bg-blue-500 hover:bg-blue-600 text-white rounded-full p-1.5 transition-colors"
-                    title="Edit image reference"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                  </button>
-                )}
-                {onDeleteChunk && (
-                  <button
-                    onClick={(e) => handleDeleteImage(chunk.id, e)}
-                    disabled={deletingChunkId === chunk.id}
-                    className="bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    title="Delete image reference"
-                  >
-                    {deletingChunkId === chunk.id ? (
-                      <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                    ) : (
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    )}
-                  </button>
-                )}
-              </div>
-            </div>
+        {currentChunks.map((chunk) => {
+          const isIndustry = chunk.industry && chunk.industry.trim() !== '';
+          return (
+            <div
+              key={chunk.id}
+              className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => setSelectedImage(chunk)}
+            >
+              {/* Image Preview */}
+              <div className="aspect-square bg-gray-100 relative overflow-hidden group">
+                <img
+                  src={`${backendUrl}${chunk.imageUrl}`}
+                  alt="Image Reference"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik02MCAxMDBDNjAgODguOTU0MyA2OC45NTQzIDgwIDgwIDgwQzkxLjA0NTcgODAgMTAwIDg4Ljk1NDMgMTAwIDEwMEMxMDAgMTExLjA0NiA5MS4wNDU3IDEyMCA4MCAxMjBDNjguOTU0MyAxMjAgNjAgMTExLjA0NiA2MCAxMDBaIiBmaWxsPSIjOUI5QkEwIi8+CjxwYXRoIGQ9Ik04MCAxNDBDNjguOTU0MyAxNDAgNjAgMTMxLjA0NiA2MCAxMjBMMTAwIDEyMEMxMDAgMTMxLjA0NiA5MS4wNDU3IDE0MCA4MCAxNDBaIiBmaWxsPSIjOUI5QkEwIi8+Cjwvc3ZnPgo=';
+                  }}
+                />
 
-            {/* Content */}
-            <div className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex gap-1">
-                  <span className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full capitalize">
-                    {chunk.page}
-                  </span>
-                  <span className="inline-block px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                    {chunk.industry}
-                  </span>
+                {/* Action Buttons - Only show on hover */}
+                <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  {onEditChunk && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEditChunk(chunk);
+                      }}
+                      className="bg-black hover:bg-gray-800 text-white rounded-full p-1.5 transition-colors"
+                      title="Edit image reference"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    </button>
+                  )}
+                  {onDeleteChunk && (
+                    <button
+                      onClick={(e) => handleDeleteImage(chunk.id, e)}
+                      disabled={deletingChunkId === chunk.id}
+                      className="bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      title="Delete image reference"
+                    >
+                      {deletingChunkId === chunk.id ? (
+                        <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                      ) : (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      )}
+                    </button>
+                  )}
                 </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex gap-1">
+                    <span className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full capitalize">
+                      {chunk.page}
+                    </span>
+                    {isIndustry &&  <span className="inline-block px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                        {chunk.industry}
+                      </span>}
+                    <span className="inline-block px-2 py-1 text-xs font-medium bg-purple-100 text-purple-800 rounded-full">
+                      {getCountryName(chunk.country)}
+                    </span>
+                  </div>
+
+                </div>
+                <p className="text-sm text-gray-900 font-medium mb-2 line-clamp-2">
+                  {chunk.useCases.join(', ').length > 100
+                    ? `${chunk.useCases.join(', ').substring(0, 100)}...`
+                    : chunk.useCases.join(', ')
+                  }
+                </p>
+
                 <p className="text-xs text-gray-500">
                   {formatDate(chunk.uploadDate)}
                 </p>
               </div>
-              <p className="text-sm text-gray-900 font-medium mb-2 line-clamp-2">
-                {chunk.useCases.join(', ').length > 100 
-                  ? `${chunk.useCases.join(', ').substring(0, 100)}...` 
-                  : chunk.useCases.join(', ')
-                }
-              </p>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       {/* Pagination */}
@@ -239,13 +248,12 @@ export default function ImageGallery({ chunks, onDeleteChunk, onEditChunk }: Ima
                 key={index}
                 onClick={() => typeof page === 'number' && handlePageChange(page)}
                 disabled={page === '...'}
-                className={`px-3 py-2 text-sm font-medium rounded-md ${
-                  page === currentPage
-                    ? 'bg-blue-600 text-white'
-                    : page === '...'
+                className={`px-3 py-2 text-sm font-medium rounded-md ${page === currentPage
+                  ? 'bg-black text-white'
+                  : page === '...'
                     ? 'text-gray-400 cursor-default'
                     : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-50'
-                }`}
+                  }`}
               >
                 {page}
               </button>
@@ -294,6 +302,11 @@ export default function ImageGallery({ chunks, onDeleteChunk, onEditChunk }: Ima
                 <div>
                   <h4 className="text-sm font-medium text-gray-900 mb-1">Industry</h4>
                   <p className="text-sm text-gray-700">{selectedImage.industry}</p>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-medium text-gray-900 mb-1">Country</h4>
+                  <p className="text-sm text-gray-700">{getCountryName(selectedImage.country)}</p>
                 </div>
 
                 <div>

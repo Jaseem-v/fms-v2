@@ -5,10 +5,11 @@ import ImageUpload from '@/components/admin/ImageUpload';
 import ImageGallery from '@/components/admin/ImageGallery';
 import ChunkSearch from '@/components/admin/ChunkSearch';
 import imageReferenceService from '@/services/imageReferenceService';
+import countriesData from '@/config/countries.json';
 
 interface EditImageFormProps {
   image: ImageReference;
-  onSave: (updates: { useCases: string[]; page: string; industry: string; url?: string }) => void;
+  onSave: (updates: { useCases: string[]; page: string; industry: string; country: string; url?: string }) => void;
   onCancel: () => void;
 }
 
@@ -16,6 +17,7 @@ function EditImageForm({ image, onSave, onCancel }: EditImageFormProps) {
   const [useCases, setUseCases] = useState<string[]>(image.useCases);
   const [page, setPage] = useState<string>(image.page);
   const [industry, setIndustry] = useState<string>(image.industry);
+  const [country, setCountry] = useState<string>(image.country);
   const [url, setUrl] = useState<string>(image.url || '');
   const [useCaseInput, setUseCaseInput] = useState<string>('');
 
@@ -43,7 +45,7 @@ function EditImageForm({ image, onSave, onCancel }: EditImageFormProps) {
       alert('Please enter at least one use case');
       return;
     }
-    onSave({ useCases, page, industry, url: url.trim() || undefined });
+    onSave({ useCases, page, industry, country, url: url.trim() || undefined });
   };
 
   return (
@@ -53,7 +55,7 @@ function EditImageForm({ image, onSave, onCancel }: EditImageFormProps) {
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Use Cases & Problems This Solves
         </label>
-        
+
         {/* Use Cases Tags */}
         {useCases.length > 0 && (
           <div className="mb-3 flex flex-wrap gap-2">
@@ -76,7 +78,7 @@ function EditImageForm({ image, onSave, onCancel }: EditImageFormProps) {
             ))}
           </div>
         )}
-        
+
         {/* Input Field */}
         <div className="flex gap-2">
           <input
@@ -91,7 +93,7 @@ function EditImageForm({ image, onSave, onCancel }: EditImageFormProps) {
             type="button"
             onClick={handleAddUseCase}
             disabled={!useCaseInput.trim()}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Add
           </button>
@@ -133,6 +135,27 @@ function EditImageForm({ image, onSave, onCancel }: EditImageFormProps) {
         </select>
       </div>
 
+      {/* Country Selection */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Country
+        </label>
+        <select
+          value={country}
+          onChange={(e) => setCountry(e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
+        >
+          {countriesData.map((countryOption) => (
+            <option key={countryOption.code} value={countryOption.code}>
+              {countryOption.name}
+            </option>
+          ))}
+        </select>
+        <p className="text-xs text-gray-500 mt-1">
+          Select the country this image reference is applicable for
+        </p>
+      </div>
+
       {/* URL Field */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -163,7 +186,7 @@ function EditImageForm({ image, onSave, onCancel }: EditImageFormProps) {
           type="button"
           onClick={handleSave}
           disabled={useCases.length === 0}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Save Changes
         </button>
@@ -180,6 +203,7 @@ interface ImageReference {
   fileName: string;
   page: string;
   industry: string;
+  country: string;
   url?: string; // Added url field
 }
 
@@ -191,6 +215,7 @@ export default function ImageReferencesPage() {
   const [useCaseInput, setUseCaseInput] = useState<string>('');
   const [selectedPage, setSelectedPage] = useState<string>('homepage');
   const [selectedIndustry, setSelectedIndustry] = useState<string>('Beauty & Personal Care');
+  const [selectedCountry, setSelectedCountry] = useState<string>('IN');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [url, setUrl] = useState<string>('');
   const [uploading, setUploading] = useState(false);
@@ -249,7 +274,7 @@ export default function ImageReferencesPage() {
         setUploadProgress(progress);
       };
 
-      const result = await imageReferenceService.uploadImage(selectedFile, useCases, selectedPage, selectedIndustry, url.trim() || undefined, handleProgress);
+      const result = await imageReferenceService.uploadImage(selectedFile, useCases, selectedPage, selectedIndustry, selectedCountry, url.trim() || undefined, handleProgress);
       console.log('Upload successful:', result);
 
       // Reset form
@@ -258,6 +283,7 @@ export default function ImageReferencesPage() {
       setUseCaseInput('');
       setSelectedPage('homepage');
       setSelectedIndustry('Beauty & Personal Care');
+      setSelectedCountry('IN');
       setUrl('');
       setResetUpload(true); // Trigger reset of ImageUpload component
 
@@ -314,19 +340,19 @@ export default function ImageReferencesPage() {
     setShowEditModal(true);
   };
 
-  const handleUpdateImage = async (updates: { useCases: string[]; page: string; industry: string; url?: string }) => {
+  const handleUpdateImage = async (updates: { useCases: string[]; page: string; industry: string; country: string; url?: string }) => {
     if (!editingImage) return;
 
     try {
       const updatedImage = await imageReferenceService.updateImage(editingImage.id, updates);
-      
+
       // Update the image in the local state
-      setImages(prevImages => 
-        prevImages.map(image => 
+      setImages(prevImages =>
+        prevImages.map(image =>
           image.id === editingImage.id ? updatedImage : image
         )
       );
-      
+
       setShowEditModal(false);
       setEditingImage(null);
     } catch (error) {
@@ -368,7 +394,7 @@ export default function ImageReferencesPage() {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Upload New Image Reference</h2>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6">
             {/* Image Upload */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -378,119 +404,145 @@ export default function ImageReferencesPage() {
             </div>
 
             {/* Use Cases Input */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Use Cases & Problems This Solves
-              </label>
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
 
-              {/* Use Cases Tags */}
-              {useCases.length > 0 && (
-                <div className="mb-3 flex flex-wrap gap-2">
-                  {useCases.map((useCase, index) => (
-                    <span
-                      key={index}
-                      className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800"
-                    >
-                      {useCase}
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveUseCase(index)}
-                        className="ml-2 text-blue-600 hover:text-blue-800"
-                        disabled={uploading}
+              <div>
+
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Use Cases & Problems This Solves
+                </label>
+
+                {/* Use Cases Tags */}
+                {useCases.length > 0 && (
+                  <div className="mb-3 flex flex-wrap gap-2">
+                    {useCases.map((useCase, index) => (
+                      <span
+                        key={index}
+                        className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    </span>
-                  ))}
+                        {useCase}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveUseCase(index)}
+                          className="ml-2 text-blue-600 hover:text-blue-800"
+                          disabled={uploading}
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {/* Input Field */}
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={useCaseInput}
+                    onChange={(e) => setUseCaseInput(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Type a use case and press Enter to add..."
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
+                    disabled={uploading}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddUseCase}
+                    disabled={!useCaseInput.trim() || uploading}
+                    className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Add
+                  </button>
                 </div>
-              )}
-
-              {/* Input Field */}
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={useCaseInput}
-                  onChange={(e) => setUseCaseInput(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Type a use case and press Enter to add..."
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
-                  disabled={uploading}
-                />
-                <button
-                  type="button"
-                  onClick={handleAddUseCase}
-                  disabled={!useCaseInput.trim() || uploading}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Add
-                </button>
+                <p className="text-xs text-gray-500 mt-1">
+                  Type use cases and press Enter or click Add. Each use case will be stored as a separate item.
+                </p>
               </div>
-              <p className="text-xs text-gray-500 mt-1">
-                Type use cases and press Enter or click Add. Each use case will be stored as a separate item.
-              </p>
 
-                             {/* Page Selection */}
-               <div className="mt-6">
-                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                   Page Type
-                 </label>
-                 <select
-                   value={selectedPage}
-                   onChange={(e) => setSelectedPage(e.target.value)}
-                   disabled={uploading}
-                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
-                 >
-                   <option value="homepage">Homepage</option>
-                   <option value="collection">Collection</option>
-                   <option value="product">Product</option>
-                   <option value="cart">Cart</option>
-                 </select>
-                 <p className="text-xs text-gray-500 mt-1">
-                   Select the page type where this image reference applies.
-                 </p>
-               </div>
+              {/* Page Selection */}
+              <div className="">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Page Type
+                </label>
+                <select
+                  value={selectedPage}
+                  onChange={(e) => setSelectedPage(e.target.value)}
+                  disabled={uploading}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
+                >
+                  <option value="homepage">Homepage</option>
+                  <option value="collection">Collection</option>
+                  <option value="product">Product</option>
+                  <option value="cart">Cart</option>
+                </select>
+                <p className="text-xs text-gray-500 mt-1">
+                  Select the page type where this image reference applies.
+                </p>
+              </div>
 
-               {/* Industry Selection */}
-               <div className="mt-6">
-                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                   Industry
-                 </label>
-                 <select
-                   value={selectedIndustry}
-                   onChange={(e) => setSelectedIndustry(e.target.value)}
-                   disabled={uploading}
-                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
-                 >
-                   <option value="Beauty & Personal Care">Beauty & Personal Care</option>
-                   <option value="Apparel">Apparel</option>
-                   <option value="Electronics">Electronics</option>
-                   <option value="Watches & Jewellery">Watches & Jewellery</option>
-                   <option value="Automobile">Automobile</option>
-                 </select>
-                 <p className="text-xs text-gray-500 mt-1">
-                   Select the industry this image reference belongs to.
-                 </p>
-               </div>
+              {/* Industry Selection */}
+              <div className="">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Industry
+                </label>
+                <select
+                  value={selectedIndustry}
+                  onChange={(e) => setSelectedIndustry(e.target.value)}
+                  disabled={uploading}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
+                >
+                  <option value="Beauty & Personal Care">Beauty & Personal Care</option>
+                  <option value="Apparel">Apparel</option>
+                  <option value="Electronics">Electronics</option>
+                  <option value="Watches & Jewellery">Watches & Jewellery</option>
+                  <option value="Automobile">Automobile</option>
+                </select>
+                <p className="text-xs text-gray-500 mt-1">
+                  Select the industry this image reference belongs to.
+                </p>
+              </div>
 
-               {/* URL Field */}
-               <div className="mt-6">
-                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                   Reference URL (Optional)
-                 </label>
-                 <input
-                   type="url"
-                   value={url}
-                   onChange={(e) => setUrl(e.target.value)}
-                   placeholder="https://example.com"
-                   disabled={uploading}
-                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
-                 />
-                 <p className="text-xs text-gray-500 mt-1">
-                   Add the URL of the reference site where this image is from
-                 </p>
-               </div>
+              {/* Country Selection */}
+              <div className="">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Country
+                </label>
+                <select
+                  value={selectedCountry}
+                  onChange={(e) => setSelectedCountry(e.target.value)}
+                  disabled={uploading}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
+                >
+                  {countriesData.map((countryOption) => (
+                    <option key={countryOption.code} value={countryOption.code}>
+                      {countryOption.name}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-gray-500 mt-1">
+                  Select the country this image reference is applicable for
+                </p>
+              </div>
+
+              {/* URL Field */}
+              <div className="">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Reference URL (Optional)
+                </label>
+                <input
+                  type="url"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  placeholder="https://example.com"
+                  disabled={uploading}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Add the URL of the reference site where this image is from
+                </p>
+              </div>
             </div>
 
 
@@ -504,7 +556,7 @@ export default function ImageReferencesPage() {
           <button
             onClick={handleAnalyzeAndSave}
             disabled={!selectedFile || useCases.length === 0 || uploading}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {uploading ? (
               <>
@@ -536,13 +588,13 @@ export default function ImageReferencesPage() {
           <div className="flex justify-center items-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           </div>
-                  ) : (
-            <ImageGallery 
-              chunks={images} 
-              onDeleteChunk={handleDeleteImage} 
-              onEditChunk={handleEditImage}
-            />
-          )}
+        ) : (
+          <ImageGallery
+            chunks={images}
+            onDeleteChunk={handleDeleteImage}
+            onEditChunk={handleEditImage}
+          />
+        )}
       </div>
 
       {/* Edit Modal */}
@@ -550,8 +602,8 @@ export default function ImageReferencesPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-md w-full p-6">
             <h2 className="text-xl font-semibold mb-4 text-black">Edit Image Reference</h2>
-            
-            <EditImageForm 
+
+            <EditImageForm
               image={editingImage}
               onSave={handleUpdateImage}
               onCancel={() => {

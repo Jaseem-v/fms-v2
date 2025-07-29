@@ -4,6 +4,7 @@ interface ImageReference {
   useCases: string[];
   page: string;
   industry: string;
+  country: string;
   url?: string;
   uploadDate: string;
   fileName: string;
@@ -38,7 +39,7 @@ export class ImageReferenceService {
     return response.ok;
   }
 
-  async updateImage(id: string, updates: { useCases?: string[]; page?: string; industry?: string; url?: string }): Promise<ImageReference> {
+  async updateImage(id: string, updates: { useCases?: string[]; page?: string; industry?: string; country?: string; url?: string }): Promise<ImageReference> {
     const response = await fetch(`${this.baseUrl}/image-references/${id}`, {
       method: 'PUT',
       headers: {
@@ -61,6 +62,7 @@ export class ImageReferenceService {
     useCases: string[], 
     page: string,
     industry: string,
+    country: string,
     url?: string,
     onProgress?: (progress: number) => void
   ): Promise<ImageReference> {
@@ -69,6 +71,7 @@ export class ImageReferenceService {
     formData.append('useCases', JSON.stringify(useCases));
     formData.append('page', page);
     formData.append('industry', industry);
+    formData.append('country', country);
     if (url) {
       formData.append('url', url);
     }

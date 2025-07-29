@@ -1,0 +1,107 @@
+[
+  {
+    "code": "IN",
+    "name": "India",
+    "isDefault": true
+  },
+  {
+    "code": "ALL",
+    "name": "All Countries",
+    "isDefault": false
+  },
+  {
+    "code": "US",
+    "name": "United States",
+    "isDefault": false
+  },
+  {
+    "code": "CN",
+    "name": "China",
+    "isDefault": false
+  },
+  {
+    "code": "JP",
+    "name": "Japan",
+    "isDefault": false
+  },
+  {
+    "code": "DE",
+    "name": "Germany",
+    "isDefault": false
+  },
+  {
+    "code": "GB",
+    "name": "United Kingdom",
+    "isDefault": false
+  },
+  {
+    "code": "FR",
+    "name": "France",
+    "isDefault": false
+  },
+  {
+    "code": "CA",
+    "name": "Canada",
+    "isDefault": false
+  },
+  {
+    "code": "AU",
+    "name": "Australia",
+    "isDefault": false
+  },
+  {
+    "code": "BR",
+    "name": "Brazil",
+    "isDefault": false
+  },
+  {
+    "code": "IT",
+    "name": "Italy",
+    "isDefault": false
+  },
+  {
+    "code": "KR",
+    "name": "South Korea",
+    "isDefault": false
+  },
+  {
+    "code": "RU",
+    "name": "Russia",
+    "isDefault": false
+  },
+  {
+    "code": "ES",
+    "name": "Spain",
+    "isDefault": false
+  },
+  {
+    "code": "MX",
+    "name": "Mexico",
+    "isDefault": false
+  },
+  {
+    "code": "NL",
+    "name": "Netherlands",
+    "isDefault": false
+  },
+  {
+    "code": "SG",
+    "name": "Singapore",
+    "isDefault": false
+  },
+  {
+    "code": "AE",
+    "name": "United Arab Emirates",
+    "isDefault": false
+  },
+  {
+    "code": "SE",
+    "name": "Sweden",
+    "isDefault": false
+  },
+  {
+    "code": "CH",
+    "name": "Switzerland",
+    "isDefault": false
+  }
+]

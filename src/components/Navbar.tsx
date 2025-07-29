@@ -38,7 +38,7 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Navigation - Center */}
-          <div className="hidden md:block">
+          {/* <div className="hidden md:block">
             <div className="flex items-baseline space-x-8">
               {navItems.map((item) => (
                 <Link
@@ -54,17 +54,17 @@ export default function Navbar() {
                 </Link>
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Login Button */}
-          <div className="hidden md:block">
+          {/* <div className="hidden md:block">
             <Link
               href="/login"
               className="bg-black text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors"
             >
               Login
             </Link>
-          </div>
+          </div> */}
 
           {/* Mobile menu button */}
           <div className="md:hidden">

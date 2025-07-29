@@ -151,7 +151,7 @@ export default function AppReferencePage() {
           </div>
           <button
             onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="inline-flex items-center px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
           >
             <PlusIcon className="h-5 w-5 mr-2" />
             Add App Reference
@@ -172,7 +172,7 @@ export default function AppReferencePage() {
             <button
               onClick={handlePreviewScrape}
               disabled={loading || !previewUrl}
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
+              className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 disabled:opacity-50"
             >
               {loading ? 'Scraping...' : 'Preview'}
             </button>
@@ -354,7 +354,7 @@ export default function AppReferencePage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                  className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 disabled:opacity-50"
                 >
                   {loading ? 'Adding...' : 'Add App'}
                 </button>

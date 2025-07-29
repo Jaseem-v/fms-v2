@@ -77,15 +77,15 @@ export default function AdminSidebar({ open, setOpen }: AdminSidebarProps) {
                                   className={`
                                     group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold
                                     ${isActive
-                                      ? 'bg-blue-50 text-blue-600'
-                                      : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                                      ? 'bg-gray-100 text-black'
+                                      : 'text-gray-700 hover:text-black hover:bg-gray-50'
                                     }
                                   `}
                                   onClick={() => setOpen(false)}
                                 >
                                   <item.icon
                                     className={`h-6 w-6 shrink-0 ${
-                                      isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-blue-600'
+                                      isActive ? 'text-black' : 'text-gray-400 group-hover:text-black'
                                     }`}
                                     aria-hidden="true"
                                   />
@@ -124,14 +124,14 @@ export default function AdminSidebar({ open, setOpen }: AdminSidebarProps) {
                           className={`
                             group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold
                             ${isActive
-                              ? 'bg-blue-50 text-blue-600'
-                              : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                              ? 'bg-gray-100 text-black'
+                              : 'text-gray-700 hover:text-black hover:bg-gray-50'
                             }
                           `}
                         >
                           <item.icon
                             className={`h-6 w-6 shrink-0 ${
-                              isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-blue-600'
+                              isActive ? 'text-black' : 'text-gray-400 group-hover:text-black'
                             }`}
                             aria-hidden="true"
                           />

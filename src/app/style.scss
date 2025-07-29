@@ -105,6 +105,14 @@
             z-index: 2;
         }
 
+        &-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            position: relative;
+            gap: 10px;
+        }
+
         &-field {
             border: none;
             outline: none;
@@ -113,6 +121,23 @@
             height: 100%;
             font-size: clamp(16px, 3vw, 22px);
             font-weight: 400;
+
+            &--error {
+                color: #dc2626;
+            }
+        }
+
+        &-error {
+            // position: absolute;
+            // top: 100%;
+            // left: 0;
+            // right: 0;
+            color: #dc2626;
+            font-size: 14px;
+            font-weight: 400;
+            margin-top: 4px;
+            padding-left: 38px;
+            z-index: 3;
         }
 
         &-button {
@@ -142,6 +167,15 @@
 
             &:hover {
                 background: #1f1f1fc7;
+            }
+
+            &:disabled {
+                background: #6b7280;
+                cursor: not-allowed;
+
+                &:hover {
+                    background: #6b7280;
+                }
             }
         }
     }
