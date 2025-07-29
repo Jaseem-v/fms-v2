@@ -8,6 +8,7 @@ interface ImageReference {
   useCases: string[];
   page: string;
   industry: string;
+  url?: string;
   uploadDate: string;
   fileName: string;
 }
@@ -316,6 +317,20 @@ export default function ImageGallery({ chunks, onDeleteChunk, onEditChunk }: Ima
                   <h4 className="text-sm font-medium text-gray-900 mb-1">File Name</h4>
                   <p className="text-sm text-gray-700 font-mono">{selectedImage.fileName}</p>
                 </div>
+
+                {selectedImage.url && (
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-900 mb-1">Reference URL</h4>
+                    <a
+                      href={selectedImage.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-blue-600 hover:text-blue-800 underline break-all"
+                    >
+                      {selectedImage.url}
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           </div>

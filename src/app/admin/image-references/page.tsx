@@ -8,7 +8,7 @@ import imageReferenceService from '@/services/imageReferenceService';
 
 interface EditImageFormProps {
   image: ImageReference;
-  onSave: (updates: { useCases: string[]; page: string; industry: string }) => void;
+  onSave: (updates: { useCases: string[]; page: string; industry: string; url?: string }) => void;
   onCancel: () => void;
 }
 
@@ -16,6 +16,7 @@ function EditImageForm({ image, onSave, onCancel }: EditImageFormProps) {
   const [useCases, setUseCases] = useState<string[]>(image.useCases);
   const [page, setPage] = useState<string>(image.page);
   const [industry, setIndustry] = useState<string>(image.industry);
+  const [url, setUrl] = useState<string>(image.url || '');
   const [useCaseInput, setUseCaseInput] = useState<string>('');
 
   const handleAddUseCase = () => {
@@ -42,7 +43,7 @@ function EditImageForm({ image, onSave, onCancel }: EditImageFormProps) {
       alert('Please enter at least one use case');
       return;
     }
-    onSave({ useCases, page, industry });
+    onSave({ useCases, page, industry, url: url.trim() || undefined });
   };
 
   return (
@@ -132,6 +133,23 @@ function EditImageForm({ image, onSave, onCancel }: EditImageFormProps) {
         </select>
       </div>
 
+      {/* URL Field */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Reference URL (Optional)
+        </label>
+        <input
+          type="url"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder="https://example.com"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          Add the URL of the reference site where this image is from
+        </p>
+      </div>
+
       {/* Action Buttons */}
       <div className="flex justify-end space-x-3 pt-4">
         <button
@@ -162,6 +180,7 @@ interface ImageReference {
   fileName: string;
   page: string;
   industry: string;
+  url?: string; // Added url field
 }
 
 export default function ImageReferencesPage() {
@@ -173,6 +192,7 @@ export default function ImageReferencesPage() {
   const [selectedPage, setSelectedPage] = useState<string>('homepage');
   const [selectedIndustry, setSelectedIndustry] = useState<string>('Beauty & Personal Care');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [url, setUrl] = useState<string>('');
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [resetUpload, setResetUpload] = useState(false);
@@ -229,7 +249,7 @@ export default function ImageReferencesPage() {
         setUploadProgress(progress);
       };
 
-              const result = await imageReferenceService.uploadImage(selectedFile, useCases, selectedPage, selectedIndustry, handleProgress);
+      const result = await imageReferenceService.uploadImage(selectedFile, useCases, selectedPage, selectedIndustry, url.trim() || undefined, handleProgress);
       console.log('Upload successful:', result);
 
       // Reset form
@@ -238,6 +258,7 @@ export default function ImageReferencesPage() {
       setUseCaseInput('');
       setSelectedPage('homepage');
       setSelectedIndustry('Beauty & Personal Care');
+      setUrl('');
       setResetUpload(true); // Trigger reset of ImageUpload component
 
       // Refresh the images list
@@ -293,7 +314,7 @@ export default function ImageReferencesPage() {
     setShowEditModal(true);
   };
 
-  const handleUpdateImage = async (updates: { useCases: string[]; page: string; industry: string }) => {
+  const handleUpdateImage = async (updates: { useCases: string[]; page: string; industry: string; url?: string }) => {
     if (!editingImage) return;
 
     try {
@@ -450,6 +471,24 @@ export default function ImageReferencesPage() {
                  </select>
                  <p className="text-xs text-gray-500 mt-1">
                    Select the industry this image reference belongs to.
+                 </p>
+               </div>
+
+               {/* URL Field */}
+               <div className="mt-6">
+                 <label className="block text-sm font-medium text-gray-700 mb-2">
+                   Reference URL (Optional)
+                 </label>
+                 <input
+                   type="url"
+                   value={url}
+                   onChange={(e) => setUrl(e.target.value)}
+                   placeholder="https://example.com"
+                   disabled={uploading}
+                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
+                 />
+                 <p className="text-xs text-gray-500 mt-1">
+                   Add the URL of the reference site where this image is from
                  </p>
                </div>
             </div>
