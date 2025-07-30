@@ -115,11 +115,10 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                     </div>
                 </div>
                 <h1 className='hero__details-title'>
-                    Fix My Store
+                    Your Store is Loosing Money, Let’s fix it
                 </h1>
                 <p className='hero__details-description'>
-                    Simple fixes to turn visitors into buyers!
-                    No guesswork, just real results!
+                    Get a detailed audit of your Shopify store, with image references and app recommendations to fix revenue leaks.
                 </p>
             </div>
 
@@ -135,7 +134,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                     />
 
                     <button className='hero__input-button' type='submit' disabled={loading}>
-                        {loading ? 'Generating...' : 'Generate report'}
+                        {loading ? 'Analyzing...' : 'Fix My Store'}
 
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                             <path d="M13 17L18 12L13 7M6 17L11 12L6 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -152,23 +151,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
             </div>
 
 
-            {/* <div className="hero__payment-section">
-                <div className="hero__payment-info">
-                    <span className="hero__payment-price">$99.99</span>
-                    <span className="hero__payment-text">for comprehensive analysis</span>
-                </div>
-                <Link 
-                    href={`/payment?url=${encodeURIComponent(url)}`}
-                    className="hero__payment-button"
-                >
-                    Pay & Get Analysis
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                </Link>
-            </div> */}
+            
 
             <div className="hero__gradient-bg">
 

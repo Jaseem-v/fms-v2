@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import paymentService, { PaymentRequest } from '../../services/paymentService';
 
@@ -17,6 +17,13 @@ function PaymentForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
+
+  // Store the URL in localStorage for payment success page
+  useEffect(() => {
+    if (websiteUrl) {
+      localStorage.setItem('pendingAnalysisUrl', websiteUrl);
+    }
+  }, [websiteUrl]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -46,21 +53,22 @@ function PaymentForm() {
     }
   };
 
-  const handleProceedToPayment = () => {
+  // Auto-redirect to payment URL when generated
+  useEffect(() => {
     if (paymentUrl) {
       window.location.href = paymentUrl;
     }
-  };
+  }, [paymentUrl]);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-green-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Complete Your Payment
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Pay $99.99 to get your comprehensive CRO analysis
+            Pay $49 to get your comprehensive CRO analysis
           </p>
         </div>
 
@@ -78,7 +86,8 @@ function PaymentForm() {
                   value={formData.websiteUrl}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  disabled
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-gray-100 opacity-60 cursor-not-allowed"
                   placeholder="https://example.com"
                 />
               </div>
@@ -94,7 +103,7 @@ function PaymentForm() {
                   value={formData.customerName}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   placeholder="Enter your full name"
                 />
               </div>
@@ -110,7 +119,7 @@ function PaymentForm() {
                   value={formData.customerEmail}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   placeholder="Enter your email address"
                 />
               </div>
@@ -122,27 +131,27 @@ function PaymentForm() {
               </div>
             )}
 
-            <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
-              <h3 className="text-sm font-medium text-blue-900 mb-2">What you'll get:</h3>
-              <ul className="text-sm text-blue-700 space-y-1">
+            <div className="bg-green-50 border border-green-200 rounded-md p-4">
+              <h3 className="text-sm font-medium text-green-900 mb-2">What you'll get:</h3>
+              <ul className="text-sm text-green-700 space-y-1">
                 <li>• Comprehensive CRO analysis report</li>
                 <li>• Screenshots of key pages</li>
                 <li>• Actionable recommendations</li>
-                <li>• Detailed insights and metrics</li>
+                <li>• Shareable report link</li>
               </ul>
             </div>
 
-            <div className="bg-gray-50 border border-gray-200 rounded-md p-4">
+            <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm">
               <div className="flex justify-between items-center">
                 <span className="text-sm font-medium text-gray-700">Total Amount:</span>
-                <span className="text-lg font-bold text-gray-900">$99.99</span>
+                <span className="text-lg font-bold text-gray-900">$49</span>
               </div>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
             >
               {loading ? 'Processing...' : 'Proceed to Payment'}
             </button>
@@ -150,22 +159,16 @@ function PaymentForm() {
         ) : (
           <div className="text-center">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg className="w-8 h-8 text-green-600 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Payment Link Generated!
+              Redirecting to Payment...
             </h3>
-            <p className="text-gray-600 mb-6">
-              Click the button below to complete your payment securely.
+            <p className="text-gray-600">
+              Please wait while we redirect you to the secure payment page.
             </p>
-            <button
-              onClick={handleProceedToPayment}
-              className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Complete Payment
-            </button>
           </div>
         )}
       </div>
@@ -175,11 +178,8 @@ function PaymentForm() {
 
 function LoadingFallback() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-        <p className="mt-4 text-gray-600">Loading payment form...</p>
-      </div>
+    <div className="min-h-screen bg-green-50 flex items-center justify-center">
+      <div className="w-16 h-16 border-2 border-green-600 border-t-transparent rounded-full animate-spin"></div>
     </div>
   );
 }

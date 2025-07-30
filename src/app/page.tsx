@@ -75,6 +75,7 @@ export default function Home() {
     handleUrlChange,
     formatTime,
     statusMessages,
+    startAnalysisAfterPayment,
   } = useAnalysis();
 
   // Check authentication status on component mount

@@ -1,6 +1,38 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import analysisService from '../services/analysisService';
 import shopifyValidationService from '../services/shopifyValidationService';
+import reportService from '../services/reportService';
+
+// Helper function to normalize URL (add https:// if no protocol is present)
+const normalizeUrl = (url: string): string => {
+    if (!url || url.trim() === '') return url;
+    
+    // If URL already has a protocol, return as is
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+        return url;
+    }
+    
+    // Add https:// if no protocol is present
+    return `https://${url}`;
+};
+
+// Helper function to validate URL format
+const validateUrl = (url: string): boolean => {
+    if (!url || url.trim() === '') return false;
+
+    try {
+        const normalizedUrl = normalizeUrl(url);
+        const urlObj = new URL(normalizedUrl);
+
+        // Check if it's a valid URL with a domain
+        const hasValidHostname = Boolean(urlObj.hostname) && urlObj.hostname.includes('.');
+        const hasValidProtocol = urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+
+        return hasValidHostname && hasValidProtocol;
+    } catch (error) {
+        return false;
+    }
+};
 
 interface UserInfo {
   name: string;
@@ -855,15 +887,124 @@ export function useAnalysis() {
       if (!validationResult.isShopify) {
         setShopifyValidationError(validationResult.message || 'This does not appear to be a Shopify site');
         setValidatingShopify(false);
-        setLoading(false); // Stop the loading state
-        setTimerActive(false); // Stop the timer
+        setLoading(false);
+        setTimerActive(false);
         return;
       }
 
       console.log('[SHOPIFY VALIDATION] ✅ Validated as Shopify site');
       setValidatingShopify(false);
 
-      const domain = new URL(url).hostname;
+      // Validate and normalize URL before redirecting to payment page
+      if (!validateUrl(url)) {
+        setError('Please enter a valid website URL (e.g., example.com or https://example.com)');
+        setValidatingShopify(false);
+        setLoading(false);
+        setTimerActive(false);
+        return;
+      }
+
+      const normalizedUrl = normalizeUrl(url);
+      const encodedUrl = encodeURIComponent(normalizedUrl);
+      window.location.href = `/payment?url=${encodedUrl}`;
+
+    } catch (error) {
+      console.error('Error in handleSubmit:', error);
+      setError('An error occurred. Please try again.');
+      setValidatingShopify(false);
+      setLoading(false);
+      setTimerActive(false);
+    }
+  }, [url, resetState, setValidatingShopify, setShopifyValidationError, setLoading, setTimerActive, setError]);
+
+  const handleUserInfoSubmit = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      setDownloadLoading(true);
+      setError(null);
+      setSuccessMessage('Generating your PDF report...');
+
+      // Validate URL before using it
+      if (!url) {
+        throw new Error('No URL provided for report generation');
+      }
+
+      const pdfBlob = await analysisService.downloadReport(report, url, userInfo);
+
+      // Create a download link
+      const downloadUrl = window.URL.createObjectURL(pdfBlob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+
+      // Create filename with website URL and "audit report"
+      try {
+        const normalizedUrl = normalizeUrl(url);
+        const domain = new URL(normalizedUrl).hostname;
+        const cleanDomain = domain.replace(/[^a-zA-Z0-9.-]/g, '-');
+        const timestamp = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+        link.download = `${cleanDomain}-audit-report-${timestamp}.pdf`;
+      } catch (urlError) {
+        // Fallback if URL parsing fails
+        const timestamp = new Date().toISOString().split('T')[0];
+        link.download = `audit-report-${timestamp}.pdf`;
+      }
+
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Clean up the URL
+      window.URL.revokeObjectURL(downloadUrl);
+
+      // Show success message
+      setSuccessMessage('Your PDF report has been downloaded successfully!');
+      setDownloadLoading(false);
+      setShowModal(false);
+
+      // Clear success message after 5 seconds
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 5000);
+    } catch (error) {
+      console.error('Error downloading report:', error);
+      setError('Failed to download report. Please try again.');
+      setDownloadLoading(false);
+    }
+  }, [report, url, userInfo]);
+
+  const handleUserInfoChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUserInfo((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }, []);
+
+  const handleUrlChange = useCallback((newUrl: string) => {
+    setUrl(newUrl);
+    // Clear validation errors when user starts typing a new URL
+    if (shopifyValidationError) {
+      setShopifyValidationError(null);
+    }
+  }, [shopifyValidationError]);
+
+  const startAnalysisAfterPayment = useCallback(async (analysisUrl?: string) => {
+    try {
+      // Use the provided URL or fall back to the state URL
+      const urlToAnalyze = analysisUrl || url;
+      
+      if (!urlToAnalyze) {
+        throw new Error('No URL provided for analysis');
+      }
+
+      // Validate URL format before proceeding
+      if (!validateUrl(urlToAnalyze)) {
+        throw new Error('Invalid URL format. Please provide a valid website URL.');
+      }
+
+      const normalizedUrl = normalizeUrl(urlToAnalyze);
+      const domain = new URL(normalizedUrl).hostname;
 
       console.log('[SEQUENTIAL] Starting sequential analysis for domain:', domain);
 
@@ -959,6 +1100,30 @@ export function useAnalysis() {
             console.log('[COMPLETE] Final report with screenshots:', finalReport);
             setReport(finalReport);
 
+            // Create report in database
+            try {
+              const reportResult = await reportService.createReport({
+                websiteUrl: urlToAnalyze,
+                analysisData: finalReport,
+                screenshots: status.screenshots || {},
+                userInfo: {
+                  name: localStorage.getItem('customerName') || '',
+                  email: localStorage.getItem('customerEmail') || '',
+                },
+                paymentId: localStorage.getItem('paymentId') || undefined,
+              });
+
+              if (reportResult.success && reportResult.reportUrl) {
+                console.log('[REPORT] Report created successfully:', reportResult.reportUrl);
+                // Store the report URL for display
+                localStorage.setItem('reportUrl', reportResult.reportUrl);
+              } else {
+                console.error('[REPORT] Failed to create report:', reportResult.message);
+              }
+            } catch (error) {
+              console.error('[REPORT] Error creating report:', error);
+            }
+
             // Clear all analysis progress
             setAnalysisInProgress({
               homepage: false,
@@ -1053,8 +1218,6 @@ export function useAnalysis() {
         clearInterval(pollInterval);
       }, 600000);
 
-
-
     } catch (err) {
       setTimerActive(false);
       setValidatingShopify(false);
@@ -1068,66 +1231,6 @@ export function useAnalysis() {
       setLoading(false);
     }
   }, [url, report, analysisInProgress, resetState]);
-
-  const handleUserInfoSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      setDownloadLoading(true);
-      setError(null);
-      setSuccessMessage('Generating your PDF report...');
-
-      const pdfBlob = await analysisService.downloadReport(report, url, userInfo);
-
-      // Create a download link
-      const downloadUrl = window.URL.createObjectURL(pdfBlob);
-      const link = document.createElement('a');
-      link.href = downloadUrl;
-
-      // Create filename with website URL and "audit report"
-      const domain = new URL(url).hostname;
-      const cleanDomain = domain.replace(/[^a-zA-Z0-9.-]/g, '-');
-      const timestamp = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
-      link.download = `${cleanDomain}-audit-report-${timestamp}.pdf`;
-
-      // Trigger download
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      // Clean up the URL
-      window.URL.revokeObjectURL(downloadUrl);
-
-      // Show success message
-      setSuccessMessage('Your PDF report has been downloaded successfully!');
-      setDownloadLoading(false);
-      setShowModal(false);
-
-      // Clear success message after 5 seconds
-      setTimeout(() => {
-        setSuccessMessage(null);
-      }, 5000);
-    } catch (error) {
-      console.error('Error downloading report:', error);
-      setError('Failed to download report. Please try again.');
-      setDownloadLoading(false);
-    }
-  }, [report, url, userInfo]);
-
-  const handleUserInfoChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setUserInfo((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  }, []);
-
-  const handleUrlChange = useCallback((newUrl: string) => {
-    setUrl(newUrl);
-    // Clear validation errors when user starts typing a new URL
-    if (shopifyValidationError) {
-      setShopifyValidationError(null);
-    }
-  }, [shopifyValidationError]);
 
   return {
     // State
@@ -1160,5 +1263,6 @@ export function useAnalysis() {
     handleUrlChange,
     formatTime,
     statusMessages,
+    startAnalysisAfterPayment,
   };
 } 

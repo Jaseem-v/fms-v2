@@ -92,6 +92,40 @@ class PaymentService {
       };
     }
   }
+
+  async verifyPaymentByOrderId(orderId: string): Promise<PaymentStatus> {
+    try {
+      const response = await fetch(`${this.baseUrl}/payments/verify-order/${orderId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        return {
+          success: result.success,
+          status: result.status,
+          message: result.message,
+        };
+      } else {
+        return {
+          success: false,
+          status: 'failed',
+          message: result.message || 'Failed to verify payment',
+        };
+      }
+    } catch (error) {
+      console.error('Payment verification error:', error);
+      return {
+        success: false,
+        status: 'failed',
+        message: 'Network error occurred',
+      };
+    }
+  }
 }
 
 export default new PaymentService(); 

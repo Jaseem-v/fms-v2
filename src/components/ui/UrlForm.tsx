@@ -32,10 +32,10 @@ export default function UrlForm({ url, setUrl, loading, validatingShopify = fals
           ) : loading ? (
             <>
               <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              Analyzing...
+              Processing...
             </>
           ) : (
-            'Generate Report'
+            'Pay & Get Analysis'
           )}
         </button>
       </div>

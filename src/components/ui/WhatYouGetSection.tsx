@@ -21,7 +21,7 @@ const WhatYouGetSection: React.FC = () => {
         {/* Store Audit Section */}
         <div className="mb-16">
           <h3 className="text-2xl font-bold text-gray-900 mb-8">
-            Store Audit (Worth $100)
+            Store Audit (Worth $349)
           </h3>
           
           <div className="grid md:grid-cols-3 gap-6 mb-8">
@@ -79,7 +79,7 @@ const WhatYouGetSection: React.FC = () => {
         {/* One-on-One Consultation Section */}
         <div className="mb-16">
           <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">
-            One-on-One Consultation (Worth $150)
+            One-on-One Consultation (Worth $349)
           </h3>
           
           <div className="bg-green-100 border border-green-200 rounded-xl p-8">
@@ -96,7 +96,7 @@ const WhatYouGetSection: React.FC = () => {
         {/* CRO Resources Section */}
         <div>
           <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">
-            CRO Resources (Worth $50)
+            CRO Resources (Worth $299)
           </h3>
           
           <div className="bg-green-100 border border-green-200 rounded-xl p-8">

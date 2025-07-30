@@ -32,7 +32,7 @@ const PricingSection: React.FC = () => {
                 <div className="text-center mb-6">
                   <div className="flex items-baseline justify-center gap-3 mb-4">
                     <span className="text-5xl font-bold text-gray-900">$49</span>
-                    <span className="text-2xl text-gray-400 line-through">$300</span>
+                    <span className="text-2xl text-gray-500 line-through">$999</span>
                   </div>
                 </div>
                 
@@ -57,15 +57,15 @@ const PricingSection: React.FC = () => {
                   <div className="space-y-4">
                     <div className="flex items-start gap-3">
                       <span className="text-gray-900 text-lg mt-0.5">✓</span>
-                      <span className="text-gray-900">Detailed store audit - Worth $100</span>
+                      <span className="text-gray-900">Detailed store audit - Worth $349</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <span className="text-gray-900 text-lg mt-0.5">✓</span>
-                      <span className="text-gray-900">One-On-One consultation - Worth $150</span>
+                      <span className="text-gray-900">One-On-One consultation - Worth $349</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <span className="text-gray-900 text-lg mt-0.5">✓</span>
-                      <span className="text-gray-900">CRO Resources - Worth $50</span>
+                      <span className="text-gray-900">CRO Resources - Worth $299</span>
                     </div>
                   </div>
                 </div>
