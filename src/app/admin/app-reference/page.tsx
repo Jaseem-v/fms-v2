@@ -101,7 +101,7 @@ export default function AppReferencePage() {
     try {
       const success = await appReferenceService.deleteAppReference(id);
       if (success) {
-        setAppReferences(prev => prev.filter(app => app.id !== id));
+        setAppReferences(prev => prev.filter(app => app._id !== id));
       }
     } catch (error) {
       console.error('Error deleting app reference:', error);
@@ -192,7 +192,7 @@ export default function AppReferencePage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredApps.map((app) => (
-              <div key={app.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div key={app._id} className="bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center space-x-3">
@@ -230,7 +230,7 @@ export default function AppReferencePage() {
                         <EyeIcon className="h-5 w-5" />
                       </button>
                       <button
-                        onClick={() => handleDeleteApp(app.id)}
+                        onClick={() => handleDeleteApp(app._id)}
                         className="text-red-600 hover:text-red-800"
                         title="Delete"
                       >
@@ -442,7 +442,7 @@ export default function AppReferencePage() {
                   
                   <div>
                     <h4 className="text-sm font-medium text-gray-900 mb-2">App ID</h4>
-                    <p className="text-gray-600 text-sm font-mono">{previewApp.id}</p>
+                    <p className="text-gray-600 text-sm font-mono">{previewApp._id}</p>
                   </div>
                 </div>
               </div>

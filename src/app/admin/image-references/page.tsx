@@ -22,6 +22,8 @@ function EditImageForm({ image, industries, onSave, onCancel }: EditImageFormPro
   const [country, setCountry] = useState<string>(image.country);
   const [url, setUrl] = useState<string>(image.url || '');
   const [useCaseInput, setUseCaseInput] = useState<string>('');
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editingText, setEditingText] = useState<string>('');
 
   const handleAddUseCase = () => {
     const trimmedInput = useCaseInput.trim();
@@ -35,10 +37,39 @@ function EditImageForm({ image, industries, onSave, onCancel }: EditImageFormPro
     setUseCases(prev => prev.filter((_, i) => i !== index));
   };
 
+  const handleEditUseCase = (index: number) => {
+    setEditingIndex(index);
+    setEditingText(useCases[index]);
+  };
+
+  const handleSaveEdit = (index: number) => {
+    const trimmedText = editingText.trim();
+    if (trimmedText && !useCases.some((uc, i) => i !== index && uc === trimmedText)) {
+      setUseCases(prev => prev.map((uc, i) => i === index ? trimmedText : uc));
+    }
+    setEditingIndex(null);
+    setEditingText('');
+  };
+
+  const handleCancelEdit = () => {
+    setEditingIndex(null);
+    setEditingText('');
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       handleAddUseCase();
+    }
+  };
+
+  const handleEditKeyPress = (e: React.KeyboardEvent, index: number) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSaveEdit(index);
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      handleCancelEdit();
     }
   };
 
@@ -60,23 +91,67 @@ function EditImageForm({ image, industries, onSave, onCancel }: EditImageFormPro
 
         {/* Use Cases Tags */}
         {useCases.length > 0 && (
-          <div className="mb-3 flex flex-wrap gap-2">
+          <div className="mb-3 flex flex-wrap gap-2 max-h-[200px] overflow-y-auto">
             {useCases.map((useCase, index) => (
-              <span
-                key={index}
-                className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800"
-              >
-                {useCase}
-                <button
-                  type="button"
-                  onClick={() => handleRemoveUseCase(index)}
-                  className="ml-2 text-blue-600 hover:text-blue-800"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </span>
+              <div key={index} className="inline-flex items-center w-full">
+                {editingIndex === index ? (
+                  <div className="flex items-start gap-1 flex-1">
+                    <textarea
+                      value={editingText}
+                      onChange={(e) => setEditingText(e.target.value)}
+                      onKeyDown={(e) => handleEditKeyPress(e, index)}
+                      onBlur={() => handleSaveEdit(index)}
+                      className="px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black min-w-[200px] min-h-[60px] resize-none w-full"
+                      autoFocus
+                      rows={3}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleSaveEdit(index)}
+                      className="text-green-600 hover:text-green-800"
+                      title="Save"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleCancelEdit}
+                      className="text-red-600 hover:text-red-800"
+                      title="Cancel"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                ) : (
+                  <span className="inline-flex items-center px-3 py-1  text-sm bg-blue-100 text-blue-800">
+                    {useCase}
+                    <button
+                      type="button"
+                      onClick={() => handleEditUseCase(index)}
+                      className="ml-2 text-blue-600 hover:text-blue-800"
+                      title="Edit"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveUseCase(index)}
+                      className="ml-1 text-blue-600 hover:text-blue-800"
+                      title="Remove"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </span>
+                )}
+              </div>
             ))}
           </div>
         )}
@@ -226,6 +301,8 @@ export default function ImageReferencesPage() {
   const [resetUpload, setResetUpload] = useState(false);
   const [editingImage, setEditingImage] = useState<ImageReference | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [editingUseCaseIndex, setEditingUseCaseIndex] = useState<number | null>(null);
+  const [editingUseCaseText, setEditingUseCaseText] = useState<string>('');
 
   const fetchImages = async () => {
     setLoading(true);
@@ -397,6 +474,35 @@ export default function ImageReferencesPage() {
     }
   };
 
+  const handleEditUseCase = (index: number) => {
+    setEditingUseCaseIndex(index);
+    setEditingUseCaseText(useCases[index]);
+  };
+
+  const handleSaveUseCaseEdit = (index: number) => {
+    const trimmedText = editingUseCaseText.trim();
+    if (trimmedText && !useCases.some((uc, i) => i !== index && uc === trimmedText)) {
+      setUseCases(prev => prev.map((uc, i) => i === index ? trimmedText : uc));
+    }
+    setEditingUseCaseIndex(null);
+    setEditingUseCaseText('');
+  };
+
+  const handleCancelUseCaseEdit = () => {
+    setEditingUseCaseIndex(null);
+    setEditingUseCaseText('');
+  };
+
+  const handleUseCaseEditKeyPress = (e: React.KeyboardEvent, index: number) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSaveUseCaseEdit(index);
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      handleCancelUseCaseEdit();
+    }
+  };
+
   return (
     <div className="py-6">
       <div className="max-w-7xl mx-auto ">
@@ -433,22 +539,70 @@ export default function ImageReferencesPage() {
                 {useCases.length > 0 && (
                   <div className="mb-3 flex flex-wrap gap-2">
                     {useCases.map((useCase, index) => (
-                      <span
-                        key={index}
-                        className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800"
-                      >
-                        {useCase}
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveUseCase(index)}
-                          className="ml-2 text-blue-600 hover:text-blue-800"
-                          disabled={uploading}
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        </button>
-                      </span>
+                      <div key={index} className="inline-flex items-center">
+                        {editingUseCaseIndex === index ? (
+                          <div className="flex items-start gap-1">
+                            <textarea
+                              value={editingUseCaseText}
+                              onChange={(e) => setEditingUseCaseText(e.target.value)}
+                              onKeyDown={(e) => handleUseCaseEditKeyPress(e, index)}
+                              onBlur={() => handleSaveUseCaseEdit(index)}
+                              className="px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black min-w-[200px] min-h-[60px] resize-none"
+                              autoFocus
+                              rows={2}
+                              disabled={uploading}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => handleSaveUseCaseEdit(index)}
+                              className="text-green-600 hover:text-green-800"
+                              title="Save"
+                              disabled={uploading}
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={handleCancelUseCaseEdit}
+                              className="text-red-600 hover:text-red-800"
+                              title="Cancel"
+                              disabled={uploading}
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="inline-flex items-center px-3 py-1  text-sm bg-blue-100 text-blue-800">
+                            {useCase}
+                            <button
+                              type="button"
+                              onClick={() => handleEditUseCase(index)}
+                              className="ml-2 text-blue-600 hover:text-blue-800"
+                              title="Edit"
+                              disabled={uploading}
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                              </svg>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveUseCase(index)}
+                              className="ml-1 text-blue-600 hover:text-blue-800"
+                              title="Remove"
+                              disabled={uploading}
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </span>
+                        )}
+                      </div>
                     ))}
                   </div>
                 )}
@@ -617,7 +771,7 @@ export default function ImageReferencesPage() {
       {/* Edit Modal */}
       {showEditModal && editingImage && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
+          <div className="bg-white rounded-lg max-w-xl w-full p-6">
             <h2 className="text-xl font-semibold mb-4 text-black">Edit Image Reference</h2>
 
             <EditImageForm

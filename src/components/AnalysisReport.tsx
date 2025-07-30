@@ -19,7 +19,7 @@ interface AnalysisItem {
 }
 
 interface AppReference {
-  id: string;
+  _id: string;
   name: string;
   iconUrl: string;
   description: string;
@@ -40,7 +40,7 @@ interface AnalysisReportProps {
   setShowModal: (show: boolean) => void;
 }
 
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '') || 'http://localhost:4000';
+const backendUrl = process.env.NEXT_PUBLIC_IMAGE_PATH_URL || 'http://localhost:4000';
 
 const PAGE_TITLES: Record<string, string> = {
   homepage: 'Homepage',
@@ -269,7 +269,7 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
                     <div className="report__item-images">
                       {item.relevantAppReferences.map((app) => (
                         <div
-                          key={app.id}
+                          key={app._id}
                           className="border border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
                           onClick={() => setSelectedAppReference(app)}
                         >

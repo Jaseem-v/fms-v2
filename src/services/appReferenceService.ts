@@ -1,5 +1,5 @@
 interface AppReference {
-  id: string;
+  _id: string;
   name: string;
   iconUrl: string;
   description: string;
@@ -92,7 +92,7 @@ class AppReferenceService {
     }
   }
 
-  async updateAppReference(id: string, updates: Partial<Omit<AppReference, 'id'>>): Promise<AppReference> {
+  async updateAppReference(id: string, updates: Partial<Omit<AppReference, '_id'>>): Promise<AppReference> {
     try {
       const response = await fetch(`${this.baseUrl}/app-references/${id}`, {
         method: 'PUT',

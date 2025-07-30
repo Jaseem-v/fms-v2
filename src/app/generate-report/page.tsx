@@ -8,6 +8,7 @@ import Header from '../../components/Header';
 import ReportLoading from '../../components/ReportLoading';
 import OverallSummary from '../../components/OverallSummary';
 import AnalysisReport from '../../components/AnalysisReport';
+import DownloadModal from '../../components/DownloadModal';
 
 function GenerateReportContent() {
   const searchParams = useSearchParams();
@@ -33,6 +34,10 @@ function GenerateReportContent() {
     setShowModal,
     analysisInProgress,
     shopifyValidationError,
+    userInfo,
+    handleUserInfoChange,
+    handleUserInfoSubmit,
+    downloadLoading,
   } = useAnalysis();
 
   // Progress calculation function similar to main page
@@ -337,6 +342,16 @@ function GenerateReportContent() {
             </div>
           </div>
         )}
+
+        {/* Download Modal */}
+        <DownloadModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          userInfo={userInfo}
+          handleUserInfoChange={handleUserInfoChange}
+          handleUserInfoSubmit={handleUserInfoSubmit}
+          downloadLoading={downloadLoading}
+        />
       </div>
     </div>
   );

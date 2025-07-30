@@ -215,12 +215,7 @@ export default function Home() {
 
       <div className="relative z-10 container mx-auto px-4 py-12 max-w-6xl min-h-screen flex flex-col justify-center">
 
-        {isCheckingAuth ? (
-          <div className="flex items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <span className="ml-3 text-gray-600">Checking authentication...</span>
-          </div>
-        ) : (
+        {
           !loading && <HeroArea
             url={url}
             setUrl={handleUrlChange}
@@ -228,18 +223,18 @@ export default function Home() {
             validatingShopify={validatingShopify}
             onSubmit={handleFormSubmit}
           />
-        )}
+        }
 
         {loading &&
-        
-        <div className='mt-[-100px]'>
-          <DotLottieReact
-          src="https://lottie.host/a1b1eddc-5bf6-4259-bfe0-17b695d57e6f/X7bQ4xuwAv.lottie"
-          loop
-          autoplay={true}
-          />
+
+          <div className='mt-[-100px]'>
+            <DotLottieReact
+              src="https://lottie.host/a1b1eddc-5bf6-4259-bfe0-17b695d57e6f/X7bQ4xuwAv.lottie"
+              loop
+              autoplay={true}
+            />
           </div>
-          }
+        }
 
         {loading && <ConversionQuotes />}
 

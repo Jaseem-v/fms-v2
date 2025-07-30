@@ -12,7 +12,8 @@ import {
   CogIcon,
   UserGroupIcon,
   DocumentTextIcon,
-  BuildingOfficeIcon
+  BuildingOfficeIcon,
+  ChatBubbleLeftRightIcon
 } from '@heroicons/react/24/outline';
 
 interface AdminSidebarProps {
@@ -22,13 +23,14 @@ interface AdminSidebarProps {
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: HomeIcon },
-          { name: 'Image Reference', href: '/admin/image-references', icon: PhotoIcon },
+  { name: 'Image Reference', href: '/admin/image-references', icon: PhotoIcon },
   { name: 'App Reference', href: '/admin/app-reference', icon: PhotoIcon },
   { name: 'Industry Management', href: '/admin/industries', icon: BuildingOfficeIcon },
+  { name: 'Dynamic Prompts', href: '/admin/prompts', icon: ChatBubbleLeftRightIcon },
   { name: 'Analytics', href: '/#', icon: ChartBarIcon },
   { name: 'Users', href: '/#', icon: UserGroupIcon },
   { name: 'Reports', href: '/#', icon: DocumentTextIcon },
-  { name: 'Settings', href: '/#', icon: CogIcon },
+  { name: 'Settings', href: '/admin/settings', icon: CogIcon },
 ];
 
 export default function AdminSidebar({ open, setOpen }: AdminSidebarProps) {
