@@ -617,7 +617,7 @@ export function useAnalysis() {
                   name: localStorage.getItem('customerName') || '',
                   email: localStorage.getItem('customerEmail') || '',
                 },
-                paymentId: localStorage.getItem('paymentId') || undefined,
+                orderId: new URLSearchParams(window.location.search).get('order_id') || undefined,
               });
 
               if (reportResult.success && reportResult.reportUrl) {

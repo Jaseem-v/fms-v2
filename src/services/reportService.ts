@@ -12,7 +12,7 @@ export interface CreateReportRequest {
     email: string;
     mobile?: string;
   };
-  paymentId?: string;
+  orderId?: string;
 }
 
 export interface UpdateReportRequest {
