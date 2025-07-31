@@ -67,7 +67,7 @@ export default function Navbar() {
           </div> */}
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          {/* <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-green-600 hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-green-500"
@@ -105,7 +105,7 @@ export default function Navbar() {
                 </svg>
               )}
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
 

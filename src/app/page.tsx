@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Header from '../components/Header';
 import UrlForm from '../components/ui/UrlForm';
 import StatusDisplay from '../components/StatusDisplay';
 import ScreenshotDisplay from '../components/ScreenshotDisplay';
@@ -43,7 +42,7 @@ interface Report {
 
 export default function Home() {
   const [selectedScreenshot, setSelectedScreenshot] = useState<{ pageType: string, url: string } | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(true);
   const [showFormModal, setShowFormModal] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
@@ -69,6 +68,9 @@ export default function Home() {
     validatingShopify,
     shopifyValidationError,
     downloadLoading,
+    currentReportId,
+    reportUrl,
+    autoSaveEnabled,
     handleSubmit,
     handleUserInfoSubmit,
     handleUserInfoChange,
@@ -79,21 +81,21 @@ export default function Home() {
   } = useAnalysis();
 
   // Check authentication status on component mount
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const result = await authService.verifyToken();
-        setIsAuthenticated(result.valid);
-      } catch (error) {
-        console.error('Auth check error:', error);
-        setIsAuthenticated(false);
-      } finally {
-        setIsCheckingAuth(false);
-      }
-    };
+  // useEffect(() => {
+  //   const checkAuth = async () => {
+  //     try {
+  //       const result = await authService.verifyToken();
+  //       setIsAuthenticated(result.valid);
+  //     } catch (error) {
+  //       console.error('Auth check error:', error);
+  //       setIsAuthenticated(false);
+  //     } finally {
+  //       setIsCheckingAuth(false);
+  //     }
+  //   };
 
-    checkAuth();
-  }, []);
+  //   checkAuth();
+  // }, []);
 
   // Calculate progress percentage based on status
   const calculateProgress = () => {
@@ -207,6 +209,59 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-green-50 relative overflow-hidden">
+      {/* Schema Markup */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": "Shopify CRO Audit",
+            "description": "Fix My Store offers a Shopify CRO Audit that doesn't just list issues — we show exactly how to fix them with examples and actionable insights to boost conversions.",
+            "brand": {
+              "@type": "Organization",
+              "name": "Fix My Store"
+            },
+            "sku": "FMS-CRO-001",
+            "url": "https://fixmystore.com/",
+            "offers": {
+              "@type": "Offer",
+              "url": "https://fixmystore.com/",
+              "priceCurrency": "USD",
+              "price": "49.00",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "seller": {
+                "@type": "Organization",
+                "name": "Conversion AB"
+              }
+            },
+            "review": {
+              "@type": "Review",
+              "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": "5",
+                "bestRating": "5"
+              },
+              "author": {
+                "@type": "Person",
+                "name": "Verified Shopify Merchant"
+              }
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "reviewCount": "37"
+            },
+            "sameAs": [
+              "https://x.com/fixyourstore?s=21",
+              "https://www.instagram.com/fixmystore_com",
+              "https://www.youtube.com/@FixMyStore"
+            ]
+          })
+        }}
+      />
+      
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=&quot;25&quot; height=&quot;25&quot; viewBox=&quot;0 0 25 25&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cpath d=&quot;M1 1h1v1H1V1zm0 23h1v1H1v-1zm23 0h1v1h-1v-1zm0-23h1v1h-1V1z&quot; stroke=&quot;%23e5e7eb&quot; stroke-width=&quot;0.5&quot;/%3E%3C/svg%3E')] opacity-30"></div>
 
@@ -243,6 +298,7 @@ export default function Home() {
           showProgress={true}
           progress={calculateProgress()}
         />}
+
 
 
 

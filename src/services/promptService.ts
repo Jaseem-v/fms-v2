@@ -1,5 +1,3 @@
-import { config } from '@/config/config';
-
 export interface Prompt {
   id: string;
   name: string;
@@ -134,7 +132,11 @@ export interface PromptStatistics {
 }
 
 class PromptService {
-  private baseUrl = `${config.apiUrl}/api/prompts`;
+  private baseUrl: string;
+
+  constructor() {
+    this.baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000/api';
+  }
 
   private async request<T>(
     endpoint: string,
@@ -142,7 +144,7 @@ class PromptService {
   ): Promise<T> {
     const token = localStorage.getItem('authToken');
     
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+    const response = await fetch(`${this.baseUrl}/prompts${endpoint}`, {
       ...options,
       headers: {
         'Content-Type': 'application/json',

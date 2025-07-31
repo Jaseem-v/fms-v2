@@ -19,13 +19,7 @@ export default function ReportLoading({
   const isProductComplete = report?.product && report?.product?.length > 0;
   const isCartComplete = report?.cart && report?.cart?.length > 0;
 
-
-
-console.log("report", report);
-console.log("isHomepageComplete", isHomepageComplete);
-console.log("isCollectionComplete", isCollectionComplete);
-console.log("isProductComplete", isProductComplete);
-console.log("isCartComplete", isCartComplete);
+  
 
   return (
     <div className="report-loading">
@@ -57,24 +51,7 @@ console.log("isCartComplete", isCartComplete);
           )}
 
           {/* Animated Steps */}
-          <div className="report-loading__steps">
-            <div className={`report-loading__step ${isHomepageComplete ? 'report-loading__step--complete' : ''}`}>
-              <span className={`report-loading__step-icon `}>🏠</span>
-              <span className="report-loading__step-text">Home page</span>
-            </div>
-            <div className={`report-loading__step ${isCollectionComplete ? 'report-loading__step--complete' : ''}`}>
-              <span className={`report-loading__step-icon `}>📦</span>
-              <span className="report-loading__step-text">Collection page</span>
-            </div>
-            <div className={`report-loading__step ${isProductComplete ? 'report-loading__step--complete' : ''}`}>
-              <span className={`report-loading__step-icon `}>🛍️</span>
-              <span className="report-loading__step-text">Product page</span>
-            </div>
-            <div className={`report-loading__step ${isCartComplete ? 'report-loading__step--complete' : ''}`}>
-              <span className={`report-loading__step-icon`}>🛒</span>
-              <span className="report-loading__step-text">Cart page</span>
-            </div>
-          </div>
+     
 
           {/* Loading Dots */}
           {/* <div className="report-loading__dots">

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 interface AnalysisItem {
   problem: string;
   solution: string;
@@ -9,11 +11,12 @@ interface Report {
 
 interface OverallSummaryProps {
   report: Report | null;
-  analysisInProgress: {[key: string]: boolean};
+  analysisInProgress: { [key: string]: boolean };
   setShowModal: (show: boolean) => void;
+  reportUrl?: string;
 }
 
-export default function OverallSummary({ report, analysisInProgress, setShowModal }: OverallSummaryProps) {
+export default function OverallSummary({ report, analysisInProgress, setShowModal, reportUrl }: OverallSummaryProps) {
   if (!report || Object.keys(report).length === 0) return null;
 
   // Calculate total problems
@@ -40,10 +43,19 @@ export default function OverallSummary({ report, analysisInProgress, setShowModa
     collection: report.collection ? report.collection.length : 0,
   };
 
+  const isHomepageComplete = report?.homepage && report?.homepage?.length > 0;
+  const isCollectionComplete = report?.collection && report?.collection?.length > 0;
+  const isProductComplete = report?.product && report?.product?.length > 0;
+  const isCartComplete = report?.cart && report?.cart?.length > 0;
+
+
+  const reportCompleted = isHomepageComplete && isCollectionComplete && isProductComplete && isCartComplete;
+
+
   return (
     <div className="overall-summary">
       {/* Performance Score Section */}
-      <div className="performance-score-section">
+      <div className="performance-score-section flex-1">
         <div className="performance-gauge">
           <div className="gauge-circle">
             <div className="gauge-progress" style={{ background: `conic-gradient(${getScoreColor(performanceScore)} ${performanceScore}%, transparent ${performanceScore}% 360deg)` } as React.CSSProperties}></div>
@@ -56,55 +68,36 @@ export default function OverallSummary({ report, analysisInProgress, setShowModa
         </div>
       </div>
 
-      {/* Problems Summary Section */}
-      <div className="problems-summary-section">
-        <div className="problems-card">
-          <div className="problems-header">
-            <div className="warning-icon">⚠️</div>
-            <div className="problems-count">{totalProblems} Problems</div>
+      <div className="overall-summary__left flex-1 flex flex-col gap-4">
+
+        <div className="report-loading__steps grid grid-cols-2 gap-4">
+          <div className={`report-loading__step ${isHomepageComplete ? 'report-loading__step--complete' : ''}`}>
+            <span className={`report-loading__step-icon `}>🏠</span>
+            <span className="report-loading__step-text">Home page ({problemsByPage.homepage} )</span>
+
           </div>
-          <div className="problems-breakdown">
-            <div className="problems-column">
-              <div className="problem-item">
-                <div className="page-icon">🏠</div>
-                <div className="page-info">
-                  <span className="page-name">Home Page</span>
-                  <span className="page-count">: {problemsByPage.homepage}</span>
-                </div>
-              </div>
-              <div className="problem-item">
-                <div className="page-icon">🛒</div>
-                <div className="page-info">
-                  <span className="page-name">Cart Page</span>
-                  <span className="page-count">: {problemsByPage.cart}</span>
-                </div>
-              </div>
-            </div>
-            <div className="problems-column right">
-              <div className="problem-item">
-                <div className="page-icon">🛍️</div>
-                <div className="page-info">
-                  <span className="page-name">Product Page</span>
-                  <span className="page-count">: {problemsByPage.product}</span>
-                </div>
-              </div>
-              <div className="problem-item">
-                <div className="page-icon">📦</div>
-                <div className="page-info">
-                  <span className="page-name">Collection Page</span>
-                  <span className="page-count">: {problemsByPage.collection}</span>
-                </div>
-              </div>
-            </div>
+          <div className={`report-loading__step ${isCollectionComplete ? 'report-loading__step--complete' : ''}`}>
+            <span className={`report-loading__step-icon `}>📦</span>
+            <span className="report-loading__step-text">Collection page ({problemsByPage.collection} )</span>
+          </div>
+          <div className={`report-loading__step ${isProductComplete ? 'report-loading__step--complete' : ''}`}>
+            <span className={`report-loading__step-icon `}>🛍️</span>
+            <span className="report-loading__step-text">Product page ({problemsByPage.product} )</span>
+          </div>
+          <div className={`report-loading__step ${isCartComplete ? 'report-loading__step--complete' : ''}`}>
+            <span className={`report-loading__step-icon`}>🛒</span>
+            <span className="report-loading__step-text">Cart page ({problemsByPage.cart} )</span>
           </div>
         </div>
-      </div>
-
-      {/* Download Report Button */}
-      <div className="download-section">
-        <button className="download-button" onClick={() => setShowModal(true)}>
-          Download Report
-        </button>
+        {/* Download Report Button */}
+        <div className="download-section flex justify-center gap-4">
+          <Link href={reportUrl || '#'} className="download-button " target="_blank">
+            View Report
+          </Link>
+          <button className={" inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-black border-2 border-gray-300 whitespace-nowrap wrap-normal" + (reportCompleted ? '' : 'disabled')} onClick={() => setShowModal(true)} disabled={!reportCompleted}>
+            Download Report
+          </button>
+        </div>
       </div>
     </div>
   );

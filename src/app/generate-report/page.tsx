@@ -4,7 +4,6 @@ import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import paymentService from '../../services/paymentService';
 import { useAnalysis } from '../../hooks/useAnalysis';
-import Header from '../../components/Header';
 import ReportLoading from '../../components/ReportLoading';
 import OverallSummary from '../../components/OverallSummary';
 import AnalysisReport from '../../components/AnalysisReport';
@@ -38,6 +37,9 @@ function GenerateReportContent() {
     handleUserInfoChange,
     handleUserInfoSubmit,
     downloadLoading,
+    currentReportId,
+    reportUrl,
+    autoSaveEnabled,
   } = useAnalysis();
 
   // Progress calculation function similar to main page
@@ -189,24 +191,13 @@ function GenerateReportContent() {
     router.push('/');
   };
 
-  // If analysis is complete, redirect to report page
-  useEffect(() => {
-    if (report && Object.keys(report).length > 0) {
-      // Get the report URL from localStorage
-      const reportUrl = localStorage.getItem('reportUrl');
-      if (reportUrl) {
-        // Extract slug from report URL
-        const slug = reportUrl.split('/report/')[1];
-        if (slug) {
-          router.push(`/report/${slug}`);
-        }
-      }
-    }
-  }, [report, router]);
+  console.log('reportUrl', reportUrl);
+
+
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* <Header /> */}
+
 
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="text-center mb-8">
@@ -287,9 +278,15 @@ function GenerateReportContent() {
           </div>
         )}
 
+        {/* Auto-save Report URL Display */}
+
+
         {/* Report Results */}
         {status === 'generating' && report && Object.keys(report).length > 0 && (
           <div className="space-y-8">
+            {/* Report URL Display - More prominent when complete */}
+           
+
             {shopifyValidationError && (
               <div className="bg-orange-50 border border-orange-200 rounded-lg p-4" role="alert">
                 <div className="flex items-center gap-2 text-orange-800">
@@ -316,6 +313,7 @@ function GenerateReportContent() {
                 report={report}
                 analysisInProgress={analysisInProgress}
                 setShowModal={setShowModal}
+                reportUrl={reportUrl || undefined}
               />
             )}
 

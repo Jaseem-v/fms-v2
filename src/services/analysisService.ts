@@ -58,11 +58,11 @@ export class AnalysisService {
   }
 
   // Sequential analysis methods
-  async startSequentialAnalysis(domain: string): Promise<{ jobId: string }> {
+  async startSequentialAnalysis(domain: string, orderId?: string): Promise<{ jobId: string }> {
     const response = await fetch(`${this.baseUrl}/analyze/sequential`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ domain })
+      body: JSON.stringify({ domain, orderId })
     });
     return response.json();
   }

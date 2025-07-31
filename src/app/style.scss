@@ -422,7 +422,7 @@
 // Overall Summary Component Styles
 .overall-summary {
     display: flex;
-    flex-direction: column;
+    // flex-direction: column;
     align-items: center;
     gap: 40px;
     //   max-width: 600px;
@@ -652,9 +652,15 @@
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 12px rgba(31, 31, 31, 0.2);
-    min-width: 200px;
+    // min-width: 200px;
     position: relative;
     overflow: hidden;
+
+    &.disabled {
+        background: #101314;
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
 
     &::before {
         content: '';
@@ -961,12 +967,12 @@
         }
     }
 
-    &__steps {
-        display: flex;
-        gap: 20px;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
+    // &__steps {
+    //     display: flex;
+    //     gap: 20px;
+    //     flex-wrap: wrap;
+    //     justify-content: center;
+    // }
 
     &__step {
         display: flex;
@@ -993,8 +999,8 @@
         }
 
         &--complete {
-            background: #4ADE80e2;
-            color: #FFF;
+            // background: #4ADE80e2;
+            // color: #FFF;
             .report-loading__step-text{
                 // color: #FFF;
             }

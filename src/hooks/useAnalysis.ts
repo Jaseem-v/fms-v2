@@ -107,6 +107,11 @@ export function useAnalysis() {
     mobile: '',
   });
 
+  // Auto-save state
+  const [currentReportId, setCurrentReportId] = useState<string | null>(null);
+  const [reportUrl, setReportUrl] = useState<string | null>(null);
+  const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
+
   // Shopify validation state
   const [validatingShopify, setValidatingShopify] = useState(false);
   const [shopifyValidationError, setShopifyValidationError] = useState<string | null>(null);
@@ -137,6 +142,11 @@ export function useAnalysis() {
   useEffect(() => {
     activeTabRef.current = activeTab;
   }, [activeTab]);
+
+  // Debug reportUrl changes
+  useEffect(() => {
+    console.log('[DEBUG] reportUrl changed:', reportUrl);
+  }, [reportUrl]);
 
   const statusMessages: Record<string, StatusMessage> = {
     // Sequential step-by-step process messages
@@ -195,6 +205,115 @@ export function useAnalysis() {
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }, []);
+
+  // Auto-save functions
+  const createInitialReport = useCallback(async (websiteUrl: string) => {
+    if (!autoSaveEnabled) return null;
+
+    try {
+      const result = await reportService.createReport({
+        websiteUrl,
+        analysisData: {},
+        screenshots: {}
+      });
+
+      if (result.success && result.report) {
+        setCurrentReportId(result.report.id);
+        
+        // Set report URL - use backend response or construct manually
+        let reportUrl = result.reportUrl;
+        if (!reportUrl && result.report.slug) {
+          // Fallback: construct URL manually
+          const frontendUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || window.location.origin;
+          reportUrl = `${frontendUrl}/report/${result.report.slug}`;
+        }
+        
+        setReportUrl(reportUrl || null);
+        console.log('[AUTO-SAVE] Created initial report:', result.report.id, 'URL:', reportUrl);
+        return result.report.id;
+      }
+    } catch (error) {
+      console.error('[AUTO-SAVE] Error creating initial report:', error);
+    }
+    return null;
+  }, [autoSaveEnabled]);
+
+  const updateReportProgress = useCallback(async (currentStep: number, totalSteps: number, currentPage?: string) => {
+    if (!autoSaveEnabled || !currentReportId) return;
+
+    try {
+      const completedPages = Object.keys(reportRef.current || {});
+      
+      await reportService.updateReportProgress(currentReportId, {
+        currentStep,
+        totalSteps,
+        currentPage,
+        completedPages
+      });
+      
+      console.log('[AUTO-SAVE] Updated progress:', { currentStep, totalSteps, currentPage });
+    } catch (error) {
+      console.error('[AUTO-SAVE] Error updating progress:', error);
+    }
+  }, [autoSaveEnabled, currentReportId]);
+
+  const updateReportAnalysisData = useCallback(async (newReportData: Report) => {
+    if (!autoSaveEnabled || !currentReportId) return;
+
+    try {
+      await reportService.updateReportAnalysisData(currentReportId, newReportData);
+      console.log('[AUTO-SAVE] Updated analysis data');
+    } catch (error) {
+      console.error('[AUTO-SAVE] Error updating analysis data:', error);
+    }
+  }, [autoSaveEnabled, currentReportId]);
+
+  const updateReportScreenshots = useCallback(async (newScreenshots: { [key: string]: string }) => {
+    if (!autoSaveEnabled || !currentReportId) return;
+
+    try {
+      const screenshotsData = Object.entries(newScreenshots).reduce((acc, [pageType, url]) => {
+        acc[pageType] = {
+          filename: `${pageType}-screenshot.png`,
+          url
+        };
+        return acc;
+      }, {} as { [key: string]: { filename: string; url: string } });
+
+      await reportService.updateReportScreenshots(currentReportId, screenshotsData);
+      console.log('[AUTO-SAVE] Updated screenshots');
+    } catch (error) {
+      console.error('[AUTO-SAVE] Error updating screenshots:', error);
+    }
+  }, [autoSaveEnabled, currentReportId]);
+
+  const completeReport = useCallback(async () => {
+    if (!autoSaveEnabled || !currentReportId) return;
+
+    try {
+      const result = await reportService.completeReport(currentReportId);
+      console.log('[AUTO-SAVE] Marked report as completed');
+      
+      // Update report URL if not already set
+      if (!reportUrl && result.reportUrl) {
+        setReportUrl(result.reportUrl);
+        console.log('[AUTO-SAVE] Updated report URL:', result.reportUrl);
+      }
+    } catch (error) {
+      console.error('[AUTO-SAVE] Error completing report:', error);
+    }
+  }, [autoSaveEnabled, currentReportId, reportUrl]);
+
+  const failReport = useCallback(async () => {
+    if (!autoSaveEnabled || !currentReportId) return;
+
+    try {
+      await reportService.failReport(currentReportId);
+      console.log('[AUTO-SAVE] Marked report as failed');
+    } catch (error) {
+      console.error('[AUTO-SAVE] Error failing report:', error);
+    }
+  }, [autoSaveEnabled, currentReportId]);
 
   const resetState = useCallback(() => {
     setLoading(true);
@@ -365,8 +484,16 @@ export function useAnalysis() {
 
       console.log('[SEQUENTIAL] Starting sequential analysis for domain:', domain);
 
+      // Create initial report for auto-saving
+      const reportId = await createInitialReport(normalizedUrl);
+      if (reportId) {
+        console.log('[AUTO-SAVE] Initial report created with ID:', reportId);
+      }
+
       // Start sequential analysis
-      const result = await analysisService.startSequentialAnalysis(domain);
+      const orderId = new URLSearchParams(window.location.search).get('order_id');
+      console.log('[SEQUENTIAL] Starting analysis with orderId:', orderId);
+      const result = await analysisService.startSequentialAnalysis(domain, orderId || undefined);
       const jobId = result.jobId;
 
       console.log('[SEQUENTIAL] Started with jobId:', jobId);
@@ -380,6 +507,8 @@ export function useAnalysis() {
           if (status.error) {
             console.error('[SEQUENTIAL] Analysis error:', status.error);
             setError(`Analysis failed: ${status.error}`);
+            // Auto-save failed status
+            await failReport();
             clearInterval(pollInterval);
             return;
           }
@@ -388,6 +517,12 @@ export function useAnalysis() {
           if (status.status) {
             setStatus(status.status);
 
+            // Auto-save progress based on status
+            const currentStatus = statusMessages[status.status];
+            if (currentStatus) {
+              updateReportProgress(currentStatus.step, 5, status.status.includes('-') ? status.status.split('-')[1] : undefined);
+            }
+
             // Handle screenshot URL updates
             if (status.status.startsWith('screenshot-url:')) {
               const parts = status.status.split(':');
@@ -395,10 +530,15 @@ export function useAnalysis() {
                 const pageType = parts[1];
                 const screenshotUrl = parts.slice(2).join(':'); // Rejoin the URL parts
                 console.log('[SCREENSHOT] Received URL for', pageType, ':', screenshotUrl);
-                setScreenshotUrls(prev => ({
-                  ...prev,
-                  [pageType]: screenshotUrl
-                }));
+                setScreenshotUrls(prev => {
+                  const newScreenshots = {
+                    ...prev,
+                    [pageType]: screenshotUrl
+                  };
+                  // Auto-save screenshots
+                  updateReportScreenshots(newScreenshots);
+                  return newScreenshots;
+                });
                 setScreenshotsInProgress(prev => ({
                   ...prev,
                   [pageType]: false
@@ -457,7 +597,17 @@ export function useAnalysis() {
             console.log('[COMPLETE] Final report with screenshots:', finalReport);
             setReport(finalReport);
 
-            // Create report in database
+            // Handle report URL from status response
+            if (status.reportUrl) {
+              console.log('[COMPLETE] Report URL from status:', status.reportUrl);
+              setReportUrl(status.reportUrl);
+            }
+
+            // Auto-save final analysis data
+            await updateReportAnalysisData(finalReport);
+            await completeReport();
+
+            // Create report in database (legacy - keeping for backward compatibility)
             try {
               const reportResult = await reportService.createReport({
                 websiteUrl: urlToAnalyze,
@@ -472,8 +622,6 @@ export function useAnalysis() {
 
               if (reportResult.success && reportResult.reportUrl) {
                 console.log('[REPORT] Report created successfully:', reportResult.reportUrl);
-                // Store the report URL for display
-                localStorage.setItem('reportUrl', reportResult.reportUrl);
               } else {
                 console.error('[REPORT] Failed to create report:', reportResult.message);
               }
@@ -553,6 +701,12 @@ export function useAnalysis() {
               return newReport;
             });
 
+            // Handle report URL from status response (for incremental updates)
+            if (status.reportUrl && !reportUrl) {
+              console.log('[SEQUENTIAL] Report URL from status (incremental):', status.reportUrl);
+              setReportUrl(status.reportUrl);
+            }
+
             // Set active tab only if no tab is currently selected by user
             if (!activeTabRef.current || activeTabRef.current === '') {
               const pageTypes = Object.keys(status.analysis);
@@ -612,6 +766,9 @@ export function useAnalysis() {
     validatingShopify,
     shopifyValidationError,
     downloadLoading,
+    currentReportId,
+    reportUrl,
+    autoSaveEnabled,
 
     // Functions
     handleSubmit,

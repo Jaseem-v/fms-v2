@@ -49,6 +49,8 @@ const PAGE_TITLES: Record<string, string> = {
   cart: 'Cart Page',
 };
 
+
+
 export default function AnalysisReport({ report, activeTab, setActiveTab, setShowModal }: AnalysisReportProps) {
   const [selectedImage, setSelectedImage] = useState<ImageReference | null>(null);
   const [selectedAppReference, setSelectedAppReference] = useState<AppReference | null>(null);
@@ -57,12 +59,10 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
   // Get available page types with data
   const availablePages = report ? Object.keys(report).filter((key) => report[key] && report[key].length > 0) : [];
 
-  // Debug logging
-  console.log('[AnalysisReport] Received report:', report);
-  console.log('[AnalysisReport] Active tab:', activeTab);
-  console.log('[AnalysisReport] Available pages:', availablePages);
-  console.log('[AnalysisReport] Backend URL:', backendUrl);
+ 
 
+
+  
   // If no data at all, show message
   if (!report || availablePages.length === 0) {
     return (
@@ -196,8 +196,7 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
 
       <div className="report__list">
         {analysis.map((item, index) => {
-          console.log(`[AnalysisReport] Item ${index}:`, item);
-          console.log(`[AnalysisReport] Item ${index} screenshot URL:`, item.screenshotUrl);
+      
           return (
             <div key={index} className="report__item">
 
