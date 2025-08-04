@@ -349,6 +349,7 @@ function GenerateReportContent() {
           handleUserInfoChange={handleUserInfoChange}
           handleUserInfoSubmit={handleUserInfoSubmit}
           downloadLoading={downloadLoading}
+          reportUrl={reportUrl}
         />
       </div>
     </div>

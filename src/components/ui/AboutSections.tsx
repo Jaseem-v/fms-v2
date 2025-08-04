@@ -163,7 +163,7 @@ const AboutSections: React.FC = () => {
       {/* Who we are? Section */}
       <section className="py-16 pb-0">
         <div className="container mx-auto px-4 max-w-6xl">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <h2 className="section-header__title">
               Who we are?
             </h2>
@@ -172,15 +172,15 @@ const AboutSections: React.FC = () => {
           <div className="flex flex-col lg:flex-row items-center gap-8">
             <div className="flex-1 text-center lg:text-left">
               <div className="flex gap-4 items-center about__company">
-                <div className="flex md:hidden min-w-16 w-16 h-16 bg-orange-500 rounded-full  items-center justify-center text-white text-xl font-bold overflow-hidden">
+                <div className=" min-w-16 w-16 h-16 bg-orange-500 rounded-full  items-center justify-center text-white text-xl font-bold overflow-hidden">
                   <img src="/conversionAb.png" alt="AZ" />
                 </div>
                 <p className="about__description">
                   We are the team behind ConversionAB where we help Shopify stores improve sales by increasing conversion rate and improving offers.
                 </p>
               </div>
-              <div className="flex gap-4 items-center mt-6 about__company">
-                <div className="flex md:hidden min-w-16 w-16 h-16 bg-blue-500 rounded-full  items-center justify-center text-white text-xl font-bold overflow-hidden">
+              <div className="flex gap-4 items-center mt-6 about__company" style={{ marginTop: '20px' }}>
+                <div className=" min-w-16 w-16 h-16 bg-blue-500 rounded-full  items-center justify-center text-white text-xl font-bold overflow-hidden">
                   <img src="/final-apps.png" alt="AZ" />
                 </div>
                 <p className="about__description">
@@ -191,24 +191,34 @@ const AboutSections: React.FC = () => {
 
             </div>
 
-            <div className=" flex-row gap-4 lg:flex-col hidden md:flex">
+            {/* <div className=" flex-row gap-4 lg:flex-col hidden md:flex">
               <div className="w-16 h-16 bg-orange-500 rounded-full overflow-hidden flex items-center justify-center text-white text-xl font-bold">
                 <img src="/conversionAb.png" alt="AZ" />
               </div>
               <div className="w-16 h-16 bg-blue-500 rounded-full overflow-hidden flex items-center justify-center text-white text-xl font-bold" >
                 <img src="/final-apps.png" alt="AZ" />
               </div>
-            </div>
+            </div> */}
           </div>
 
-          <div className="about__stats">
-            <div className="about__stats-item">
-              <div className="about__stats-title">30K+</div>
-              <div className="about__stats-description">stores used</div>
-            </div>
-            <div className="about__stats-item">
-              <div className="about__stats-title">20+</div>
-              <div className="about__stats-description">stores optimized</div>
+        </div>
+        <div className='about__stats-container'>
+
+          <div className='container mx-auto  max-w-6xl'>
+            <div className="about__stats ">
+              <div className="about__stats-item">
+                <div className="about__stats-title">30K+</div>
+                <div className="about__stats-description">stores used</div>
+              </div>
+              <div className="about__stats-item">
+                <div className="about__stats-title">20+</div>
+                <div className="about__stats-description">stores optimized</div>
+              </div>
+              <div className="about__stats-item">
+                <div className="about__stats-title">4+</div>
+                <div className="about__stats-description">Years  In
+                  Shopify</div>
+              </div>
             </div>
           </div>
         </div>

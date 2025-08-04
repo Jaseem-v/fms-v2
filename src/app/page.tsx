@@ -19,6 +19,9 @@ import WhatYouGetSection from '../components/ui/WhatYouGetSection';
 import AboutSections from '../components/ui/AboutSections';
 import FAQSection from '../components/ui/FAQSection';
 import ConversionQuotes from '../components/ConversionQuotes';
+import Calandly from '@/components/Calandly';
+
+
 
 interface UserInfo {
   name: string;
@@ -210,6 +213,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-green-50 relative overflow-hidden">
+
       {/* Schema Markup */}
       <script
         type="application/ld+json"
@@ -262,13 +266,13 @@ export default function Home() {
           })
         }}
       />
-      
+
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=&quot;25&quot; height=&quot;25&quot; viewBox=&quot;0 0 25 25&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cpath d=&quot;M1 1h1v1H1V1zm0 23h1v1H1v-1zm23 0h1v1h-1v-1zm0-23h1v1h-1V1z&quot; stroke=&quot;%23e5e7eb&quot; stroke-width=&quot;0.5&quot;/%3E%3C/svg%3E')] opacity-30"></div>
 
-      
 
-      <div className="relative z-10 container mx-auto px-4 py-12 max-w-6xl min-h-screen flex flex-col justify-center  main-contaier">
+
+      <div className="relative z-10  px-4 py-12 min-h-screen flex flex-col justify-center  main-contaier">
 
         {
           !loading && <HeroArea
@@ -308,6 +312,10 @@ export default function Home() {
             <AboutSections />
             <PricingSection />
             <FAQSection />
+            <div className='mt-15'>
+              <Calandly />
+
+            </div>
           </>
         )}
 
@@ -366,6 +374,7 @@ export default function Home() {
         handleUserInfoChange={handleUserInfoChange}
         handleUserInfoSubmit={handleUserInfoSubmit}
         downloadLoading={downloadLoading}
+        reportUrl={reportUrl}
       />
 
       <ScreenshotModal

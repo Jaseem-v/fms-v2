@@ -13,18 +13,10 @@ interface DownloadModalProps {
   handleUserInfoChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleUserInfoSubmit: (e: React.FormEvent) => void;
   downloadLoading: boolean;
+  reportUrl: string | null;
 }
 
-export default function DownloadModal({ showModal, setShowModal, userInfo, handleUserInfoChange, handleUserInfoSubmit, downloadLoading }: DownloadModalProps) {
-  const [reportUrl, setReportUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Get the report URL from localStorage
-    const storedReportUrl = localStorage.getItem('reportUrl');
-    if (storedReportUrl) {
-      setReportUrl(storedReportUrl);
-    }
-  }, []);
+export default function DownloadModal({ showModal, setShowModal, userInfo, handleUserInfoChange, handleUserInfoSubmit, downloadLoading, reportUrl }: DownloadModalProps) {
 
   if (!showModal) return null;
 
