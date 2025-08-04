@@ -179,7 +179,7 @@ const AboutSections: React.FC = () => {
               </p>
             </div>
 
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-row gap-4 lg:flex-col">
               <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center text-white text-xl font-bold">
                 <img src="/conversionAb.png" alt="AZ" />
               </div>

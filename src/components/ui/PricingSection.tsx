@@ -75,7 +75,7 @@ const PricingSection: React.FC = () => {
               <div className="px-8 pb-8">
                 <button
                   onClick={handlePurchase}
-                  className="w-full bg-gray-800 hover:bg-gray-900 text-white font-semibold py-4 px-6 rounded-xl transition-colors duration-200 transform hover:scale-105"
+                  className="btn"
                 >
                   Purchase Plan
                 </button>
