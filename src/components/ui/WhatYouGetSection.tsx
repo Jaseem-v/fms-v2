@@ -9,10 +9,10 @@ const WhatYouGetSection: React.FC = () => {
   };
 
   return (
-    <section className="py-16 bg-green-50">
-      <div className="container mx-auto px-4 max-w-6xl">
+    <section className="py-16 bg-green-50 pb-0">
+      <div className="container mx-auto max-w-6xl">
         {/* Main Title */}
-        <div className="text-center mb-16">
+        <div className="text-center lg:mb-16 mb-8">
           <h2 className="section-header__title">
             What do you get for $49?
           </h2>
@@ -78,7 +78,7 @@ const WhatYouGetSection: React.FC = () => {
           <div className="text-center">
             <button
               onClick={handleSeeSample}
-              className="btn"
+              className="link-btn"
             >
               See Sample Report
             </button>
@@ -98,9 +98,10 @@ const WhatYouGetSection: React.FC = () => {
                 <span> (7 left)</span>
               </p>
             </div>
-            <div className="bg-white rounded-lg h-64 flex items-center justify-center w-full">
-              <span className="text-gray-500 font-medium">GIF</span>
+            <div className="what-get__img mt-12">
+              <img src="/screenshots/pdf-cro.gif" alt="screenshot" />
             </div>
+            {/* pdf-cro.gif */}
           </div>
         </div>
 

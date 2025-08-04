@@ -266,8 +266,7 @@ export default function Home() {
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=&quot;25&quot; height=&quot;25&quot; viewBox=&quot;0 0 25 25&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cpath d=&quot;M1 1h1v1H1V1zm0 23h1v1H1v-1zm23 0h1v1h-1v-1zm0-23h1v1h-1V1z&quot; stroke=&quot;%23e5e7eb&quot; stroke-width=&quot;0.5&quot;/%3E%3C/svg%3E')] opacity-30"></div>
 
-      {/* Gradient Blob */}
-      <div className="absolute left-1/2 bottom-0 transform -translate-x-1/2 translate-y-80 w-[1000px] h-[500px] bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full blur-[200px] opacity-20"></div>
+      
 
       <div className="relative z-10 container mx-auto px-4 py-12 max-w-6xl min-h-screen flex flex-col justify-center">
 

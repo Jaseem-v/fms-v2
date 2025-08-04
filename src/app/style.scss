@@ -1376,6 +1376,16 @@ body:not([data-admin="true"]) main {
         background: #DCFFE8;
         margin-top: 50px;
 
+        border: 1px solid #00000010;
+
+        @media (max-width: 480px) {
+            margin-top: 30px;
+            padding: 30px 15px 15px;
+
+        }
+
+
+
         &-title {
             color: #000;
             text-align: center;
@@ -1383,8 +1393,12 @@ body:not([data-admin="true"]) main {
             font-size: 26px;
             font-style: normal;
             font-weight: 500;
-            line-height: 32.5px;
+            line-height: 1.2;
             /* 125% */
+
+            @media (max-width: 480px) {
+                font-size: 20px;
+            }
         }
 
         &-description {
@@ -1394,8 +1408,12 @@ body:not([data-admin="true"]) main {
             font-size: 20px;
             font-style: normal;
             font-weight: 400;
-            line-height: 27px;
+            line-height: 1.2;
             /* 135% */
+
+            @media (max-width: 480px) {
+                font-size: 15px;
+            }
         }
 
         &-icon {
@@ -1409,8 +1427,17 @@ body:not([data-admin="true"]) main {
             border-radius: 35px;
             background: #000;
             position: absolute;
-            left: 128px;
+            left: 50%;
+
             top: -42px;
+            transform: translateX(-50%);
+
+            @media (max-width: 480px) {
+                width: 50px;
+                height: 50px;
+                top: -32px;
+
+            }
         }
     }
 }
@@ -1463,6 +1490,7 @@ body:not([data-admin="true"]) main {
         @media (max-width: 480px) {
             font-size: 14px;
         }
+
         span {
             font-weight: 700;
         }
@@ -1492,11 +1520,25 @@ body:not([data-admin="true"]) main {
 
         border-radius: 21px;
         background: #C8F4D7;
+        border: 1px solid #00000010;
+
 
         &-icon {
             width: 50px;
             height: 50px;
             aspect-ratio: 1/1;
+
+            @media (max-width: 480px) {
+                width: 40px;
+                height: 40px;
+
+                svg {
+
+                    width: 40px;
+                    height: 40px;
+                    aspect-ratio: 1/1;
+                }
+            }
         }
 
         &-title {
@@ -1505,8 +1547,12 @@ body:not([data-admin="true"]) main {
             font-size: 26px;
             font-style: normal;
             font-weight: 500;
-            line-height: 32.5px;
+            line-height: 1.2;
             /* 125% */
+
+            @media (max-width: 480px) {
+                font-size: 20px;
+            }
         }
 
         &-description {
@@ -1515,10 +1561,112 @@ body:not([data-admin="true"]) main {
             font-size: 20px;
             font-style: normal;
             font-weight: 400;
-            line-height: 27px;
+            line-height: 1.2;
             /* 135% */
+
+            @media (max-width: 480px) {
+                font-size: 15px;
+            }
         }
     }
+
+    &__main {
+        border-radius: 66px;
+        background: #C8F4D7;
+
+        display: flex;
+        width: 100%;
+
+        padding: 0;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 10px;
+        flex-shrink: 0;
+        flex-direction: column;
+        overflow: hidden;
+
+        @media (max-width: 480px) {
+            border-radius: 40px;
+
+        }
+    }
+
+    &__content {
+        border-radius: 66px;
+        border: 1px solid rgba(39, 39, 39, 0.15);
+        background: #FFF;
+
+        display: flex;
+        width: 100%;
+        padding: 50px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        flex-shrink: 0;
+
+        @media (max-width: 480px) {
+            border-radius: 40px;
+
+        }
+    }
+
+    &__price {
+        display: flex;
+        align-items: center;
+        gap: 17px;
+        width: 100%;
+        justify-content: center;
+
+        &-value {
+            color: #000;
+            font-family: "Instrument Sans";
+            font-size: 70px;
+            font-style: normal;
+            font-weight: 500;
+        }
+
+        &-old {
+            color: #8C8C8C;
+            font-family: "Instrument Sans";
+            font-size: 45px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 123%;
+            /* 55.35px */
+            text-decoration-line: line-through;
+        }
+    }
+
+    &__feature-tags {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        align-self: stretch;
+        flex-wrap: wrap;
+    }
+
+    &__feature-tag {
+        flex: 1 0 0;
+        display: flex;
+        padding: 8px 10px;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        border-radius: 50px;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        background: #F0FFF5;
+
+        color: #1F1F1F;
+        font-family: "Instrument Sans";
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 123%;
+
+        white-space: nowrap;
+        /* 27.06px */
+    }
+
 
 }
 
@@ -1546,15 +1694,15 @@ body:not([data-admin="true"]) main {
             text-align: left;
 
             @media (max-width: 480px) {
-               font-size: 18px;
+                font-size: 18px;
             }
         }
 
-        svg{
+        svg {
             @media (max-width: 480px) {
                 width: 20px;
                 height: 20px;
-             }
+            }
         }
 
         &__description {
@@ -1570,7 +1718,7 @@ body:not([data-admin="true"]) main {
 
             @media (max-width: 480px) {
                 font-size: 16px;
-             }
+            }
         }
     }
 }
@@ -1649,6 +1797,11 @@ body:not([data-admin="true"]) main {
         border: 1px solid rgba(0, 0, 0, 0.15);
         background: #DFFFEA;
 
+        @media (max-width: 480px) {
+            padding: 16px;
+
+        }
+
         &-details {
             display: flex;
             width: 734px;
@@ -1662,6 +1815,11 @@ body:not([data-admin="true"]) main {
         padding: 25px;
         align-items: center;
         gap: 25px;
+
+        @media (max-width: 480px) {
+            padding: 16px;
+
+        }
     }
 
     &__img {
@@ -1704,12 +1862,31 @@ body:not([data-admin="true"]) main {
 
     @media (max-width: 480px) {
         font-size: 16px;
-    padding: 11px 25px;
+        padding: 11px 25px;
 
     }
 
     &:active {
         transform: scale(0.98);
+    }
+}
+
+.link-btn {
+    color: #272727;
+    text-align: center;
+    font-family: "Instrument Sans";
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 123%;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+        color: #363636;
+        cursor: pointer;
+        transform: scale(1.02);
     }
 }
 

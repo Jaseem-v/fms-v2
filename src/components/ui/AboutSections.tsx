@@ -161,7 +161,7 @@ const AboutSections: React.FC = () => {
   return (
     <div className="bg-green-50">
       {/* Who we are? Section */}
-      <section className="py-16">
+      <section className="py-16 pb-0">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="section-header__title">
@@ -258,8 +258,8 @@ const AboutSections: React.FC = () => {
       </section> */}
 
       {/* Who is this for? Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-4 max-w-6xl">
+      <section className="py-16 pb-0">
+        <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="section-header__title">
               Who is this for?
@@ -283,8 +283,8 @@ const AboutSections: React.FC = () => {
       </section>
 
       {/* Risk-Free Purchase Section */}
-      <section className="py-16 ">
-        <div className="container mx-auto px-4 max-w-6xl">
+      <section className="py-16 pb-0">
+        <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="section-header__title">
               Risk-Free Purchase
