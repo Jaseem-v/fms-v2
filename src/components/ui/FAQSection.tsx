@@ -48,38 +48,40 @@ const FAQSection: React.FC = () => {
     <section className="py-16 bg-green-50">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="text-center mb-12">
-          <h2 className="text-5xl font-serif text-gray-900 mb-8">
+          <h2 className="section-header__title">
             Frequently Asked Questions
           </h2>
         </div>
-        
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+
+        <div className="  overflow-hidden">
           {faqs.map((faq, index) => (
             <div key={index}>
               <button
                 onClick={() => toggleFAQ(index)}
-                className="w-full px-8 py-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                className="faq-item"
               >
-                <h3 className="text-lg font-semibold text-gray-900 pr-4">
+                <h3 className="faq-item__title">
                   {faq.question}
                 </h3>
                 <div className="flex-shrink-0">
-                  <span className={`text-2xl font-bold transition-transform ${
-                    openIndex === index ? 'text-green-600' : 'text-green-500'
-                  }`}>
-                    {openIndex === index ? '−' : '+'}
-                  </span>
+                  {openIndex == index ? <svg xmlns="http://www.w3.org/2000/svg" width="32" height="3" viewBox="0 0 32 3" fill="none">
+                    <path d="M1 1.5H30.5" stroke="#007A2A" stroke-width="2" stroke-linecap="round" />
+                  </svg> :
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="33" viewBox="0 0 32 33" fill="none">
+                      <path d="M1 16.5H30.5" stroke="#007A2A" stroke-width="2" stroke-linecap="round" />
+                      <path d="M15.75 31.25L15.75 1.75" stroke="#007A2A" stroke-width="2" stroke-linecap="round" />
+                    </svg>}
                 </div>
               </button>
-              
+
               {openIndex === index && (
-                <div className="px-8 pb-6">
-                  <p className="text-gray-700 leading-relaxed">
+                <div className="">
+                  <p className="faq-item__description">
                     {faq.answer}
                   </p>
                 </div>
               )}
-              
+
               {index < faqs.length - 1 && (
                 <div className="border-b border-gray-200 mx-8"></div>
               )}

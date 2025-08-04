@@ -3,6 +3,7 @@ import Link from "next/link";
 interface AnalysisItem {
   problem: string;
   solution: string;
+  summary: string;
 }
 
 interface Report {

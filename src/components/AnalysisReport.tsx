@@ -13,6 +13,7 @@ interface ImageReference {
 interface AnalysisItem {
   problem: string;
   solution: string;
+  summary: string;
   relevantImages?: ImageReference[];
   relevantAppReferences?: AppReference[];
   screenshotUrl?: string;
@@ -205,7 +206,7 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
                 <div className="report__item-element">
                   <div className="report__item-title-container">
                     <h3 className="report__item-title">
-                      Problem
+                      {item.summary}
                     </h3>
                   </div>
                   <p className="report__item-description">{item.problem}</p>

@@ -11,8 +11,8 @@ const PricingSection: React.FC = () => {
     <section className="py-16 ">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-serif text-gray-900 mb-4">
-            Flexible Pricing Plan
+          <h2 className="section-header__title">
+            One time payment
           </h2>
         </div>
         

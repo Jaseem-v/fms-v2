@@ -45,6 +45,7 @@ interface UserInfo {
 export interface AnalysisItem {
   problem: string;
   solution: string;
+  summary: string;
   screenshotUrl?: string;
   relevantImages?: {
     id: string;

@@ -9,7 +9,7 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const allowedPaths = ['/', '/pricing', '/privacy', '/terms'];
-  
+
   if (!allowedPaths.includes(pathname)) {
     return null;
   }
@@ -27,13 +27,18 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-green-50 shadow-lg border-b border-gray-200">
+    <nav className="bg-green-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
-              <span className="text-xl font-bold text-gray-900">FixMyStore</span>
+              <span className="logo__title">
+                  FixMyStore
+                <span>
+                  .com
+                </span>
+              </span>
             </Link>
           </div>
 
@@ -117,11 +122,10 @@ export default function Navbar() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                  isActive(item.href)
+                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive(item.href)
                     ? 'text-green-600 bg-green-50'
                     : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
-                }`}
+                  }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 {item.name}

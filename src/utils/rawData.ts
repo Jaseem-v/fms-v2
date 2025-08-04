@@ -5,6 +5,7 @@ export const initialReport: Report = {
         {
             "problem": "The main headline 'Sitteer' with the tagline 'FOR THE LOVE OF ALLAH' is not very specific about what the product or service is.",
             "solution": "Add a brief descriptor in the headline to clarify what Sitteer offers, such as 'Premium Islamic Clothing and Gifts.'",
+            "summary": "The main headline 'Sitteer' with the tagline 'FOR THE LOVE OF ALLAH' is not very specific about what the product or service is.",
             "relevantImages": [
                 {
                     "id": "6884fdcc1974bdc7c8e4aa77",
@@ -46,6 +47,7 @@ export const initialReport: Report = {
         {
             "problem": "The hero section's 'SHOP NOW' CTA blends into the background due to its white color on a light background.",
             "solution": "Change the CTA button color to a contrasting color, like a deep purple or dark green, to make it stand out more.",
+            "summary": "The hero section's 'SHOP NOW' CTA blends into the background due to its white color on a light background.",
             "relevantImages": [
                 {
                     "id": "6884fdcc1974bdc7c8e4aa77",
@@ -86,6 +88,7 @@ export const initialReport: Report = {
         {
             "problem": "The navigation menu is somewhat cluttered with items like 'HOME,' 'CATALOG,' 'CONTACT,' and 'TRACK YOUR ORDER' all in one line.",
             "solution": "Simplify the navigation by grouping related items under a single dropdown menu, such as combining 'CONTACT' and 'TRACK YOUR ORDER' under 'Account.'",
+            "summary": "The navigation menu is somewhat cluttered with items like 'HOME,' 'CATALOG,' 'CONTACT,' and 'TRACK YOUR ORDER' all in one line.",
             "relevantImages": [],
             "relevantAppReferences": [
                 {
@@ -111,6 +114,7 @@ export const initialReport: Report = {
         {
             "problem": "There is a lack of trust signals such as reviews, badges, or guarantees visible on the homepage.",
             "solution": "Add customer reviews or testimonials, and include badges for secure payment methods near the product sections.",
+            "summary": "There is a lack of trust signals such as reviews, badges, or guarantees visible on the homepage.",
             "relevantImages": [
                 {
                     "id": "688502601974bdc7c8e4aad3",
@@ -186,6 +190,7 @@ export const initialReport: Report = {
         {
             "problem": "The announcement banner or potential for urgency is not utilized for current promotions or discounts.",
             "solution": "Add a visible announcement bar at the top of the page to highlight any ongoing promotions or limited-time offers to create a sense of urgency.",
+            "summary": "The announcement banner or potential for urgency is not utilized for current promotions or discounts.",
             "relevantImages": [
                 {
                     "id": "688502da1974bdc7c8e4aad6",
@@ -243,6 +248,7 @@ export const initialReport: Report = {
         {
             "problem": "The images in the 'FOR YOU' section do not have descriptive alt text or visible captions.",
             "solution": "Add alt text and captions to each image to briefly describe the product and its unique features, enhancing accessibility and SEO.",
+            "summary": "The images in the 'FOR YOU' section do not have descriptive alt text or visible captions.",
             "relevantImages": [],
             "relevantAppReferences": [],
             "screenshotUrl": "http://localhost:4000/screenshots/homepage-1753867800139.png"
@@ -250,6 +256,7 @@ export const initialReport: Report = {
         {
             "problem": "The 'Subscribe to our newsletter' section is visually minimal and does not highlight the benefits of subscribing.",
             "solution": "Enhance the newsletter section with a colorful background and include bullet points or icons to emphasize benefits like 'Exclusive discounts' or 'First access to new products.'",
+            "summary": "The 'Subscribe to our newsletter' section is visually minimal and does not highlight the benefits of subscribing.",
             "relevantImages": [],
             "relevantAppReferences": [],
             "screenshotUrl": "http://localhost:4000/screenshots/homepage-1753867800139.png"
@@ -257,6 +264,7 @@ export const initialReport: Report = {
         {
             "problem": "There is no visible brand story section to connect emotionally with the audience.",
             "solution": "Add a section near the bottom of the homepage that tells the brand's story, focusing on its mission and values to build a deeper connection with visitors.",
+            "summary": "There is no visible brand story section to connect emotionally with the audience.",
             "relevantImages": [
                 {
                     "id": "68852e601974bdc7c8e4ab37",
@@ -281,7 +289,8 @@ export const initialReport: Report = {
         {
             "problem": "The 'Sold Out' label is prominently displayed on multiple products, which could discourage potential buyers from exploring other available items.",
             "solution": "Reorganize the collection page to prioritize in-stock items at the top. Add a filter to hide sold-out products if the user prefers.",
-            "relevantImages": [
+            "summary": "The 'Sold Out' label is prominently displayed on multiple products, which could discourage potential buyers from exploring other available items.",
+                "relevantImages": [
                 {
                     "id": "6888df040305a9dbcd095ddc",
                     "imageUrl": "/uploads/image_1753800452667.png",
@@ -324,6 +333,7 @@ export const initialReport: Report = {
         {
             "problem": "The product images are unevenly sized and some appear blurry, reducing the overall visual appeal and professional look of the page.",
             "solution": "Standardize the image sizes and ensure all images are high-resolution to enhance the visual consistency and attractiveness of the page.",
+            "summary": "The product images are unevenly sized and some appear blurry, reducing the overall visual appeal and professional look of the page.",
             "relevantImages": [
                 {
                     "id": "6888b7fc0305a9dbcd095dc8",
@@ -365,6 +375,7 @@ export const initialReport: Report = {
         {
             "problem": "There is a lack of a quick view or hover effect to preview product details, requiring users to click through to individual product pages to get more information.",
             "solution": "Implement a quick view or hover feature that allows users to see essential product details such as size options, material, and additional images without leaving the collection page.",
+            "summary": "There is a lack of a quick view or hover effect to preview product details, requiring users to click through to individual product pages to get more information.",
             "relevantImages": [
                 {
                     "id": "6888ba0c0305a9dbcd095dcb",
@@ -407,7 +418,8 @@ export const initialReport: Report = {
         {
             "problem": "The filter and sort options are limited and not very prominent, which can make it difficult for users to find specific products quickly.",
             "solution": "Enhance the filter and sort functionality by adding more options such as 'Price Range' and 'Customer Ratings', and make these options more visually prominent.",
-            "relevantImages": [
+            "summary": "The filter and sort options are limited and not very prominent, which can make it difficult for users to find specific products quickly.",
+                "relevantImages": [
                 {
                     "id": "6888dbc00305a9dbcd095dd3",
                     "imageUrl": "/uploads/image_1753799616557.png",
@@ -449,6 +461,7 @@ export const initialReport: Report = {
         {
             "problem": "Trust signals such as customer reviews are present but not emphasized, potentially reducing their impact on conversion.",
             "solution": "Highlight customer reviews more prominently by using larger fonts or color accents to draw attention to high-rated products.",
+            "summary": "Trust signals such as customer reviews are present but not emphasized, potentially reducing their impact on conversion.",
             "relevantImages": [
                 {
                     "id": "6888dbc00305a9dbcd095dd3",
@@ -492,6 +505,7 @@ export const initialReport: Report = {
         {
             "problem": "The layout displays two images per row, causing excessive scrolling on mobile devices.",
             "solution": "Optimize the mobile version by displaying a single column of images per row to make navigation easier and reduce scrolling.",
+            "summary": "The layout displays two images per row, causing excessive scrolling on mobile devices.",
             "relevantImages": [
                 {
                     "id": "6888b7fc0305a9dbcd095dc8",
@@ -534,6 +548,7 @@ export const initialReport: Report = {
         {
             "problem": "The top of the page lacks a clear banner to communicate the value or theme of the collection, which could engage visitors more effectively.",
             "solution": "Add a visually appealing banner at the top of the collection page that highlights the category theme or any special promotions.",
+            "summary": "The top of the page lacks a clear banner to communicate the value or theme of the collection, which could engage visitors more effectively.",
             "relevantImages": [
                 {
                     "id": "6888dd710305a9dbcd095dd6",
@@ -579,6 +594,7 @@ export const initialReport: Report = {
         {
             "problem": "The product images lack zoom functionality and do not show multiple angles or context-of-use, limiting the customer's ability to see details.",
             "solution": "Implement high-resolution images with zoom capability and provide multiple angles and context-of-use shots to enhance the customer's understanding of the product.",
+            "summary": "The product images lack zoom functionality and do not show multiple angles or context-of-use, limiting the customer's ability to see details.",
             "relevantImages": [
                 {
                     "id": "6888e70d0305a9dbcd095e47",
@@ -621,6 +637,7 @@ export const initialReport: Report = {
         {
             "problem": "The product title 'Fancy Gifting Pouch' is not keyword-optimized and lacks descriptive elements that could improve searchability.",
             "solution": "Enhance the product title by including keywords such as 'tulle', 'gift bag', or 'decorative pouch' to improve search engine optimization and clarity.",
+            "summary": "The product title 'Fancy Gifting Pouch' is not keyword-optimized and lacks descriptive elements that could improve searchability.",
             "relevantImages": [
                 {
                     "id": "6888e44b0305a9dbcd095e38",
@@ -665,6 +682,7 @@ export const initialReport: Report = {
         {
             "problem": "The product description is minimal and does not provide detailed information about features, materials, or use cases.",
             "solution": "Expand the product description to include more details about the materials, dimensions, potential uses, and any unique selling points to better inform potential buyers.",
+            "summary": "The product description is minimal and does not provide detailed information about features, materials, or use cases.",
             "relevantImages": [
                 {
                     "id": "6888e70d0305a9dbcd095e47",
@@ -707,7 +725,8 @@ export const initialReport: Report = {
         {
             "problem": "The pricing is visible, but there is no indication of discounts, offers, or stock availability, which could drive urgency.",
             "solution": "Display any available discounts or special offers prominently and include stock availability information to create urgency and encourage quicker purchasing decisions.",
-            "relevantImages": [
+            "summary": "The pricing is visible, but there is no indication of discounts, offers, or stock availability, which could drive urgency.",
+                "relevantImages": [
                 {
                     "id": "6888e44b0305a9dbcd095e38",
                     "imageUrl": "/uploads/image_1753801803101.png",
@@ -752,6 +771,7 @@ export const initialReport: Report = {
         {
             "problem": "The 'Add to Cart' button is not highly visible due to its light color and lack of contrast with the background.",
             "solution": "Enhance the visibility of the 'Add to Cart' button by using a more contrasting color and increasing its size to make it more prominent and actionable.",
+            "summary": "The 'Add to Cart' button is not highly visible due to its light color and lack of contrast with the background.",
             "relevantImages": [],
             "relevantAppReferences": [],
             "screenshotUrl": "http://localhost:4000/screenshots/product-1753867849104.png"
@@ -759,6 +779,7 @@ export const initialReport: Report = {
         {
             "problem": "There are no customer reviews or ratings visible, which may reduce trust for new customers.",
             "solution": "Encourage customers to leave reviews and feature them prominently on the product page to build trust and provide social proof.",
+            "summary": "There are no customer reviews or ratings visible, which may reduce trust for new customers.",
             "relevantImages": [
                 {
                     "id": "6888e4c70305a9dbcd095e3b",
@@ -802,6 +823,7 @@ export const initialReport: Report = {
         {
             "problem": "Shipping costs, estimated delivery times, and return policy details are not immediately visible, potentially causing hesitation.",
             "solution": "Include clear and concise information about shipping costs, estimated delivery times, and return policies directly on the product page to reduce any purchasing barriers.",
+            "summary": "Shipping costs, estimated delivery times, and return policy details are not immediately visible, potentially causing hesitation.",
             "relevantImages": [],
             "relevantAppReferences": [],
             "screenshotUrl": "http://localhost:4000/screenshots/product-1753867849104.png"
@@ -809,6 +831,7 @@ export const initialReport: Report = {
         {
             "problem": "The related products section displays incomplete information and lacks engaging visuals.",
             "solution": "Improve the related products section by ensuring all products have images and complete descriptions, and consider using a carousel layout to make navigation more engaging.",
+            "summary": "The related products section displays incomplete information and lacks engaging visuals.",
             "relevantImages": [
                 {
                     "id": "6888e5ce0305a9dbcd095e41",
@@ -852,6 +875,7 @@ export const initialReport: Report = {
         {
             "problem": "The page does not include FAQs, which could address common customer concerns and objections.",
             "solution": "Add an FAQ section addressing common questions about the product, such as care instructions, to help alleviate potential customer hesitations.",
+            "summary": "The page does not include FAQs, which could address common customer concerns and objections.",
             "relevantImages": [
                 {
                     "id": "6888e84b0305a9dbcd095e50",
@@ -878,6 +902,7 @@ export const initialReport: Report = {
         {
             "problem": "The cart page lacks a shipping calculator or estimate before proceeding to checkout.",
             "solution": "Incorporate a real-time shipping calculator or provide estimated shipping costs directly on the cart page to inform users of additional charges early in the process.",
+            "summary": "The cart page lacks a shipping calculator or estimate before proceeding to checkout.",
             "relevantImages": [],
             "relevantAppReferences": [],
             "screenshotUrl": "http://localhost:4000/screenshots/cart-with-products-1753867894798.png"
@@ -885,6 +910,7 @@ export const initialReport: Report = {
         {
             "problem": "There are no visible progress indicators showing where the user is in the checkout process.",
             "solution": "Add a visual checkout progress bar at the top of the page to help users understand their position in the checkout flow, reducing uncertainty.",
+            "summary": "There are no visible progress indicators showing where the user is in the checkout process.",
             "relevantImages": [],
             "relevantAppReferences": [],
             "screenshotUrl": "http://localhost:4000/screenshots/cart-with-products-1753867894798.png"
@@ -892,6 +918,7 @@ export const initialReport: Report = {
         {
             "problem": "The page lacks visible security badges or trust signals.",
             "solution": "Display security badges and payment method icons near the checkout button to increase user trust and confidence in the security of their purchase.",
+            "summary": "The page lacks visible security badges or trust signals.",
             "relevantImages": [
                 {
                     "id": "6888ee550305a9dbcd095e6d",
@@ -915,6 +942,7 @@ export const initialReport: Report = {
         {
             "problem": "There is no option for guest checkout, which can deter users who do not want to create an account.",
             "solution": "Include a guest checkout option to streamline the process for users who prefer not to register, potentially reducing cart abandonment.",
+            "summary": "There is no option for guest checkout, which can deter users who do not want to create an account.",
             "relevantImages": [
                 {
                     "id": "6888ed5a0305a9dbcd095e67",
@@ -938,6 +966,7 @@ export const initialReport: Report = {
         {
             "problem": "The cart page design is very minimal, which might lead to a lack of urgency or encouragement to complete the purchase.",
             "solution": "Add urgency cues such as limited-time offers or stock levels, and consider using bolder colors for the checkout button to draw more attention.",
+            "summary": "The cart page design is very minimal, which might lead to a lack of urgency or encouragement to complete the purchase.",
             "relevantImages": [
                 {
                     "id": "6888ece50305a9dbcd095e64",
@@ -976,6 +1005,7 @@ export const initialReport: Report = {
         {
             "problem": "There is no reminder or nudge for free shipping thresholds or benefits.",
             "solution": "Implement a notification or banner that informs users how much more they need to spend to qualify for free shipping, encouraging larger orders.",
+            "summary": "There is no reminder or nudge for free shipping thresholds or benefits.",
             "relevantImages": [
                 {
                     "id": "6888ec330305a9dbcd095e61",
