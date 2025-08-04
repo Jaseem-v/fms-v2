@@ -171,21 +171,32 @@ const AboutSections: React.FC = () => {
 
           <div className="flex flex-col lg:flex-row items-center gap-8">
             <div className="flex-1 text-center lg:text-left">
-              <p className="about__description">
-                We are the team behind ConversionAB where we help Shopify stores improve sales by increasing conversion rate and improving offers.
-              </p>
-              <p className="about__description mt-6">
-                We also own Final Apps where we build Shopify apps to ease up the store management.
-              </p>
+              <div className="flex gap-4 items-center about__company">
+                <div className="flex md:hidden min-w-16 w-16 h-16 bg-orange-500 rounded-full  items-center justify-center text-white text-xl font-bold overflow-hidden">
+                  <img src="/conversionAb.png" alt="AZ" />
+                </div>
+                <p className="about__description">
+                  We are the team behind ConversionAB where we help Shopify stores improve sales by increasing conversion rate and improving offers.
+                </p>
+              </div>
+              <div className="flex gap-4 items-center mt-6 about__company">
+                <div className="flex md:hidden min-w-16 w-16 h-16 bg-blue-500 rounded-full  items-center justify-center text-white text-xl font-bold overflow-hidden">
+                  <img src="/final-apps.png" alt="AZ" />
+                </div>
+                <p className="about__description">
+                  We also own Final Apps where we build Shopify apps to ease up the store management.
+                </p>
+              </div>
+
+
             </div>
 
-            <div className="flex flex-row gap-4 lg:flex-col">
-              <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center text-white text-xl font-bold">
+            <div className=" flex-row gap-4 lg:flex-col hidden md:flex">
+              <div className="w-16 h-16 bg-orange-500 rounded-full overflow-hidden flex items-center justify-center text-white text-xl font-bold">
                 <img src="/conversionAb.png" alt="AZ" />
               </div>
-              <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white text-xl font-bold">
+              <div className="w-16 h-16 bg-blue-500 rounded-full overflow-hidden flex items-center justify-center text-white text-xl font-bold" >
                 <img src="/final-apps.png" alt="AZ" />
-
               </div>
             </div>
           </div>
@@ -266,7 +277,7 @@ const AboutSections: React.FC = () => {
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {targetAudience.map((item, index) => (
               <div key={index} className="target__item">
                 <div className="target__item-icon">{item.icon}</div>

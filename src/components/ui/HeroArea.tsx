@@ -62,11 +62,14 @@ const validateUrl = (url: string): boolean => {
 
 export default function HeroArea({ url, setUrl, loading, validatingShopify, onSubmit }: HeroAreaProps) {
 
-    const [activePage, setActivePage] = useState(2);
+    const [activePage, setActivePage] = useState<number | null>(null);
     const [urlError, setUrlError] = useState<string>('');
 
     const handleMouseEnter = (index: number) => {
         setActivePage(index);
+    }
+    const handleMouseLeave = () => {
+        setActivePage(null);
     }
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -160,7 +163,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
             <ul className="hero__pages-list">
 
                 {pages.map((page, index) => (
-                    <li className={`hero__pages-item ${activePage === index ? 'active' : ''}`} key={index} onMouseEnter={() => handleMouseEnter(index)}>
+                    <li className={`hero__pages-item ${activePage === index ? 'active' : ''}`} key={index} onMouseEnter={() => handleMouseEnter(index)} onMouseLeave={handleMouseLeave}>
                         <h2 className='hero__pages-item-icon'>
                             {page.icon}
                         </h2>
