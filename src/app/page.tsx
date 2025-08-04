@@ -268,7 +268,7 @@ export default function Home() {
 
       
 
-      <div className="relative z-10 container mx-auto px-4 py-12 max-w-6xl min-h-screen flex flex-col justify-center">
+      <div className="relative z-10 container mx-auto px-4 py-12 max-w-6xl min-h-screen flex flex-col justify-center  main-contaier">
 
         {
           !loading && <HeroArea

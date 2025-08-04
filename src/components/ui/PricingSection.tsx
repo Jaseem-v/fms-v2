@@ -41,7 +41,7 @@ const PricingSection: React.FC = () => {
                   {/* Feature Tags */}
                   <div className="payment-card__feature-tags">
                     <div className="payment-card__feature-tag">
-                     Instant delivery
+                      Instant delivery
                     </div>
                     <div className="payment-card__feature-tag">
                       One time Payment
@@ -72,14 +72,14 @@ const PricingSection: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="px-8 pb-8">
-                    <button
-                      onClick={handlePurchase}
-                      className="btn"
-                    >
-                      Fix My Store
-                    </button>
-                  </div>
+
+                  <button
+                    onClick={handlePurchase}
+                    className="btn"
+                  >
+                    Fix My Store
+                  </button>
+
 
                 </div>
               </div>

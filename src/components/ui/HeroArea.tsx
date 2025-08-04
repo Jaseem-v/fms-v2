@@ -117,8 +117,11 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                         25+ Shopify stores optimized this month
                     </div>
                 </div>
-                <h1 className='hero__details-title'>
-                    Your Store is Loosing Money, Let’s fix it
+                <h1 className='hero__details-title hidden md:block'>
+                    Your Store is  Loosing Money, Let’s fix it
+                </h1>
+                <h1 className='hero__details-title  md:hidden'>
+                    Your Store is <br /> Loosing Money, <br /> Let’s fix it
                 </h1>
                 <p className='hero__details-description'>
                     Get a detailed audit of your Shopify store, with image references and app recommendations to fix revenue leaks.
@@ -154,7 +157,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
             </div>
 
 
-            
+
 
             <div className="hero__gradient-bg">
 
