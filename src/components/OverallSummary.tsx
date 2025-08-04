@@ -14,10 +14,11 @@ interface OverallSummaryProps {
   report: Report | null;
   analysisInProgress: { [key: string]: boolean };
   setShowModal: (show: boolean) => void;
-  reportUrl?: string;
+  reportUrl?: string | null;
+  noViewReport?: boolean;
 }
 
-export default function OverallSummary({ report, analysisInProgress, setShowModal, reportUrl }: OverallSummaryProps) {
+export default function OverallSummary({ report, analysisInProgress, setShowModal, reportUrl, noViewReport }: OverallSummaryProps) {
   if (!report || Object.keys(report).length === 0) return null;
 
   // Calculate total problems
@@ -26,7 +27,7 @@ export default function OverallSummary({ report, analysisInProgress, setShowModa
   }, 0);
 
   // Calculate performance score (100 - problems * 1.5, minimum 0)
-  const performanceScore = Math.max(0, Math.round(100 - (totalProblems * 1.5)));
+  const performanceScore = Math.max(0, Math.round(100 - (totalProblems )));
 
   // Get background color based on performance score
   const getScoreColor = (score: number) => {
@@ -92,10 +93,12 @@ export default function OverallSummary({ report, analysisInProgress, setShowModa
         </div>
         {/* Download Report Button */}
         <div className="download-section flex justify-center gap-4">
-          <Link href={reportUrl || '#'} className="download-button " target="_blank">
-            View Report
-          </Link>
-          <button className={" inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-black border-2 border-gray-300 whitespace-nowrap wrap-normal" + (reportCompleted ? '' : 'disabled')} onClick={() => setShowModal(true)} disabled={!reportCompleted}>
+          {!noViewReport && (
+            <Link href={reportUrl || '#'} className="download-button view" target="_blank">
+              View Report
+            </Link>
+          )}
+          <button className={"download-button view" + (reportCompleted ? '' : 'disabled')} onClick={() => setShowModal(true)} disabled={!reportCompleted}>
             Download Report
           </button>
         </div>

@@ -311,11 +311,19 @@ export default function Home() {
             <WhatYouGetSection />
             <AboutSections />
             <PricingSection />
-            <FAQSection />
             <div className='mt-15'>
+              <div className="text-center mb-12 flex flex-col gap-8">
+                <h2 className="section-header__title">
+                  Need help/ have queries? Let’s talk.
+                </h2>
+                <p className='section-header__description'>
+                  We’re not some random folks on the internet. We’re CRO experts works with million dollar Shopify Plus brands. Book a call.
+                </p>
+              </div>
               <Calandly />
-
             </div>
+            <FAQSection />
+
           </>
         )}
 

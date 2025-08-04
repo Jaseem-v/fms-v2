@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import React from 'react';
 
 const WhatYouGetSection: React.FC = () => {
@@ -76,12 +77,13 @@ const WhatYouGetSection: React.FC = () => {
 
           {/* Call to Action Button */}
           <div className="text-center">
-            <button
-              onClick={handleSeeSample}
+            <Link
+              href="/report/sitteer-com-1754311226618-955541-yhb6og"
+              // onClick={handleSeeSample}
               className="link-btn"
             >
               See Sample Report
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -121,9 +123,14 @@ const WhatYouGetSection: React.FC = () => {
                 Proven 100 CRO checklist that can be used to turn more visitors into customers and store breakdown of 10 famous brands like All birds, Nike, Adidas and more
               </p>
             </div>
-            <div className="bg-white rounded-lg h-64 flex items-center justify-center w-full">
-              <span className="text-gray-500 font-medium">GIF</span>
+
+            <div className="what-get__img mt-10" style={{marginTop:"16px",borderRadius:"10px"}}>
+              <img src="/screenshots/cro-resource.gif" alt="screenshot" />
             </div>
+
+            {/* <div className="bg-white rounded-lg h-64 flex items-center justify-center w-full">
+              <span className="text-gray-500 font-medium">GIF</span>
+            </div> */}
           </div>
         </div>
       </div>

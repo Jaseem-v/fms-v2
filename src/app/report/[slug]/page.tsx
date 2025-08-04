@@ -6,17 +6,94 @@ import reportService from '../../../services/reportService';
 import AnalysisReport from '../../../components/AnalysisReport';
 import OverallSummary from '../../../components/OverallSummary';
 import ReportLoading from '../../../components/ReportLoading';
+import DownloadModal from '@/components/DownloadModal';
+import { useAnalysis } from '@/hooks/useAnalysis';
 
 export default function ReportPage() {
   const params = useParams();
   const slug = params.slug as string;
-  
+
   const [report, setReport] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>('');
   const [reportData, setReportData] = useState<any>(null);
   const [isInProgress, setIsInProgress] = useState(false);
+  const [userInfo, setUserInfo] = useState({
+    name: '',
+    email: '',
+    mobile: '',
+  });
+  const [downloadLoading, setDownloadLoading] = useState(false);
+
+  const {
+    showModal,
+    setShowModal,
+    reportUrl,
+    setUrl
+  } = useAnalysis();
+
+  // Custom download handler for report page
+  const handleUserInfoSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      setDownloadLoading(true);
+      
+      // Use the local report state instead of the hook's report state
+      if (!report || typeof report !== 'object' || Object.keys(report).length === 0) {
+        throw new Error('No report data available for download');
+      }
+
+      if (!reportData?.websiteUrl) {
+        throw new Error('No URL provided for report generation');
+      }
+
+      const analysisService = (await import('../../../services/analysisService')).default;
+      const pdfBlob = await analysisService.downloadReport(report, reportData.websiteUrl, userInfo);
+
+      // Create a download link
+      const downloadUrl = window.URL.createObjectURL(pdfBlob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+
+      // Create filename with website URL and "audit report"
+      try {
+        const domain = new URL(reportData.websiteUrl).hostname;
+        const cleanDomain = domain.replace(/[^a-zA-Z0-9.-]/g, '-');
+        const timestamp = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+        link.download = `${cleanDomain}-audit-report-${timestamp}.pdf`;
+      } catch (urlError) {
+        // Fallback if URL parsing fails
+        const timestamp = new Date().toISOString().split('T')[0];
+        link.download = `audit-report-${timestamp}.pdf`;
+      }
+
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Clean up the URL
+      window.URL.revokeObjectURL(downloadUrl);
+
+      // Close modal
+      setShowModal(false);
+    } catch (error) {
+      console.error('Error downloading report:', error);
+      alert('Failed to download report. Please try again.');
+    } finally {
+      setDownloadLoading(false);
+    }
+  };
+
+  const handleUserInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUserInfo((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
 
   useEffect(() => {
     if (slug) {
@@ -33,13 +110,14 @@ export default function ReportPage() {
 
       if (result.success && result.report) {
         setReportData(result.report);
-        
+
         // Check if report is still in progress
         if (result.report.status === 'pending') {
           setIsInProgress(true);
           // If in progress, show progress indicator
           if (result.report.progress) {
             setReport(result.report.analysisData || {});
+
           } else {
             setReport({});
           }
@@ -47,7 +125,13 @@ export default function ReportPage() {
           setIsInProgress(false);
           setReport(result.report.analysisData);
         }
+
+        console.log("result.report.websiteUrl", result.report.websiteUrl);
         
+
+        setUrl(result.report.websiteUrl);
+
+
         // Set the first page type as active tab
         const pageTypes = Object.keys(result.report.analysisData || {});
         if (pageTypes.length > 0) {
@@ -71,10 +155,10 @@ export default function ReportPage() {
     const pollInterval = setInterval(async () => {
       try {
         const result = await reportService.getReportBySlug(slug);
-        
+
         if (result.success && result.report) {
           setReportData(result.report);
-          
+
           if (result.report.status === 'completed') {
             setIsInProgress(false);
             setReport(result.report.analysisData);
@@ -93,7 +177,7 @@ export default function ReportPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-       
+
         <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="text-center">
             <div className="w-16 h-16 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -108,7 +192,7 @@ export default function ReportPage() {
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50">
-      
+
         <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="text-center">
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -133,7 +217,7 @@ export default function ReportPage() {
   if (!report) {
     return (
       <div className="min-h-screen bg-gray-50">
-     
+
         <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="text-center">
             <h2 className="text-xl font-semibold text-gray-900 mb-2">No Report Data</h2>
@@ -146,7 +230,7 @@ export default function ReportPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-     
+
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -183,17 +267,29 @@ export default function ReportPage() {
               <OverallSummary
                 report={report}
                 analysisInProgress={{}}
-                setShowModal={() => {}}
+                setShowModal={setShowModal}
+                noViewReport={true}
+                reportUrl={reportUrl}
               />
 
               <AnalysisReport
                 report={report}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
-                setShowModal={() => {}}
+                setShowModal={setShowModal}
               />
             </>
           )}
+
+          <DownloadModal
+            showModal={showModal}
+            setShowModal={setShowModal}
+            userInfo={userInfo}
+            handleUserInfoChange={handleUserInfoChange}
+            handleUserInfoSubmit={handleUserInfoSubmit}
+            downloadLoading={downloadLoading}
+            reportUrl={reportUrl}
+          />
         </div>
       </div>
     </div>

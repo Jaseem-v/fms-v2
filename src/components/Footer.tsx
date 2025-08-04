@@ -68,6 +68,23 @@ export default function Footer() {
                   Pricing
                 </Link>
               </li>
+
+              <li>
+                <a href="mailto:support@fixmystore.com" className=" hover:text-white transition-colors">
+                  Contact Us
+                </a>
+              </li>
+
+            </ul>
+          </div>
+
+          {/* Support */}
+          <div>
+            <h3 className="text-sm font-semibold  tracking-wider uppercase mb-4">
+              Quick Links
+            </h3>
+            <ul className="space-y-3">
+
               <li>
                 <Link href="/privacy" className=" hover:text-white transition-colors">
                   Privacy Policy
@@ -78,30 +95,7 @@ export default function Footer() {
                   Terms of Service
                 </Link>
               </li>
-            </ul>
-          </div>
 
-          {/* Support */}
-          <div>
-            <h3 className="text-sm font-semibold  tracking-wider uppercase mb-4">
-              Support
-            </h3>
-            <ul className="space-y-3">
-              <li>
-                <a href="mailto:support@fixmystore.com" className=" hover:text-white transition-colors">
-                  Contact Us
-                </a>
-              </li>
-              <li>
-                <a href="#" className=" hover:text-white transition-colors">
-                  Help Center
-                </a>
-              </li>
-              <li>
-                <a href="#" className=" hover:text-white transition-colors">
-                  Documentation
-                </a>
-              </li>
             </ul>
           </div>
         </div>
@@ -113,7 +107,7 @@ export default function Footer() {
               © 2025 FixMyStore. All rights reserved.
             </p>
             <p className="text-gray-50 text-sm">
-            made with ❤️
+              made with ❤️
             </p>
           </div>
         </div>

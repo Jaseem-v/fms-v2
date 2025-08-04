@@ -105,7 +105,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
     };
 
     return (
-        <div className='hero__content'>
+        <div className='hero__content' id='payment'>
             <div className="hero__details">
                 <div className="hero__details-trust">
                     <div className="hero__details-trust-icon">

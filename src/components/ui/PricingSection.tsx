@@ -1,11 +1,10 @@
 'use client';
 
+import Link from 'next/link';
 import React from 'react';
 
 const PricingSection: React.FC = () => {
-  const handlePurchase = () => {
-    window.location.href = '/payment';
-  };
+  
 
   return (
     <section className="py-16 ">
@@ -73,12 +72,12 @@ const PricingSection: React.FC = () => {
                   </div>
 
 
-                  <button
-                    onClick={handlePurchase}
+                  <Link
+                    href="#payment"
                     className="btn"
                   >
                     Fix My Store
-                  </button>
+                  </Link>
 
 
                 </div>

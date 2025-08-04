@@ -406,6 +406,11 @@ export function useAnalysis() {
         throw new Error('No URL provided for report generation');
       }
 
+      // Validate report data before sending
+      if (!report || typeof report !== 'object' || Object.keys(report).length === 0) {
+        throw new Error('No report data available for download');
+      }
+
       const pdfBlob = await analysisService.downloadReport(report, url, userInfo);
 
       // Create a download link

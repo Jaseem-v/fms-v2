@@ -447,7 +447,7 @@
     padding: 20px;
     font-family: "Instrument Sans", sans-serif;
 
-    width: max-content;
+    // width: max-content;
 }
 
 // Performance Score Section
@@ -672,6 +672,21 @@
     // min-width: 200px;
     position: relative;
     overflow: hidden;
+
+
+    &.view {
+        background: transparent;
+        color: #131313;
+
+        box-shadow: none;
+
+        border: 1px solid #131313;
+
+        &:hover {
+            background: transparent;
+            color: #131313;
+        }
+    }
 
     &.disabled {
         background: #101314;
