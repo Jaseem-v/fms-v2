@@ -98,8 +98,12 @@ const WhatYouGetSection: React.FC = () => {
                 <span> (7 left)</span>
               </p>
             </div>
-            <div className="what-get__img mt-12">
+            {/* <div className="what-get__img mt-12">
               <img src="/screenshots/pdf-cro.gif" alt="screenshot" />
+            </div> */}
+
+<div className="bg-white rounded-lg h-64 flex items-center justify-center w-full">
+              <span className="text-gray-500 font-medium">GIF</span>
             </div>
             {/* pdf-cro.gif */}
           </div>
