@@ -13,7 +13,8 @@ import {
   UserGroupIcon,
   DocumentTextIcon,
   BuildingOfficeIcon,
-  ChatBubbleLeftRightIcon
+  ChatBubbleLeftRightIcon,
+  CameraIcon
 } from '@heroicons/react/24/outline';
 
 interface AdminSidebarProps {
@@ -25,6 +26,7 @@ const navigation = [
   { name: 'Dashboard', href: '/admin', icon: HomeIcon },
   { name: 'Image Reference', href: '/admin/image-references', icon: PhotoIcon },
   { name: 'App Reference', href: '/admin/app-reference', icon: PhotoIcon },
+  { name: 'Screenshots', href: '/admin/screenshots', icon: CameraIcon },
   { name: 'Industry Management', href: '/admin/industries', icon: BuildingOfficeIcon },
   { name: 'Dynamic Prompts', href: '/admin/prompts', icon: ChatBubbleLeftRightIcon },
   { name: 'Analytics', href: '/#', icon: ChartBarIcon },
