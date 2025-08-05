@@ -8,7 +8,7 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  const allowedPaths = ['/', '/pricing', '/privacy', '/terms'];
+  const allowedPaths = ['/', '/pricing', '/privacy', '/terms', '/analyzing'];
 
   if (!allowedPaths.includes(pathname)) {
     return null;

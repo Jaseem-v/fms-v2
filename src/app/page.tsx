@@ -188,13 +188,9 @@ export default function Home() {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (isAuthenticated) {
-      // If authenticated, proceed with analysis
-      handleSubmit(e);
-    } else {
-      // If not authenticated, show form modal
-      setShowFormModal(true);
-    }
+    // Redirect to analyzing page with URL as query parameter
+    const analyzingUrl = `/analyzing?url=${encodeURIComponent(url)}`;
+    window.location.href = analyzingUrl;
   };
 
   // Keyboard support for screenshot modal
