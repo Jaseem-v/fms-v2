@@ -27,6 +27,7 @@ export interface PaymentStatus {
 export interface DiscountVerification {
   success: boolean;
   valid: boolean;
+  discountId?: string;
   discountAmount?: number;
   discountPercentage?: number;
   message?: string;
@@ -54,6 +55,7 @@ class PaymentService {
         return {
           success: result.success,
           valid: result.valid,
+          discountId: result.discountId,
           discountAmount: result.discountAmount,
           discountPercentage: result.discountPercentage,
           message: result.message,
