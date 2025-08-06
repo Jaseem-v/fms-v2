@@ -1,26 +1,33 @@
 import settingsService from '../services/settingsService';
 
-// Utility function to get current payment status
-export const getPaymentStatus = (): boolean => {
+export const isPaymentEnabled = (): boolean => {
   return settingsService.isPaymentEnabled();
 };
 
-// Utility function to check if user should be redirected to payment
-export const shouldRedirectToPayment = (): boolean => {
+export const checkPaymentRequired = (): boolean => {
   return settingsService.isPaymentEnabled();
 };
 
-// Utility function to get all current settings
-export const getCurrentSettings = () => {
-  return settingsService.getSettings();
+export const getCurrentSettings = async () => {
+  return await settingsService.getSettings();
 };
 
-// Utility function to reset settings (useful for testing)
-export const resetSettings = (): void => {
-  settingsService.resetSettings();
+export const resetSettings = async (): Promise<void> => {
+  await settingsService.resetSettings();
 };
 
-// Utility function to set payment enabled/disabled
-export const setPaymentEnabled = (enabled: boolean): void => {
+export const updatePaymentSetting = (enabled: boolean): void => {
   settingsService.updateSetting('paymentEnabled', enabled);
+};
+
+export const updateReportMode = async (mode: 'MANUAL' | 'AUTO'): Promise<void> => {
+  await settingsService.updateSetting('report_mode', mode);
+};
+
+export const updateManualTime = async (time: string): Promise<void> => {
+  const timeNumber = parseInt(time, 10);
+  if (isNaN(timeNumber)) {
+    throw new Error('Invalid time value. Please provide a valid number.');
+  }
+  await settingsService.updateSetting('report_manual_time', timeNumber);
 }; 
