@@ -48,15 +48,9 @@ class SettingsService {
   // Get server settings from API
   async getServerSettings(): Promise<ServerSettings> {
     try {
-      const token = localStorage.getItem('authToken');
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-
       const response = await fetch(`${this.baseUrl}/settings`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
