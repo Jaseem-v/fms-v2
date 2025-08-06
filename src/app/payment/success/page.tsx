@@ -4,10 +4,12 @@ import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import paymentService from '../../../services/paymentService';
+import { triggerPurchaseConversion } from '../../../utils/conversionTracking';
 
 function PaymentSuccessContent() {
   const searchParams = useSearchParams();
   const paymentId = searchParams.get('payment_id');
+  const orderId = searchParams.get('order_id');
   
   const [status, setStatus] = useState<'loading' | 'success' | 'failed'>('loading');
   const [message, setMessage] = useState('');
@@ -29,6 +31,11 @@ function PaymentSuccessContent() {
       if (result.success && result.status === 'completed') {
         setStatus('success');
         setMessage('Payment verified successfully! Your analysis will be processed shortly.');
+        
+        // Trigger Google Ads conversion tracking
+        const transactionId = orderId || paymentId || `payment_${Date.now()}`;
+        triggerPurchaseConversion(transactionId, 49.0, 'USD');
+        
         // Start analysis after successful payment verification
         startAnalysisAfterPayment();
       } else {
@@ -46,11 +53,17 @@ function PaymentSuccessContent() {
       // Get the website URL from URL params or localStorage
       const urlParams = new URLSearchParams(window.location.search);
       const websiteUrl = urlParams.get('url') || localStorage.getItem('pendingAnalysisUrl');
-      const orderId = urlParams.get('order_id');
+      const currentOrderId = urlParams.get('order_id');
       
-      if (websiteUrl && orderId) {
+      if (websiteUrl && currentOrderId) {
+        // Trigger conversion tracking if not already triggered
+        if (status === 'success' && !paymentId) {
+          const transactionId = currentOrderId || `order_${Date.now()}`;
+          triggerPurchaseConversion(transactionId, 49.0, 'USD');
+        }
+        
         // Redirect to generate-report page with order ID and URL
-        window.location.href = `/generate-report?order_id=${orderId}&url=${encodeURIComponent(websiteUrl)}`;
+        window.location.href = `/generate-report?order_id=${currentOrderId}&url=${encodeURIComponent(websiteUrl)}`;
       } else {
         console.error('Missing website URL or order ID');
         // Fallback to homepage

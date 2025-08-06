@@ -85,6 +85,18 @@ export default function RootLayout({
             `,
           }}
         />
+        <Script
+          id="google-ads-conversion"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'AW-17433848522');
+            `,
+          }}
+        />
       </head>
       <body className={inter.className}>
         <noscript>
