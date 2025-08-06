@@ -727,6 +727,11 @@
     &__tabs {
         display: flex;
         align-items: center;
+
+        @media (max-width: 500px) {
+            flex-wrap: wrap;
+            gap: 10px;
+        }
         // gap: 10px;
     }
 
@@ -750,6 +755,13 @@
         justify-content: center;
         background: #FFF;
         cursor: pointer;
+
+        @media (max-width: 500px) {
+            font-size: 16px;
+            padding: 10px;
+            white-space: nowrap;
+            min-width: 40%;
+        }
 
         &.active,
         &:hover {

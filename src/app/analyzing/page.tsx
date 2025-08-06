@@ -18,7 +18,7 @@ function AnalyzingPageContent() {
   const router = useRouter();
   const websiteUrl = searchParams.get('url');
 
-  const [showLoading, setShowLoading] = useState(true);
+  const [showLoading, setShowLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('homepage');
   const [progress, setProgress] = useState(0);
 
@@ -62,7 +62,7 @@ function AnalyzingPageContent() {
                 <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=&quot;25&quot; height=&quot;25&quot; viewBox=&quot;0 0 25 25&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cpath d=&quot;M1 1h1v1H1V1zm0 23h1v1H1v-1zm23 0h1v1h-1v-1zm0-23h1v1h-1V1z&quot; stroke=&quot;%23e5e7eb&quot; stroke-width=&quot;0.5&quot;/%3E%3C/svg%3E')] opacity-30"></div>
 
                 <div className="relative z-10 px-4 py-12 min-h-screen flex flex-col justify-center">
-                    <div className='mt-[-100px]'>
+                    <div className='mt-[-100px] analyze-loading'>
                         <DotLottieReact
                             src="https://lottie.host/a1b1eddc-5bf6-4259-bfe0-17b695d57e6f/X7bQ4xuwAv.lottie"
                             loop
@@ -115,11 +115,11 @@ function AnalyzingPageContent() {
                         ))}
                     </div>
 
-                    <div className="p-6">
+                    <div className="mt-6">
                         <div className="relative">
                             <div className="w-full rounded-lg overflow-hidden">
                                 <img
-                                    className='w-full h-full'
+                                    className='w-full md:h-full h-[400px] '
                                     src={`/blured/${blurredImg}.png`}
                                 />
                                 <div className="absolute inset-0 bg-black/30 flex items-center justify-center">

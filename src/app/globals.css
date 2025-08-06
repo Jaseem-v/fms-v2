@@ -35,6 +35,19 @@ body {
   overflow: hidden;
 }
 
+/* Mobile-first styles for analyze-loading */
+.analyze-loading > div {
+  width: 200% !important;
+  transform: translate(-25%) !important;
+}
+
+/* Responsive breakpoint for larger screens */
+@media (min-width: 768px) {
+  .analyze-loading > div {
+    width: 100% !important;
+    transform: none !important;
+  }
+}
 
 html{
   scroll-behavior: smooth;
