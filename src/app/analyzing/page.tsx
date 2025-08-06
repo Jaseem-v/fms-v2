@@ -30,12 +30,12 @@ function AnalyzingPageContent() {
 
         const timer = setTimeout(() => {
             setShowLoading(false);
-        }, 5000);
+        }, 15000);
 
         const progressTimer = setInterval(() => {
             setProgress(prev => {
                 if (prev >= 95) return 95;
-                return prev + 2;
+                return prev + 0.5;
             });
         }, 100);
 
