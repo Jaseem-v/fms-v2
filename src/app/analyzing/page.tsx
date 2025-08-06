@@ -18,7 +18,7 @@ function AnalyzingPageContent() {
   const router = useRouter();
   const websiteUrl = searchParams.get('url');
 
-  const [showLoading, setShowLoading] = useState(false);
+  const [showLoading, setShowLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('homepage');
   const [progress, setProgress] = useState(0);
 
