@@ -2,7 +2,7 @@
 
 import { useState, Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import paymentService, { PaymentRequest } from '../../services/paymentService';
+import paymentService, { PaymentRequest, DiscountVerification } from '../../services/paymentService';
 
 function PaymentForm() {
   const searchParams = useSearchParams();
@@ -14,6 +14,9 @@ function PaymentForm() {
     customerName: '',
   });
   
+  const [discountCode, setDiscountCode] = useState('');
+  const [discountVerification, setDiscountVerification] = useState<DiscountVerification | null>(null);
+  const [verifyingDiscount, setVerifyingDiscount] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
@@ -33,13 +36,42 @@ function PaymentForm() {
     }));
   };
 
+  const handleDiscountCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDiscountCode(e.target.value);
+    // Clear previous verification when user types
+    setDiscountVerification(null);
+  };
+
+  const verifyDiscountCode = async () => {
+    if (!discountCode.trim()) return;
+    
+    setVerifyingDiscount(true);
+    try {
+      const result = await paymentService.verifyDiscountCode(discountCode.trim());
+      setDiscountVerification(result);
+    } catch (error) {
+      setDiscountVerification({
+        success: false,
+        valid: false,
+        message: 'Failed to verify discount code'
+      });
+    } finally {
+      setVerifyingDiscount(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
-      const response = await paymentService.createPayment(formData);
+      const paymentData = {
+        ...formData,
+        discountCode: discountVerification?.valid ? discountCode : undefined
+      };
+
+      const response = await paymentService.createPayment(paymentData);
 
       if (response.success && response.paymentUrl) {
         setPaymentUrl(response.paymentUrl);
@@ -60,6 +92,9 @@ function PaymentForm() {
     }
   }, [paymentUrl]);
 
+  const originalAmount = 49;
+  const finalAmount = discountVerification?.valid ? (originalAmount - (discountVerification.discountAmount || 0)) : originalAmount;
+
   return (
     <div className="min-h-screen bg-green-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -68,7 +103,7 @@ function PaymentForm() {
             Complete Your Payment
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Pay $49 to get your comprehensive CRO analysis
+            Pay ${finalAmount} to get your comprehensive CRO analysis
           </p>
         </div>
 
@@ -123,6 +158,39 @@ function PaymentForm() {
                   placeholder="Enter your email address"
                 />
               </div>
+
+              <div className="mb-4">
+                <label htmlFor="discountCode" className="block text-sm font-medium text-gray-700 mb-1">
+                  Discount Code (Optional)
+                </label>
+                <div className="flex space-x-2">
+                  <input
+                    type="text"
+                    id="discountCode"
+                    value={discountCode}
+                    onChange={handleDiscountCodeChange}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder="Enter discount code"
+                  />
+                  <button
+                    type="button"
+                    onClick={verifyDiscountCode}
+                    disabled={!discountCode.trim() || verifyingDiscount}
+                    className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {verifyingDiscount ? 'Verifying...' : 'Apply'}
+                  </button>
+                </div>
+                {discountVerification && (
+                  <div className={`mt-2 p-2 rounded-md text-sm ${
+                    discountVerification.valid 
+                      ? 'bg-green-50 border border-green-200 text-green-700'
+                      : 'bg-red-50 border border-red-200 text-red-700'
+                  }`}>
+                    {discountVerification.message}
+                  </div>
+                )}
+              </div>
             </div>
 
             {error && (
@@ -142,9 +210,23 @@ function PaymentForm() {
             </div>
 
             <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-gray-700">Total Amount:</span>
-                <span className="text-lg font-bold text-gray-900">$49</span>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium text-gray-700">Original Price:</span>
+                  <span className="text-sm text-gray-500">${originalAmount}</span>
+                </div>
+                {discountVerification?.valid && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-green-700">Discount:</span>
+                    <span className="text-sm text-green-700">-${discountVerification.discountAmount}</span>
+                  </div>
+                )}
+                <div className="border-t pt-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-lg font-bold text-gray-900">Total Amount:</span>
+                    <span className="text-lg font-bold text-gray-900">${finalAmount}</span>
+                  </div>
+                </div>
               </div>
             </div>
 

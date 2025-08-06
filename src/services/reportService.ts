@@ -211,6 +211,66 @@ class ReportService {
   async failReport(reportId: string): Promise<ReportResponse> {
     return this.updateReport(reportId, { status: 'failed' });
   }
+
+  async getAllReports(page: number = 1, limit: number = 20, status?: string, search?: string): Promise<{
+    success: boolean;
+    reports: any[];
+    pagination: {
+      page: number;
+      total: number;
+      totalPages: number;
+      limit: number;
+    };
+  }> {
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+        ...(status && { status }),
+        ...(search && { search })
+      });
+
+      const response = await fetch(`${this.baseUrl}/api/reports/all?${params}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        return {
+          success: true,
+          reports: result.reports,
+          pagination: result.pagination,
+        };
+      } else {
+        return {
+          success: false,
+          reports: [],
+          pagination: {
+            page: 1,
+            total: 0,
+            totalPages: 0,
+            limit: 20,
+          },
+        };
+      }
+    } catch (error) {
+      console.error('Get all reports error:', error);
+      return {
+        success: false,
+        reports: [],
+        pagination: {
+          page: 1,
+          total: 0,
+          totalPages: 0,
+          limit: 20,
+        },
+      };
+    }
+  }
 }
 
 export default new ReportService();

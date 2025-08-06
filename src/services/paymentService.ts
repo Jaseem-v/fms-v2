@@ -4,6 +4,7 @@ export interface PaymentRequest {
   websiteUrl: string;
   customerEmail: string;
   customerName: string;
+  discountCode?: string;
 }
 
 export interface PaymentResponse {
@@ -11,6 +12,10 @@ export interface PaymentResponse {
   paymentUrl?: string;
   paymentId?: string;
   message?: string;
+  discountApplied?: boolean;
+  originalAmount?: number;
+  finalAmount?: number;
+  discountAmount?: number;
 }
 
 export interface PaymentStatus {
@@ -19,11 +24,55 @@ export interface PaymentStatus {
   message?: string;
 }
 
+export interface DiscountVerification {
+  success: boolean;
+  valid: boolean;
+  discountAmount?: number;
+  discountPercentage?: number;
+  message?: string;
+}
+
 class PaymentService {
   private baseUrl: string;
 
   constructor() {
     this.baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
+  }
+
+  async verifyDiscountCode(discountCode: string): Promise<DiscountVerification> {
+    try {
+      const response = await fetch(`${this.baseUrl}/payments/verify-discount/${discountCode}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        return {
+          success: result.success,
+          valid: result.valid,
+          discountAmount: result.discountAmount,
+          discountPercentage: result.discountPercentage,
+          message: result.message,
+        };
+      } else {
+        return {
+          success: false,
+          valid: false,
+          message: result.message || 'Failed to verify discount code',
+        };
+      }
+    } catch (error) {
+      console.error('Discount verification error:', error);
+      return {
+        success: false,
+        valid: false,
+        message: 'Network error occurred',
+      };
+    }
   }
 
   async createPayment(paymentData: PaymentRequest): Promise<PaymentResponse> {
@@ -43,6 +92,10 @@ class PaymentService {
           success: true,
           paymentUrl: result.paymentUrl,
           paymentId: result.paymentId,
+          discountApplied: result.discountApplied,
+          originalAmount: result.originalAmount,
+          finalAmount: result.finalAmount,
+          discountAmount: result.discountAmount,
         };
       } else {
         return {

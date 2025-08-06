@@ -29,9 +29,9 @@ const navigation = [
   { name: 'Screenshots', href: '/admin/screenshots', icon: CameraIcon },
   { name: 'Industry Management', href: '/admin/industries', icon: BuildingOfficeIcon },
   { name: 'Dynamic Prompts', href: '/admin/prompts', icon: ChatBubbleLeftRightIcon },
+  { name: 'Reports', href: '/admin/reports', icon: DocumentTextIcon },
   { name: 'Analytics', href: '/#', icon: ChartBarIcon },
   { name: 'Users', href: '/#', icon: UserGroupIcon },
-  { name: 'Reports', href: '/#', icon: DocumentTextIcon },
   { name: 'Settings', href: '/admin/settings', icon: CogIcon },
 ];
 
