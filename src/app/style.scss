@@ -6,7 +6,7 @@
         max-width: 775px;
         flex-direction: column;
         align-items: center;
-        gap: 66px;
+        gap: 40px;
 
         margin: auto;
         padding: 0 20px;
@@ -111,7 +111,11 @@
             flex-direction: column;
             width: 100%;
             position: relative;
-            gap: 10px;
+            gap: 30px;
+
+            @media (max-width: 480px) {
+                gap: 10px;
+            }
         }
 
         &-field {
@@ -732,6 +736,7 @@
             flex-wrap: wrap;
             gap: 10px;
         }
+
         // gap: 10px;
     }
 
@@ -1981,26 +1986,30 @@ body:not([data-admin="true"]) main {
 }
 
 .link-btn {
-    color: #fff;
+    color: #272727;
     text-align: center;
     font-family: "Instrument Sans";
     font-size: 20px;
     font-style: normal;
     font-weight: 400;
-    line-height: 123%;
+    line-height: 1;
     // text-decoration: underline;
     cursor: pointer;
     transition: all 0.3s ease;
-    background: #272727;
-    padding: 10px 20px;
-    border-radius: 12px;
+    // background: #272727;
+    // padding: 10px 20px;
+    // border-radius: 12px;
+
+    @media (max-width: 480px) {
+        font-size: 16px;
+    }
 
 
     &:hover {
-        // color: #363636;
+        color: #363636;
         cursor: pointer;
         transform: scale(1.02);
-        background: #272727e0;
+        // background: #272727e0;
 
     }
 }
@@ -2041,4 +2050,72 @@ body:not([data-admin="true"]) main {
 .footer {
     background: #272727;
     color: #fff;
+}
+
+
+.announcment-bar {
+    background: #3A6E4F;
+
+    display: flex;
+    width: 100%;
+    // height: 46px;
+    padding: 16px 16px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+
+    p {
+        color: #FFF;
+        text-align: center;
+        font-family: "Instrument Sans";
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 131%;
+        /* 17.03px */
+
+        @media (max-width: 480px) {
+            font-size: 10px;
+        }
+
+        span {
+            font-weight: 600;
+        }
+    }
+
+}
+
+.hero__input-guarantee {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: #666;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    @media (max-width: 480px) {
+       
+        gap: 2px;
+    }
+
+    span {
+        color: #3D3D3D;
+        text-align: center;
+        font-family: "Instrument Sans";
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 123%;
+
+        white-space: nowrap;
+
+        @media (max-width: 480px) {
+            font-size: 9px;
+            gap: 5px;
+        }
+
+        /* 19.68px */
+    }
 }

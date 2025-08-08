@@ -100,15 +100,24 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <noscript>
-          <iframe 
+          <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-5F65X6XM"
-            height="0" 
-            width="0" 
-            style={{display: 'none', visibility: 'hidden'}}
+            height="0"
+            width="0"
+            style={{ display: 'none', visibility: 'hidden' }}
           />
         </noscript>
         <AuthProvider>
           <Navbar />
+          <div className="announcment-bar">
+            <p>
+              Free 20-min strategy call included | Only &nbsp;
+         
+              <span>
+                7 spots left
+              </span>  this week
+            </p>
+          </div>
           {children}
           <Footer />
         </AuthProvider>

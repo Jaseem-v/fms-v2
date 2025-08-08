@@ -14,15 +14,18 @@ function PaymentSuccessContent() {
   const [status, setStatus] = useState<'loading' | 'success' | 'failed'>('loading');
   const [message, setMessage] = useState('');
 
+  console.log('orderId', orderId);
+  console.log('paymentId', paymentId);
+
   useEffect(() => {
-    if (paymentId) {
+    if (orderId) {
       verifyPayment();
     } else {
       setStatus('success'); // Assume success if no payment ID
       // Start analysis after successful payment
       startAnalysisAfterPayment();
     }
-  }, [paymentId]);
+  }, [orderId]);
 
   const verifyPayment = async () => {
     try {
@@ -63,7 +66,7 @@ function PaymentSuccessContent() {
         }
         
         // Redirect to generate-report page with order ID and URL
-        window.location.href = `/generate-report?order_id=${currentOrderId}&url=${encodeURIComponent(websiteUrl)}`;
+        // window.location.href = `/generate-report?order_id=${currentOrderId}&url=${encodeURIComponent(websiteUrl)}`;
       } else {
         console.error('Missing website URL or order ID');
         // Fallback to homepage

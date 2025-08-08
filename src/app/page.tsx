@@ -20,6 +20,7 @@ import AboutSections from '../components/ui/AboutSections';
 import FAQSection from '../components/ui/FAQSection';
 import ConversionQuotes from '../components/ConversionQuotes';
 import Calandly from '@/components/Calandly';
+import BeforeAfter from '@/components/ui/BeforeAfter';
 
 
 
@@ -270,6 +271,7 @@ export default function Home() {
 
       <div className="relative z-10  px-4 py-12 min-h-screen flex flex-col justify-center  main-contaier">
 
+
         {
           !loading && <HeroArea
             url={url}
@@ -319,6 +321,8 @@ export default function Home() {
               <Calandly />
             </div>
             <FAQSection />
+
+            <BeforeAfter />
 
           </>
         )}

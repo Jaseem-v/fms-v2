@@ -154,7 +154,50 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                         {urlError}
                     </div>
                 )}
+
+               
+
+                <div className='hero__input-guarantee'>
+                    <span>
+                        7-day money-back guarantee
+                    </span>
+                    <span className='hidden md:block'>
+                        •
+                    </span>
+                    <span className='md:hidden'>
+                        |
+                    </span>
+                    <span>
+                        Delivered instantly
+                    </span>
+                    <span className='hidden md:block'>
+                        •
+                    </span>
+                    <span className='md:hidden'>
+                        |
+                    </span>
+                    <span>
+                        One- time payment
+                    </span>
+                </div>
+
+                <div className="text-center flex items-center justify-center gap-2 border-b border-gray-700 w-max mx-auto">
+                    <Link
+                        href="/report/sitteer-com-1754311226618-955541-yhb6og"
+                        // onClick={handleSeeSample}
+                        className="link-btn"
+                    >
+                        See Sample Report
+
+                    </Link>
+                    {">"}
+                </div>
+
+
+
             </div>
+
+
 
 
 
@@ -178,6 +221,10 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                 ))}
 
             </ul>
+
+            <div className="flex justify-center">
+                <img src="/shopify.svg" alt="" />
+            </div>
 
         </div>
     )
