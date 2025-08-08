@@ -307,6 +307,7 @@ export default function Home() {
         {!loading && !report && (
           <>
             <WhatYouGetSection />
+            <BeforeAfter />
             <AboutSections />
             <PricingSection />
             <div className='mt-15'>
@@ -322,7 +323,6 @@ export default function Home() {
             </div>
             <FAQSection />
 
-            <BeforeAfter />
 
           </>
         )}

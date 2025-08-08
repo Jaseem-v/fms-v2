@@ -2119,3 +2119,23 @@ body:not([data-admin="true"]) main {
         /* 19.68px */
     }
 }
+
+.instrument-sans {
+    font-family: "Instrument Sans";
+}
+
+.before-after-title {
+    font-size: 32px;
+    font-weight: 400;
+
+    span{
+        font-weight: 700;
+    }
+}
+
+
+.before-after-description {
+    font-size: 16px;
+    font-weight: 400;
+    // color: #101314;
+}

@@ -80,7 +80,7 @@ const WhatYouGetSection: React.FC = () => {
             <Link
               href="/report/sitteer-com-1754311226618-955541-yhb6og"
               // onClick={handleSeeSample}
-              className="link-btn"
+              className="download-button"
             >
               See Sample Report
             </Link>
