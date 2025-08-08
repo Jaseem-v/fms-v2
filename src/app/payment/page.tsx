@@ -3,6 +3,7 @@
 import { useState, Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import paymentService, { PaymentRequest, DiscountVerification } from '../../services/paymentService';
+import { triggerGA4Purchase } from '../../utils/conversionTracking';
 
 function PaymentForm() {
   const searchParams = useSearchParams();
@@ -74,6 +75,20 @@ function PaymentForm() {
       const response = await paymentService.createPayment(paymentData);
 
       if (response.success && response.paymentUrl) {
+        // Trigger GA4 purchase event
+        triggerGA4Purchase({
+          conversionId: response.paymentId || "unknown", // Use paymentId as conversionId
+          email: formData.customerEmail,
+          itemCount: 1,
+          currency: "USD",
+          transactionValue: finalAmount,
+          productRows: [{
+            id: "pdt_ZW8nVDJ5EKSnWLsTJKVpg",
+            category: "Digital Service",
+            name: "CRO Analysis Report"
+          }]
+        });
+        
         setPaymentUrl(response.paymentUrl);
       } else {
         setError(response.message || 'Failed to create payment');

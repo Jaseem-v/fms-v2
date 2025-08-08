@@ -5,6 +5,7 @@
 declare global {
   interface Window {
     gtag: (...args: any[]) => void;
+    dataLayer: any[];
   }
 }
 
@@ -66,5 +67,63 @@ export const triggerCustomConversion = (
     console.log('Custom conversion triggered:', eventData);
   } else {
     console.warn('Google Ads gtag not available');
+  }
+};
+
+/**
+ * Triggers a GA4 purchase event with comprehensive tracking data
+ * @param transactionData - Object containing transaction details
+ */
+export const triggerGA4Purchase = (transactionData: {
+  conversionId: string;
+  email?: string;
+  phoneNumber?: string;
+  itemCount: number;
+  currency: string;
+  transactionValue: number;
+  productRows: Array<{
+    id: string;
+    category: string;
+    name: string;
+  }>;
+}): void => {
+  if (typeof window !== 'undefined' && window.dataLayer) {
+    const advancedMatchingParams = [];
+    
+    if (transactionData.email) {
+      advancedMatchingParams.push({ 
+        name: "email", 
+        value: transactionData.email 
+      });
+    }
+    
+    if (transactionData.phoneNumber) {
+      advancedMatchingParams.push({ 
+        name: "phoneNumber", 
+        value: transactionData.phoneNumber 
+      });
+    }
+
+    window.dataLayer.push({
+      event: "Purchase",
+      conversionId: transactionData.conversionId,
+      advancedMatchingParams,
+      itemCount: transactionData.itemCount,
+      currency: transactionData.currency,
+      transactionValue: transactionData.transactionValue,
+      productRows: transactionData.productRows
+    });
+
+    console.log('GA4 Purchase event triggered:', {
+      event: "Purchase",
+      conversionId: transactionData.conversionId,
+      advancedMatchingParams,
+      itemCount: transactionData.itemCount,
+      currency: transactionData.currency,
+      transactionValue: transactionData.transactionValue,
+      productRows: transactionData.productRows
+    });
+  } else {
+    console.warn('GA4 dataLayer not available');
   }
 }; 

@@ -327,52 +327,54 @@ export default function Home() {
           </>
         )}
 
-        {report && <main className="space-y-8">
-          {shopifyValidationError && (
-            <div className="max-w-4xl mx-auto bg-orange-50 border border-orange-200 rounded-lg p-4" role="alert">
-              <div className="flex items-center gap-2 text-orange-800">
-                <span className="text-orange-500">🛒</span>
-                <div>
-                  <div className="font-semibold">Shopify Site Required</div>
-                  <div>{shopifyValidationError}</div>
+        {report &&
+
+          <main className="space-y-8">
+            {shopifyValidationError && (
+              <div className="max-w-4xl mx-auto bg-orange-50 border border-orange-200 rounded-lg p-4" role="alert">
+                <div className="flex items-center gap-2 text-orange-800">
+                  <span className="text-orange-500">🛒</span>
+                  <div>
+                    <div className="font-semibold">Shopify Site Required</div>
+                    <div>{shopifyValidationError}</div>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {error && (
-            <div className="max-w-4xl mx-auto bg-red-50 border border-red-200 rounded-lg p-4" role="alert">
-              <div className="flex items-center gap-2 text-red-800">
-                <span className="text-red-500">⚠️</span>
-                {error}
+            {error && (
+              <div className="max-w-4xl mx-auto bg-red-50 border border-red-200 rounded-lg p-4" role="alert">
+                <div className="flex items-center gap-2 text-red-800">
+                  <span className="text-red-500">⚠️</span>
+                  {error}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {<ReportLoading
-            message={status ? statusMessages[status]?.description || status : 'Initializing analysis...'}
-            showProgress={true}
-            progress={analysisComplete ? 100 : calculateProgress()}
-            report={report}
-          />}
-
-          {!shopifyValidationError && report && Object.keys(report).length > 0 && (
-            <OverallSummary
+            {<ReportLoading
+              message={status ? statusMessages[status]?.description || status : 'Initializing analysis...'}
+              showProgress={true}
+              progress={analysisComplete ? 100 : calculateProgress()}
               report={report}
-              analysisInProgress={analysisInProgress}
-              setShowModal={setShowModal}
-            />
-          )}
+            />}
 
-          {!shopifyValidationError && report && Object.keys(report).length > 0 && (
-            <AnalysisReport
-              report={report}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-              setShowModal={setShowModal}
-            />
-          )}
-        </main>}
+            {!shopifyValidationError && report && Object.keys(report).length > 0 && (
+              <OverallSummary
+                report={report}
+                analysisInProgress={analysisInProgress}
+                setShowModal={setShowModal}
+              />
+            )}
+
+            {!shopifyValidationError && report && Object.keys(report).length > 0 && (
+              <AnalysisReport
+                report={report}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                setShowModal={setShowModal}
+              />
+            )}
+          </main>}
       </div>
 
       <DownloadModal
