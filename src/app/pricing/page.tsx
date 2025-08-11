@@ -1,6 +1,6 @@
 'use client';
 
-import PricingSection from "@/components/ui/PricingSection";
+import PricingSection from "@/components/home/PricingSection";
 
 export default function PricingPage() {
   const plans = [

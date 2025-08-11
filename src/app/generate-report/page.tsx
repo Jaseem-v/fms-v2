@@ -5,10 +5,10 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import paymentService from '../../services/paymentService';
 import settingsService from '../../services/settingsService';
 import { useAnalysis } from '../../hooks/useAnalysis';
-import ReportLoading from '../../components/ReportLoading';
-import OverallSummary from '../../components/OverallSummary';
-import AnalysisReport from '../../components/AnalysisReport';
-import DownloadModal from '../../components/DownloadModal';
+import ReportLoading from '../../components/report/ReportLoading';
+import OverallSummary from '../../components/report/OverallSummary';
+import AnalysisReport from '../../components/report/AnalysisReport';
+import DownloadModal from '../../components/report/DownloadModal';
 
 function GenerateReportContent() {
   const searchParams = useSearchParams();

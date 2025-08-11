@@ -3,7 +3,7 @@
 import React, { ReactNode, useState } from 'react';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminNavbar from '@/components/admin/AdminNavbar';
-import ProtectedRoute from '@/components/ProtectedRoute';
+import ProtectedRoute from '@/components/layout/ProtectedRoute';
 
 interface AdminLayoutProps {
   children: ReactNode;

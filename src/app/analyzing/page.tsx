@@ -2,9 +2,9 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import ReportLoading from '../../components/ReportLoading';
+import ReportLoading from '../../components/report/ReportLoading';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import Navbar from '../../components/Navbar';
+import Navbar from '../../components/layout/Navbar';
 
 const PAGE_TITLES: Record<string, string> = {
     homepage: 'Homepage',

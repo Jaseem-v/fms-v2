@@ -1,26 +1,26 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import UrlForm from '../components/ui/UrlForm';
-import StatusDisplay from '../components/StatusDisplay';
-import ScreenshotDisplay from '../components/ScreenshotDisplay';
-import AnalysisReport from '../components/AnalysisReport';
-import OverallSummary from '../components/OverallSummary';
-import DownloadModal from '../components/DownloadModal';
-import ScreenshotModal from '../components/ScreenshotModal';
-import FormModal from '../components/FormModal';
+import UrlForm from '../components/home/UrlForm';
+import StatusDisplay from '../components/report/StatusDisplay';
+import ScreenshotDisplay from '../components/report/ScreenshotDisplay';
+import AnalysisReport from '../components/report/AnalysisReport';
+import OverallSummary from '../components/report/OverallSummary';
+import DownloadModal from '../components/report/DownloadModal';
+import ScreenshotModal from '../components/report/ScreenshotModal';
+import FormModal from '../components/layout/FormModal';
 import { useAnalysis } from '../hooks/useAnalysis';
-import HeroArea from '@/components/ui/HeroArea';
-import ReportLoading from '@/components/ReportLoading';
+import HeroArea from '@/components/home/HeroArea';
+import ReportLoading from '@/components/report/ReportLoading';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import authService from '../services/authService';
-import PricingSection from '../components/ui/PricingSection';
-import WhatYouGetSection from '../components/ui/WhatYouGetSection';
-import AboutSections from '../components/ui/AboutSections';
-import FAQSection from '../components/ui/FAQSection';
-import ConversionQuotes from '../components/ConversionQuotes';
-import Calandly from '@/components/Calandly';
-import BeforeAfter from '@/components/ui/BeforeAfter';
+import PricingSection from '../components/home/PricingSection';
+import WhatYouGetSection from '../components/home/WhatYouGetSection';
+import AboutSections from '../components/home/AboutSections';
+import FAQSection from '../components/home/FAQSection';
+import ConversionQuotes from '../components/report/ConversionQuotes';
+import Calandly from '@/components/home/Calandly';
+import BeforeAfter from '@/components/home/BeforeAfter';
 
 
 

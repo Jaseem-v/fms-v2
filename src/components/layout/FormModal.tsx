@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import formService, { FormData } from '../services/formService';
+import formService, { FormData } from '@/services/formService';
 
 interface FormModalProps {
   isOpen: boolean;

@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import reportService from '../../../services/reportService';
-import AnalysisReport from '../../../components/AnalysisReport';
-import OverallSummary from '../../../components/OverallSummary';
-import ReportLoading from '../../../components/ReportLoading';
-import DownloadModal from '@/components/DownloadModal';
+import AnalysisReport from '../../../components/report/AnalysisReport';
+import OverallSummary from '../../../components/report/OverallSummary';
+import ReportLoading from '../../../components/report/ReportLoading';
+import DownloadModal from '@/components/report/DownloadModal';
 import { useAnalysis } from '@/hooks/useAnalysis';
 
 export default function ReportPage() {
