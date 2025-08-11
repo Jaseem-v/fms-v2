@@ -33,7 +33,7 @@ const AboutSections: React.FC = () => {
         </defs>
       </svg>,
       title: "New Shopify Store Owners",
-      description: "Just launched? Get actionable feedback."
+      description: "Actionable feedback to increase orders."
     },
     {
       icon: <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
@@ -49,7 +49,7 @@ const AboutSections: React.FC = () => {
         </defs>
       </svg>,
       title: "Revenue-Generating Store Owners",
-      description: "Increase your conversion rate and revenue."
+      description: "Double your sales by increasing the conversion rate."
     },
     {
       icon: <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
@@ -63,9 +63,9 @@ const AboutSections: React.FC = () => {
         </defs>
       </svg>,
       title: "CRO Agencies",
-      description: "Pitch clients smarter with proper references."
+      description: "Use this report to convince clients of CRO services."
     },
-    {
+      {
       icon: <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
         <g clip-path="url(#clip0_21_7564)">
           <path d="M35.4504 33.6654C35.6604 34.4442 35.1981 35.2433 34.4194 35.4519C34.2925 35.4854 34.1656 35.5029 34.0402 35.5029C33.3971 35.5029 32.8079 35.0727 32.6329 34.4223C32.1138 32.4827 30.2938 31.1279 28.2083 31.1279C26.1229 31.1279 24.3029 32.4827 23.7838 34.4223C23.5738 35.1996 22.7746 35.6619 21.9973 35.4533C21.2185 35.2448 20.7563 34.4456 20.9663 33.6669C21.8281 30.4542 24.806 28.2112 28.2083 28.2112C31.6106 28.2112 34.5885 30.4542 35.4504 33.6669V33.6654ZM28.2083 19.4598C26.1973 19.4598 24.5625 21.0946 24.5625 23.1056C24.5625 25.1167 26.1973 26.7515 28.2083 26.7515C30.2194 26.7515 31.8542 25.1167 31.8542 23.1056C31.8542 21.0946 30.2194 19.4598 28.2083 19.4598ZM6.33333 22.3765H7.79167C9.54167 22.3765 11.0963 21.586 12.1667 20.361C13.2371 21.586 14.7917 22.3765 16.5417 22.3765H19.4583C20.1263 22.3765 20.781 22.2642 21.4038 22.0425C22.1635 21.7727 22.5602 20.94 22.2904 20.1802C22.0192 19.4204 21.185 19.0267 20.4296 19.2935C20.1204 19.4029 19.7923 19.4583 19.4583 19.4583H16.5417C14.9331 19.4583 13.625 18.1502 13.625 16.5417C13.625 15.7367 12.9717 15.0833 12.1667 15.0833C11.3617 15.0833 10.7083 15.7367 10.7083 16.5417C10.7083 18.1502 9.40021 19.4583 7.79167 19.4583H6.33333C4.76125 19.4583 3.47646 18.2085 3.41812 16.6496L5.08938 6.51563C5.64792 4.68833 7.35708 3.41667 9.27479 3.41667H10.7083V7.79167C10.7083 8.59667 11.3617 9.25 12.1667 9.25C12.9717 9.25 13.625 8.59667 13.625 7.79167V3.41667H22.375V7.79167C22.375 8.59667 23.0269 9.25 23.8333 9.25C24.6398 9.25 25.2917 8.59667 25.2917 7.79167V3.41667H26.7238C28.64 3.41667 30.3506 4.68688 30.9092 6.51563L32.5804 16.6496C32.5687 16.9456 32.5133 17.2358 32.4156 17.5144C32.1473 18.2742 32.5469 19.1069 33.3052 19.3752C34.0665 19.645 34.8977 19.2454 35.166 18.4856C35.3848 17.8615 35.4985 17.2067 35.4985 16.5417C35.4985 16.4615 33.75 5.84188 33.734 5.78792C32.8444 2.67437 29.9598 0.5 26.7223 0.5H9.27479C6.03729 0.501458 3.15417 2.67583 2.26313 5.78937C2.24708 5.84333 0.5 16.4629 0.5 16.5431C0.5 18.0088 1.06146 19.3344 1.95833 20.361V29.6681C1.95833 32.8852 4.57458 35.5015 7.79167 35.5015H16.5417C17.3467 35.5015 18 34.8481 18 34.0431C18 33.2381 17.3467 32.5848 16.5417 32.5848H7.79167C6.18313 32.5848 4.875 31.2767 4.875 29.6681V22.1694C5.34458 22.2919 5.82729 22.3765 6.33333 22.3765Z" fill="#DCFFE8" />
@@ -77,7 +77,7 @@ const AboutSections: React.FC = () => {
         </defs>
       </svg>,
       title: "Shopify Agencies",
-      description: "Show clients why they need a redesign."
+      description: "Use the audit report to show clients why they need a redesign."
     },
     {
       icon: <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
@@ -91,7 +91,7 @@ const AboutSections: React.FC = () => {
         </defs>
       </svg>,
       title: "Dropshipping Store Owners",
-      description: "Fix conversion issues and boost ROI."
+      description: "Turn more visitors into buyers without increasing ad spend."
     },
     {
       icon: <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
