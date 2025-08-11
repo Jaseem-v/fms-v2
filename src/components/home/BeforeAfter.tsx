@@ -6,7 +6,7 @@ export default function BeforeAfter() {
             <div className="container mx-auto max-w-4xl">
                 <div className="text-center md:mb-12 mb-6">
                     <h2 className="section-header__title instrument-sans before-after-title">
-                        Meet <span>Jacob</span>
+                        Meet <span>Felix</span>
                     </h2>
 
                     <p className='section-header__description before-after-description'>
@@ -23,7 +23,7 @@ export default function BeforeAfter() {
             <div className="container mx-auto max-w-4xl mt-16 ">
                 <div className="text-center md:mb-12 mb-6">
                     <h2 className="section-header__title instrument-sans before-after-title">
-                        Now    Meet <span>Jacob</span>
+                        Now    Meet <span>Felix</span>
                     </h2>
 
                     <p className='section-header__description before-after-description'>
