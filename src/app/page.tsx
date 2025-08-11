@@ -313,10 +313,12 @@ export default function Home() {
             <div className='mt-15'>
               <div className="text-center mb-12 flex flex-col gap-8">
                 <h2 className="section-header__title">
-                  Need help/ have queries? Let’s talk.
+                The CRO Team Behind Million-Dollar Shopify Plus Stores
+
                 </h2>
                 <p className='section-header__description'>
-                  We’re not some random folks on the internet. We’re CRO experts works with million dollar Shopify Plus brands. Book a call.
+                We’ve helped some of the biggest brands turn more clicks into customers. When you work with us, you’re getting proven expertise, not guesswork. Book your call today.
+
                 </p>
               </div>
               <Calandly />

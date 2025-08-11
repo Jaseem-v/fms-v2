@@ -118,13 +118,13 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                     </div>
                 </div>
                 <h1 className='hero__details-title hidden md:block'>
-                    Your Store is  Loosing Money, Let’s fix it
+                Plenty of Traffic, But Few Orders?
                 </h1>
                 <h1 className='hero__details-title  md:hidden'>
-                    Your Store is <br /> Loosing Money, <br /> Let’s fix it
+                Plenty of Traffic, But Few Orders?
                 </h1>
                 <p className='hero__details-description'>
-                    Get a detailed audit of your Shopify store, with image references and app recommendations to fix revenue leaks.
+                Get a detailed audit of your Shopify store, with insights from million-dollar brands and app recommendations for easy implementation.
                 </p>
             </div>
 
@@ -159,7 +159,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
 
                 <div className='hero__input-guarantee'>
                     <span>
-                        7-day money-back guarantee
+                    One Time Payment
                     </span>
                     <span className='hidden md:block'>
                         •
@@ -168,7 +168,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                         |
                     </span>
                     <span>
-                        Delivered instantly
+                    7-Day Refund Option
                     </span>
                     <span className='hidden md:block'>
                         •
@@ -177,7 +177,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                         |
                     </span>
                     <span>
-                        One- time payment
+                    No Hidden Fee
                     </span>
                 </div>
 

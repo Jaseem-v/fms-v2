@@ -33,7 +33,7 @@ const AboutSections: React.FC = () => {
         </defs>
       </svg>,
       title: "New Shopify Store Owners",
-      description: "Just launched? Get actionable feedback"
+      description: "Just launched? Get actionable feedback."
     },
     {
       icon: <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
@@ -49,7 +49,7 @@ const AboutSections: React.FC = () => {
         </defs>
       </svg>,
       title: "Revenue-Generating Store Owners",
-      description: "Increase your conversion rate and revenue"
+      description: "Increase your conversion rate and revenue."
     },
     {
       icon: <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
@@ -91,7 +91,7 @@ const AboutSections: React.FC = () => {
         </defs>
       </svg>,
       title: "Dropshipping Store Owners",
-      description: "Fix conversion issues and boost ROI"
+      description: "Fix conversion issues and boost ROI."
     },
     {
       icon: <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
@@ -108,7 +108,7 @@ const AboutSections: React.FC = () => {
         </defs>
       </svg>,
       title: "Ecom store coaches",
-      description: "Give feedback to your student’s stores"
+      description: "Give feedback to your student’s stores."
     }
   ];
 
@@ -125,7 +125,7 @@ const AboutSections: React.FC = () => {
         </defs>
       </svg>,
       title: "One-time Payment",
-      description: "You will get full CRO report + resources as soon as you complete the payment"
+      description: "Get a full CRO report + resources upon making payment."
     },
     {
       icon: <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50" fill="none">
@@ -139,14 +139,14 @@ const AboutSections: React.FC = () => {
         </defs>
       </svg>,
       title: "7 Day Refund Policy",
-      description: "If you don't find it valuable, you can request refund, no questions asked."
+      description: "If you don’t find value in our service, request a refund within 7 days, no questions asked."
     },
     {
       icon: <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50" fill="none">
         <path d="M50 16.6635C50 20.0969 48.6958 23.6198 46.7062 27.0052C46.1354 25.5615 45.2562 24.224 44.0625 23.1198C45.1542 20.9073 45.8333 18.7219 45.8333 16.6635C45.8333 11.0177 41.5396 6.24688 36.4583 6.24688C31.8021 6.24688 29.15 8.13229 27.3625 9.77604L19.3958 17.1698C18.6604 17.9073 18.4854 19.1469 19.0562 19.9406C19.4292 20.4594 19.9771 20.7719 20.5958 20.8219C21.2104 20.8781 21.8062 20.6531 22.2375 20.2177L30.9312 11.8948L33.8125 14.9031L31.2333 17.3719L41.1229 26.051C43.4396 28.0844 44.0104 31.499 42.45 33.9927C41.4896 35.526 39.9208 36.5573 38.1479 36.8177C38.0271 36.8344 37.9083 36.849 37.7875 36.8594C37.7792 37.9323 37.4937 38.9948 36.9083 39.9323C35.9479 41.4656 34.3792 42.4969 32.6062 42.7573C32.2208 42.8115 31.8375 42.8344 31.4542 42.8156C31.3417 43.6115 31.0708 44.3865 30.6312 45.0885C29.6708 46.6219 28.1021 47.651 26.3292 47.9115C26.0312 47.9552 25.7333 47.976 25.4396 47.976C23.9667 47.976 22.5375 47.4448 21.4167 46.4594L14.95 40.6594C8.12708 34.4969 0 25.3323 0 16.6635C0 8.62188 6.075 2.08021 13.5417 2.08021C16.8812 2.08021 19.4438 2.86354 21.4542 3.89063L18.1229 6.98229C16.8521 6.53646 15.3521 6.24688 13.5417 6.24688C8.46042 6.24688 4.16667 11.0177 4.16667 16.6635C4.16667 22.2344 8.98542 29.6573 17.7396 37.5677L24.1854 43.3469C24.5958 43.7073 25.1646 43.874 25.7271 43.7927C26.2979 43.7094 26.7875 43.3865 27.1021 42.8802C27.5812 42.1115 27.3437 40.9698 26.5583 40.2823L19.8771 33.9302L22.7437 30.9052L30.4979 38.226C30.8708 38.551 31.4479 38.7219 32.0021 38.6344C32.5729 38.551 33.0625 38.226 33.3771 37.7219C33.8562 36.9531 33.6187 35.8115 32.8333 35.1219L25.4167 28.4073L28.1979 25.3073L35.9937 32.2448C36.4104 32.6115 36.9812 32.7823 37.5417 32.6948C38.1125 32.6115 38.6021 32.2865 38.9167 31.7823C39.3958 31.0135 39.1583 29.8719 38.3729 29.1823L28.2104 20.2635L25.1479 23.1948C24 24.3448 22.4146 24.9948 20.7646 24.9948C18.5854 24.9948 16.7542 23.8781 15.6708 22.374C13.9104 19.9281 14.2667 16.401 16.5 14.1677L24.5312 6.71354C26.7021 4.71979 30.2896 2.07812 36.4542 2.07812C43.9208 2.07812 49.9958 8.61979 49.9958 16.6615L50 16.6635Z" fill="black" />
       </svg>,
       title: "24*7 Support",
-      description: "We are here to assist you if you need any help or clear doubts"
+      description: "We are here to assist and help you."
     }
   ];
 
@@ -176,7 +176,7 @@ const AboutSections: React.FC = () => {
                   <img src="/conversionAb.png" alt="AZ" />
                 </div>
                 <p className="about__description">
-                  We are the team behind ConversionAB where we help Shopify stores improve sales by increasing conversion rate and improving offers.
+                At ConversionAB, we’ve helped many Shopify Plus brands generate $100K+ in revenue boosting conversion rates and optimizing offers.
                 </p>
               </div>
               <div className="flex gap-4 items-center mt-6 about__company" style={{ marginTop: '20px' }}>
@@ -184,7 +184,9 @@ const AboutSections: React.FC = () => {
                   <img src="/final-apps.png" alt="AZ" />
                 </div>
                 <p className="about__description">
-                  We also own Final Apps where we build Shopify apps to ease up the store management.
+                We run Final Apps, creating powerful Shopify apps to simplify store management. 
+4 out of our 10 apps carry the official Shopify badge.
+
                 </p>
               </div>
 

@@ -20,7 +20,7 @@ const FAQSection: React.FC = () => {
     },
     {
       question: "How detailed is the report?",
-      answer: "You'll get specific recommendations for each page type with text explanations and screenshots from big brands for references also app recommendations to fix the issues"
+      answer: "Every page type is broken down with precise recommendations, detailed explanations, real-world brand examples, and app suggestions for resolving the issues."
     },
     {
       question: "What if my store is password protected?",
@@ -28,15 +28,15 @@ const FAQSection: React.FC = () => {
     },
     {
       question: "How accurate is the audit?",
-      answer: "Our tool analyzes your store using industry best practices. Since we don't have access to internal data, the report may have limitations. We recommend cross-checking insights for your specific needs."
+      answer: "Our audits are crafted using proven CRO frameworks and industry best practices, the same principles used by top-performing eCommerce brands. While the analysis doesn’t include internal store data, every recommendation is designed to be practical and easy to validate against the store’s unique goals."
     },
     {
       question: "Is the audit free?",
-      answer: "No, because we are sure that this is a valuable resource and you can increase your sales by applying these to your website"
+      answer: "No, our audits are a paid service as they deliver high-value, actionable insights based on proven CRO strategies. Applying these recommendations can directly improve store conversions and increase sales, making it a worthwhile investment."
     },
     {
       question: "Can I get help implementing the recommendations?",
-      answer: "Yes, we can help you implement the recommendations. However, please note that additional charges may apply for expert support and implementation assistance."
+      answer: "Absolutely. Our CRO experts can handle the implementation for you, ensuring every change is done right. Implementation is available as an add-on service, with pricing based on the level of support required."
     }
   ];
 

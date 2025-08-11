@@ -15,7 +15,7 @@ const WhatYouGetSection: React.FC = () => {
         {/* Main Title */}
         <div className="text-center lg:mb-16 mb-8">
           <h2 className="section-header__title">
-            What do you get for $49?
+          What’s Included?
           </h2>
         </div>
 
@@ -33,7 +33,8 @@ const WhatYouGetSection: React.FC = () => {
                   Complete Store Analysis
                 </h4>
                 <p className="section-header__description mb-4">
-                  Our tool will analyze the images, copy, and structure of the store across the home, collection, product, and cart pages.
+                FixMyStore will analyze your store’s images, copy, and layout across the home, collection, product, and cart pages.
+
                 </p>
               </div>
               <div className="what-get__img">
@@ -49,7 +50,7 @@ const WhatYouGetSection: React.FC = () => {
                   Screenshots for Reference
                 </h4>
                 <p className="section-header__description mb-4">
-                  Our report also includes screenshots as references from high-converting stores to give you a proper idea of how you can improve your store.
+                Audit includes screenshots from Shopify Plus brands, showing how to improve your store based on proven examples.
                 </p>
               </div>
               <div className="what-get__img">
@@ -66,7 +67,8 @@ const WhatYouGetSection: React.FC = () => {
                   App Recommendations
                 </h4>
                 <p className="section-header__description mb-4">
-                  Not just screenshots, FixMyStore also recommends apps to fix these issues and helps to increase sales.
+                FixMyStore will recommend the best Shopify apps to resolve the issues identified in the audit report.
+
                 </p>
               </div>
               <div className="what-get__img">
@@ -96,8 +98,8 @@ const WhatYouGetSection: React.FC = () => {
               </h3>
 
               <p className="section-header__description">
-                We offer 20 minutes consultation call to first 10 customers where our CRO experts will help you on what to do on how to increase sales.
-                <span> (7 left)</span>
+              Get a free 20-minute consultation call from our CRO experts on how to boost your Shopify sales! 
+                <span> (Only 7 spots left! )</span>
               </p>
             </div>
             <div className="what-get__img mt-10" style={{marginTop:"16px",borderRadius:"10px"}}>
@@ -120,7 +122,8 @@ const WhatYouGetSection: React.FC = () => {
               </h3>
 
               <p className="section-header__description">
-                Proven 100 CRO checklist that can be used to turn more visitors into customers and store breakdown of 10 famous brands like All birds, Nike, Adidas and more
+              Discover the 100-point CRO checklist that powers Allbirds, Nike, Adidas & more to make millions.
+
               </p>
             </div>
 

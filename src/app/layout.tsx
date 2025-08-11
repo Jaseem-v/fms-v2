@@ -111,11 +111,9 @@ export default function RootLayout({
           <Navbar />
           <div className="announcment-bar">
             <p>
-              Free 20-min strategy call included | Only &nbsp;
-         
-              <span>
-                7 spots left
-              </span>  this week
+              Free 20-min strategy call included | Only <span>
+                 7 spots left
+              </span> this week
             </p>
           </div>
           {children}
