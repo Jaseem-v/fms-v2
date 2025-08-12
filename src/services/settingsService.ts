@@ -7,6 +7,21 @@ interface ServerSettings {
   report_manual_time: number;
 }
 
+interface AIProviderStatus {
+  currentProvider: 'openai' | 'gemini';
+  availableProviders: string[];
+  providerStatus: {
+    openai: boolean;
+    gemini: boolean;
+  };
+}
+
+interface AIConnectionTest {
+  provider: 'openai' | 'gemini';
+  connectionTest: boolean;
+  message: string;
+}
+
 interface Settings extends LocalSettings, ServerSettings {}
 
 const DEFAULT_LOCAL_SETTINGS: LocalSettings = {
@@ -186,6 +201,80 @@ class SettingsService {
   async resetSettings(): Promise<void> {
     this.saveLocalSettings(DEFAULT_LOCAL_SETTINGS);
     await this.resetServerSettings();
+  }
+
+  // Get AI provider status
+  async getAIProviderStatus(): Promise<AIProviderStatus> {
+    try {
+      const response = await fetch(`${this.baseUrl}/settings/ai-provider`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.data;
+    } catch (error) {
+      console.error('Error fetching AI provider status:', error);
+      throw error;
+    }
+  }
+
+  // Set AI provider
+  async setAIProvider(provider: 'openai' | 'gemini'): Promise<AIProviderStatus> {
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      const response = await fetch(`${this.baseUrl}/settings/ai-provider`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ provider })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+      }
+
+      const data = await response.json();
+      return data.data;
+    } catch (error) {
+      console.error('Error setting AI provider:', error);
+      throw error;
+    }
+  }
+
+  // Test AI connection
+  async testAIConnection(): Promise<AIConnectionTest> {
+    try {
+      const response = await fetch(`${this.baseUrl}/settings/ai-provider/test`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.data;
+    } catch (error) {
+      console.error('Error testing AI connection:', error);
+      throw error;
+    }
   }
 }
 

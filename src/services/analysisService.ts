@@ -20,43 +20,6 @@ export class AnalysisService {
     console.log('AnalysisService initialized with baseUrl:', this.baseUrl);
   }
 
-  // Polling methods
-  async startHomepageAnalysis(domain: string): Promise<{ jobId: string }> {
-    const response = await fetch(`${this.baseUrl}/analyze/homepage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ domain })
-    });
-    return response.json();
-  }
-
-  async startCollectionAnalysis(domain: string): Promise<{ jobId: string }> {
-    const response = await fetch(`${this.baseUrl}/analyze/collection`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ domain })
-    });
-    return response.json();
-  }
-
-  async startProductAnalysis(domain: string): Promise<{ jobId: string }> {
-    const response = await fetch(`${this.baseUrl}/analyze/product`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ domain })
-    });
-    return response.json();
-  }
-
-  async startCartAnalysis(domain: string): Promise<{ jobId: string }> {
-    const response = await fetch(`${this.baseUrl}/analyze/cart`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ domain })
-    });
-    return response.json();
-  }
-
   // Sequential analysis methods
   async startSequentialAnalysis(domain: string, orderId?: string): Promise<{ jobId: string }> {
     const response = await fetch(`${this.baseUrl}/analyze/sequential`, {
@@ -70,28 +33,6 @@ export class AnalysisService {
   async getSequentialAnalysisStatus(jobId: string): Promise<any> {
     const response = await fetch(`${this.baseUrl}/analyze/sequential/status?jobId=${jobId}`);
     return response.json();
-  }
-
-  async getAnalysisStatus(pageType: string, jobId: string): Promise<any> {
-    const response = await fetch(`${this.baseUrl}/analyze/${pageType}/status?jobId=${jobId}`);
-    return response.json();
-  }
-
-  // Legacy EventSource methods (for backward compatibility)
-  analyzeHomepage(domain: string): EventSource {
-    return new EventSource(`${this.baseUrl}/analyze/homepage?domain=${encodeURIComponent(domain)}`);
-  }
-
-  analyzeCollection(domain: string): EventSource {
-    return new EventSource(`${this.baseUrl}/analyze/collection?domain=${encodeURIComponent(domain)}`);
-  }
-
-  analyzeProduct(domain: string): EventSource {
-    return new EventSource(`${this.baseUrl}/analyze/product?domain=${encodeURIComponent(domain)}`);
-  }
-
-  analyzeCart(domain: string): EventSource {
-    return new EventSource(`${this.baseUrl}/analyze/cart?domain=${encodeURIComponent(domain)}`);
   }
 
   async downloadReport(report: any, url: string, userInfo: any): Promise<Blob> {

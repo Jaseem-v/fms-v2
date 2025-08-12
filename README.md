@@ -1,22 +1,6 @@
-# CRO Analysis Frontend
+# Frontend Application
 
-A modern Next.js frontend for the CRO Analysis application with TypeScript, Tailwind CSS, and App Router.
-
-## Features
-
-- 🚀 **Instant Analysis** - Real-time CRO analysis for ecommerce websites
-- 🎯 **Actionable Insights** - Clear problems and solutions for conversion optimization
-- ⏰ **Real-Time Results** - Live status updates during analysis
-- 📱 **Responsive Design** - Works perfectly on all devices
-- 🎨 **Modern UI** - Beautiful gradient design with smooth animations
-
-## Tech Stack
-
-- **Framework**: Next.js 14 with App Router
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Font**: Inter (Google Fonts)
-- **Backend**: Separate Node.js server (configured via environment variables)
+A modern Next.js application for CRO (Conversion Rate Optimization) analysis with a beautiful, responsive UI.
 
 ## Getting Started
 
@@ -57,8 +41,8 @@ npm run dev
 src/
 ├── app/
 │   ├── api/
-│   │   ├── ecommerce-screenshots/
-│   │   │   └── route.ts          # SSE endpoint for analysis
+│   │   ├── download-report/
+│   │   │   └── route.ts          # Report download endpoint
 │   │   └── send-report/
 │   │       └── route.ts          # Report download endpoint
 │   ├── globals.css               # Global styles
@@ -70,7 +54,7 @@ src/
 
 The frontend proxies requests to your backend server:
 
-- `GET /api/ecommerce-screenshots?domain={domain}` - Start CRO analysis
+- `POST /api/download-report` - Download analysis report as PDF
 - `POST /api/send-report` - Send analysis report via email
 
 ## Development
@@ -89,8 +73,8 @@ The frontend proxies requests to your backend server:
 
 ## Features
 
-### Real-time Analysis
-- Server-Sent Events (SSE) for live status updates
+### Sequential Analysis
+- Comprehensive e-commerce website analysis
 - Progress tracking with step-by-step feedback
 - Error handling with user-friendly messages
 
@@ -102,7 +86,7 @@ The frontend proxies requests to your backend server:
 
 ### Report Management
 - Tabbed interface for different page types
-- Download reports via email
+- Download reports as PDF
 - User information collection modal
 
 ## Contributing

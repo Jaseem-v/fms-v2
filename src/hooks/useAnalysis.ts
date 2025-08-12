@@ -499,6 +499,18 @@ export function useAnalysis() {
       // Start sequential analysis
       const orderId = new URLSearchParams(window.location.search).get('order_id');
       console.log('[SEQUENTIAL] Starting analysis with orderId:', orderId);
+      
+      // Log which AI model is being used
+      try {
+        const aiModelResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000/api'}/settings/ai-provider`);
+        if (aiModelResponse.ok) {
+          const aiModelData = await aiModelResponse.json();
+          console.log('[AI MODEL] Using AI model:', aiModelData.data.currentProvider);
+        }
+      } catch (error) {
+        console.log('[AI MODEL] Could not determine AI model:', error);
+      }
+      
       const result = await analysisService.startSequentialAnalysis(domain, orderId || undefined);
       const jobId = result.jobId;
 

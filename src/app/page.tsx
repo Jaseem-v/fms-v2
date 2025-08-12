@@ -189,6 +189,21 @@ export default function Home() {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Check localStorage for admin settings
+    const adminSettingsStr = localStorage.getItem('adminSettings');
+    if (adminSettingsStr) {
+      try {
+        const adminSettings = JSON.parse(adminSettingsStr);
+        if (adminSettings.paymentEnabled === false) {
+          // Payment is disabled, start analysis directly
+          handleSubmit(e);
+          return;
+        }
+      } catch (error) {
+        console.error('Error parsing admin settings:', error);
+      }
+    }
+
     // Redirect to analyzing page with URL as query parameter
     const analyzingUrl = `/analyzing?url=${encodeURIComponent(url)}`;
     window.location.href = analyzingUrl;
@@ -210,6 +225,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-green-50 relative overflow-hidden">
+    
 
       {/* Schema Markup */}
       <script
@@ -264,6 +280,14 @@ export default function Home() {
         }}
       />
 
+<div className="announcment-bar">
+            <p>
+              Free 20-min strategy call included | Only <span>
+                 7 spots left
+              </span> this week
+            </p>
+          </div>
+          
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=&quot;25&quot; height=&quot;25&quot; viewBox=&quot;0 0 25 25&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cpath d=&quot;M1 1h1v1H1V1zm0 23h1v1H1v-1zm23 0h1v1h-1v-1zm0-23h1v1h-1V1z&quot; stroke=&quot;%23e5e7eb&quot; stroke-width=&quot;0.5&quot;/%3E%3C/svg%3E')] opacity-30"></div>
 
