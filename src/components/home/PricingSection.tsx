@@ -20,9 +20,9 @@ const PricingSection: React.FC = () => {
             <div className="payment-card__main">
               {/* Header */}
 
-              <h3 className="section-header__teritiary-title text-center w-full mt-5">
+              {/* <h3 className="section-header__teritiary-title text-center w-full mt-5">
                 First 50 Users Only
-              </h3>
+              </h3> */}
 
 
               {/* Content */}
