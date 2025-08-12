@@ -63,7 +63,7 @@ const AboutSections: React.FC = () => {
         </defs>
       </svg>,
       title: "CRO Agencies",
-      description: "Use this report to convince clients of CRO services."
+      description: "Use the audit to convince clients for CRO services."
     },
       {
       icon: <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
@@ -77,7 +77,7 @@ const AboutSections: React.FC = () => {
         </defs>
       </svg>,
       title: "Shopify Agencies",
-      description: "Use the audit report to show clients why they need a redesign."
+      description: "Use the report to show clients why they need a redesign."
     },
     {
       icon: <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
@@ -108,7 +108,7 @@ const AboutSections: React.FC = () => {
         </defs>
       </svg>,
       title: "Ecom store coaches",
-      description: "Give feedback to your student’s stores."
+      description: "Give feedback to your students stores."
     }
   ];
 
