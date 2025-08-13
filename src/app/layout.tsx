@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ToastProvider } from "@/contexts/ToastContext";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import "./font.css";
@@ -94,10 +95,12 @@ export default function RootLayout({
           />
         </noscript>
         <AuthProvider>
-          <Navbar />
-         
-          {children}
-          <Footer />
+          <ToastProvider>
+            <Navbar />
+           
+            {children}
+            <Footer />
+          </ToastProvider>
         </AuthProvider>
       </body>
     </html>

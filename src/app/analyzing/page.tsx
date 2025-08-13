@@ -6,6 +6,8 @@ import ReportLoading from '../../components/report/ReportLoading';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Navbar from '../../components/layout/Navbar';
 import { config } from '@/config/config';
+import { useToast } from '@/contexts/ToastContext';
+import shopifyValidationService from '@/services/shopifyValidationService';
 
 const PAGE_TITLES: Record<string, string> = {
   homepage: 'Homepage',
@@ -17,18 +19,72 @@ const PAGE_TITLES: Record<string, string> = {
 function AnalyzingPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { showToast } = useToast();
   const websiteUrl = searchParams.get('url');
 
   const [showLoading, setShowLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('homepage');
   const [progress, setProgress] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [isValidating, setIsValidating] = useState(true);
 
+  // Separate useEffect for Shopify validation
   useEffect(() => {
     if (!websiteUrl) {
       router.push('/');
       return;
     }
+
+    let isMounted = true;
+
+    const validateShopifySite = async () => {
+      try {
+        const result = await shopifyValidationService.validateShopifySite(websiteUrl);
+        
+        if (!isMounted) return;
+        
+        if (!result.isShopify) {
+          showToast('This site is not a Shopify store. Please enter a valid Shopify store URL.', 'error');
+          router.push('/');
+          return;
+        }
+        
+        setIsValidating(false);
+      } catch (error) {
+        console.error('Shopify validation error:', error);
+        // Fallback to client-side validation
+        try {
+          const clientResult = await shopifyValidationService.validateShopifyClientSide(websiteUrl);
+          
+          if (!isMounted) return;
+          
+          if (!clientResult.isShopify) {
+            showToast('This site is not a Shopify store. Please enter a valid Shopify store URL.', 'error');
+            router.push('/');
+            return;
+          }
+          setIsValidating(false);
+        } catch (clientError) {
+          console.error('Client-side validation error:', clientError);
+          if (isMounted) {
+            showToast('Unable to validate site. Please ensure you enter a valid Shopify store URL.', 'error');
+            router.push('/');
+          }
+          return;
+        }
+      }
+    };
+
+    validateShopifySite();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [websiteUrl, router, showToast]);
+
+  // Separate useEffect for loading logic
+  useEffect(() => {
+    if (isValidating) return; // Don't start loading until validation is complete
 
     // Preload all blurred images
     const preloadImages = async () => {
@@ -71,7 +127,7 @@ function AnalyzingPageContent() {
       clearTimeout(timer);
       clearInterval(progressTimer);
     };
-  }, [websiteUrl, router, imagesLoaded]);
+  }, [isValidating, imagesLoaded]);
 
   // Handle case where images load before timer
   useEffect(() => {
@@ -94,14 +150,14 @@ function AnalyzingPageContent() {
 
   const blurredImg = activeTab === 'homepage' ? '1' : activeTab === 'collection' ? '2' : activeTab === 'product' ? '3' : '4'
 
-  if (showLoading) {
+  if (showLoading || isValidating) {
     return (
       <div className="min-h-screen bg-green-50 relative overflow-hidden">
         {/* <Navbar /> */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=&quot;25&quot; height=&quot;25&quot; viewBox=&quot;0 0 25 25&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cpath d=&quot;M1 1h1v1H1V1zm0 23h1v1H1v-1zm23 0h1v1h-1v-1zm0-23h1v1h-1V1z&quot; stroke=&quot;%23e5e7eb&quot; stroke-width=&quot;0.5&quot;/%3E%3C/svg%3E')] opacity-30"></div>
 
         <div className="relative z-10 px-4 py-12 min-h-screen flex flex-col justify-center">
-          <div className='mt-[-100px] analyze-loading'>
+          <div className='mt-[-250px] analyze-loading'>
             <DotLottieReact
               src="https://lottie.host/a1b1eddc-5bf6-4259-bfe0-17b695d57e6f/X7bQ4xuwAv.lottie"
               loop
@@ -110,19 +166,19 @@ function AnalyzingPageContent() {
           </div>
 
           <ReportLoading
-            message="Analyzing your store for conversion optimization opportunities..."
-            showProgress={true}
+            message={isValidating ? "Validating Shopify store..." : "Analyzing your store for conversion optimization opportunities..."}
+            showProgress={!isValidating}
             progress={progress}
           />
           
-          {!imagesLoaded && (
+          {/* {!imagesLoaded && !isValidating && (
             <div className="text-center mt-4">
               <div className="inline-flex items-center text-sm text-gray-600">
                 <div className="w-4 h-4 border-2 border-gray-300 border-t-green-500 rounded-full animate-spin mr-2"></div>
                 Preloading images...
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     );
