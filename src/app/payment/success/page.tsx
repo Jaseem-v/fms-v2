@@ -42,11 +42,8 @@ function PaymentSuccessContent() {
         
         // Trigger Twitter conversion tracking
         if (typeof window !== 'undefined' && (window as any).twq) {
-          (window as any).twq('event', 'tw-qbsq3-qbsq4', {
-            currency: config.currency,
-            conversion_id: transactionId,
-            email_address: null,
-            phone_number: null
+          (window as any).twq('event', 'tw-qbsq3-qbuhz', {
+            conversion_id: transactionId
           });
         }
         
@@ -77,11 +74,8 @@ function PaymentSuccessContent() {
           
           // Trigger Twitter conversion tracking
           if (typeof window !== 'undefined' && (window as any).twq) {
-            (window as any).twq('event', 'tw-qbsq3-qbsq4', {
-              currency: config.currency,
-              conversion_id: transactionId,
-              email_address: null,
-              phone_number: null
+            (window as any).twq('event', 'tw-qbsq3-qbuhz', {
+              conversion_id: transactionId
             });
           }
         }
