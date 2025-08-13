@@ -25,7 +25,7 @@ const WhatYouGetSection: React.FC = () => {
         {/* Store Audit Section */}
         <div className="mb-16">
           <h3 className="section-header__sub-title">
-            Store Audit (Worth ${config.pricing.plans.professional})
+            Store Audit (Worth ${config.pricing.storeAudit})
           </h3>
 
           <div className="grid md:grid-cols-3 gap-6 mb-8 mt-8">
@@ -97,7 +97,7 @@ const WhatYouGetSection: React.FC = () => {
           <div className="what-get__item">
             <div className="what-get__details">
               <h3 className="section-header__sub-title">
-                One-on-One Consultation (Worth ${config.pricing.plans.professional})
+                One-on-One Consultation (Worth ${config.pricing.oneOnOneConsultation})
               </h3>
 
               <p className="section-header__description">
@@ -121,7 +121,7 @@ const WhatYouGetSection: React.FC = () => {
           <div className="what-get__item">
             <div className="what-get__details">
               <h3 className="section-header__sub-title">
-                CRO Resources (Worth ${config.pricing.plans.basic})
+                CRO Resources (Worth ${config.pricing.croResource})
               </h3>
 
               <p className="section-header__description">

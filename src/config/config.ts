@@ -1,11 +1,14 @@
 export const config = {
   apiUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000',
   appName: 'CRO Analysis',
-  paymentAmount: parseInt(process.env.NEXT_PUBLIC_PAYMENT_AMOUNT || '49', 10),
+  paymentAmount: parseInt(process.env.NEXT_PUBLIC_PAYMENT_AMOUNT || '149', 10),
   currency: process.env.NEXT_PUBLIC_CURRENCY || 'USD',
   pricing: {
-    mainPrice: parseInt(process.env.NEXT_PUBLIC_MAIN_PRICE || '49', 10),
-    oldPrice: parseInt(process.env.NEXT_PUBLIC_OLD_PRICE || '999', 10),
+    mainPrice: parseInt(process.env.NEXT_PUBLIC_MAIN_PRICE || '149', 10),
+    oldPrice: parseInt(process.env.NEXT_PUBLIC_OLD_PRICE || '997', 10),
+    storeAudit: parseInt(process.env.NEXT_PUBLIC_STORE_AUDIT || '349', 10),
+    oneOnOneConsultation: parseInt(process.env.NEXT_PUBLIC_ONE_ON_ONE_CONSULTATION || '349', 10),
+    croResource: parseInt(process.env.NEXT_PUBLIC_CRO_RESOURCE || '299', 10),
     plans: {
       basic: parseInt(process.env.NEXT_PUBLIC_BASIC_PLAN_PRICE || '99', 10),
       professional: parseInt(process.env.NEXT_PUBLIC_PROFESSIONAL_PLAN_PRICE || '199', 10),
