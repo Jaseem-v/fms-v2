@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import ReportLoading from '../../components/report/ReportLoading';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Navbar from '../../components/layout/Navbar';
+import { config } from '@/config/config';
 
 const PAGE_TITLES: Record<string, string> = {
   homepage: 'Homepage',
@@ -182,7 +183,7 @@ function AnalyzingPageContent() {
                       onClick={handlePaymentClick}
                       className="download-button"
                     >
-                      Unlock Full Report - $49
+                      Unlock Full Report - ${config.pricing.mainPrice}
                     </button>
                   </div>
                 </div>

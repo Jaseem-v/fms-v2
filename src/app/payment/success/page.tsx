@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import paymentService from '../../../services/paymentService';
 import { triggerPurchaseConversion } from '../../../utils/conversionTracking';
+import { config } from '@/config/config';
 
 function PaymentSuccessContent() {
   const searchParams = useSearchParams();
@@ -37,7 +38,7 @@ function PaymentSuccessContent() {
         
         // Trigger Google Ads conversion tracking
         const transactionId = orderId || paymentId || `payment_${Date.now()}`;
-        triggerPurchaseConversion(transactionId, 49.0, 'USD');
+        triggerPurchaseConversion(transactionId, config.pricing.mainPrice, config.currency);
         
         // Start analysis after successful payment verification
         startAnalysisAfterPayment();
@@ -62,7 +63,7 @@ function PaymentSuccessContent() {
         // Trigger conversion tracking if not already triggered
         if (status === 'success' && !paymentId) {
           const transactionId = currentOrderId || `order_${Date.now()}`;
-          triggerPurchaseConversion(transactionId, 49.0, 'USD');
+          triggerPurchaseConversion(transactionId, config.pricing.mainPrice, config.currency);
         }
         
         // Redirect to generate-report page with order ID and URL

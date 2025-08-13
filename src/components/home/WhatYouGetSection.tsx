@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import React from 'react';
+import { config } from '@/config/config';
 
 const WhatYouGetSection: React.FC = () => {
   const handleSeeSample = () => {
@@ -12,17 +13,19 @@ const WhatYouGetSection: React.FC = () => {
   return (
     <section className="py-16 bg-green-50 pb-0">
       <div className="container mx-auto max-w-6xl">
-        {/* Main Title */}
-        <div className="text-center lg:mb-16 mb-8">
+        <div className="text-center mb-12">
           <h2 className="section-header__title">
-          What’s Included?
+            What You Get
           </h2>
+          <p className="section-header__description">
+            Everything you need to transform your Shopify store and boost conversions
+          </p>
         </div>
 
         {/* Store Audit Section */}
         <div className="mb-16">
           <h3 className="section-header__sub-title">
-            Store Audit (Worth $349)
+            Store Audit (Worth ${config.pricing.plans.professional})
           </h3>
 
           <div className="grid md:grid-cols-3 gap-6 mb-8 mt-8">
@@ -94,7 +97,7 @@ const WhatYouGetSection: React.FC = () => {
           <div className="what-get__item">
             <div className="what-get__details">
               <h3 className="section-header__sub-title">
-                One-on-One Consultation (Worth $349)
+                One-on-One Consultation (Worth ${config.pricing.plans.professional})
               </h3>
 
               <p className="section-header__description">
@@ -118,7 +121,7 @@ const WhatYouGetSection: React.FC = () => {
           <div className="what-get__item">
             <div className="what-get__details">
               <h3 className="section-header__sub-title">
-                CRO Resources (Worth $299)
+                CRO Resources (Worth ${config.pricing.plans.basic})
               </h3>
 
               <p className="section-header__description">

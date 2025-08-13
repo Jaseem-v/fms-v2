@@ -21,7 +21,7 @@ import FAQSection from '../components/home/FAQSection';
 import ConversionQuotes from '../components/report/ConversionQuotes';
 import Calandly from '@/components/home/Calandly';
 import BeforeAfter from '@/components/home/BeforeAfter';
-
+import { config } from '@/config/config';
 
 
 interface UserInfo {
@@ -245,8 +245,8 @@ export default function Home() {
             "offers": {
               "@type": "Offer",
               "url": "https://fixmystore.com/",
-              "priceCurrency": "USD",
-              "price": "49.00",
+              "priceCurrency": config.currency,
+              "price": `${config.pricing.mainPrice}.00`,
               "availability": "https://schema.org/InStock",
               "itemCondition": "https://schema.org/NewCondition",
               "seller": {

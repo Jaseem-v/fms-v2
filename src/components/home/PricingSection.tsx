@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import React from 'react';
+import { config } from '@/config/config';
 
 const PricingSection: React.FC = () => {
   
@@ -30,8 +31,8 @@ const PricingSection: React.FC = () => {
                 {/* Pricing */}
 
                 <div className="payment-card__price">
-                  <span className="payment-card__price-value">$49</span>
-                  <span className="payment-card__price-old">$999</span>
+                  <span className="payment-card__price-value">${config.pricing.mainPrice}</span>
+                  <span className="payment-card__price-old">${config.pricing.oldPrice}</span>
                 </div>
 
 

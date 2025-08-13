@@ -2,6 +2,8 @@
  * Utility functions for Google Ads conversion tracking
  */
 
+import { config } from '../config/config';
+
 declare global {
   interface Window {
     gtag: (...args: any[]) => void;
@@ -17,8 +19,8 @@ declare global {
  */
 export const triggerPurchaseConversion = (
   transactionId: string,
-  value: number = 49.0,
-  currency: string = 'USD'
+  value: number = config.pricing.mainPrice,
+  currency: string = config.currency
 ): void => {
   if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('event', 'conversion', {

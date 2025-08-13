@@ -10,7 +10,8 @@ export default function BeforeAfter() {
                     </h2>
 
                     <p className='section-header__description before-after-description'>
-                        The struggling store owner
+                        Before using <span className='font-bold'>FixMyStore</span>.com
+
                     </p>
                 </div>
 
@@ -27,7 +28,7 @@ export default function BeforeAfter() {
                     </h2>
 
                     <p className='section-header__description before-after-description'>
-                        The Optimized store owner!
+                        After using <span className='font-bold'>FixMyStore</span>.com
                     </p>
                 </div>
 

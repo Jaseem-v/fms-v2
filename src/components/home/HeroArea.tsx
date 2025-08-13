@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 
 interface HeroAreaProps {
@@ -64,6 +64,32 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
 
     const [activePage, setActivePage] = useState<number | null>(null);
     const [urlError, setUrlError] = useState<string>('');
+    const [isSticky, setIsSticky] = useState<boolean>(false);
+    const inputWrapperRef = useRef<HTMLDivElement>(null);
+    const inputContainerRef = useRef<HTMLFormElement>(null);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (!inputWrapperRef.current || !inputContainerRef.current) return;
+            
+            const wrapperRect = inputWrapperRef.current.getBoundingClientRect();
+            const isMobile = window.innerWidth <= 768;
+            
+            if (isMobile && wrapperRect.top <= 0) {
+                setIsSticky(true);
+                document.body.style.paddingBottom = '90px';
+            } else {
+                setIsSticky(false);
+                document.body.style.paddingBottom = '0px';
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            document.body.style.paddingBottom = '0px';
+        };
+    }, []);
 
     const handleMouseEnter = (index: number) => {
         setActivePage(index);
@@ -129,8 +155,12 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
             </div>
 
 
-            <div className="hero__input-wrapper">
-                <form className="hero__input-container" onSubmit={handleSubmit}>
+            <div className="hero__input-wrapper" ref={inputWrapperRef}>
+                <form 
+                    className={`hero__input-container ${isSticky ? 'hero__input-container--sticky' : ''}`} 
+                    onSubmit={handleSubmit}
+                    ref={inputContainerRef}
+                >
                     <input
                         type="text"
                         placeholder='Enter your store URL'

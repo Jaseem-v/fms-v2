@@ -1,12 +1,13 @@
 'use client';
 
 import PricingSection from "@/components/home/PricingSection";
+import { config } from "@/config/config";
 
 export default function PricingPage() {
   const plans = [
     {
       name: 'Basic',
-      price: '$99',
+      price: `$${config.pricing.plans.basic}`,
       period: 'one-time',
       features: [
         'Complete CRO audit report',
@@ -19,7 +20,7 @@ export default function PricingPage() {
     },
     {
       name: 'Professional',
-      price: '$199',
+      price: `$${config.pricing.plans.professional}`,
       period: 'one-time',
       features: [
         'Complete CRO audit report',
@@ -34,7 +35,7 @@ export default function PricingPage() {
     },
     {
       name: 'Enterprise',
-      price: '$399',
+      price: `$${config.pricing.plans.enterprise}`,
       period: 'one-time',
       features: [
         'Complete CRO audit report',
