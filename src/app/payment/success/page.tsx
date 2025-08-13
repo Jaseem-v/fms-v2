@@ -40,6 +40,16 @@ function PaymentSuccessContent() {
         const transactionId = orderId || paymentId || `payment_${Date.now()}`;
         triggerPurchaseConversion(transactionId, config.pricing.mainPrice, config.currency);
         
+        // Trigger Twitter conversion tracking
+        if (typeof window !== 'undefined' && (window as any).twq) {
+          (window as any).twq('event', 'tw-qbsq3-qbsq4', {
+            currency: config.currency,
+            conversion_id: transactionId,
+            email_address: null,
+            phone_number: null
+          });
+        }
+        
         // Start analysis after successful payment verification
         startAnalysisAfterPayment();
       } else {
@@ -64,6 +74,16 @@ function PaymentSuccessContent() {
         if (status === 'success' && !paymentId) {
           const transactionId = currentOrderId || `order_${Date.now()}`;
           triggerPurchaseConversion(transactionId, config.pricing.mainPrice, config.currency);
+          
+          // Trigger Twitter conversion tracking
+          if (typeof window !== 'undefined' && (window as any).twq) {
+            (window as any).twq('event', 'tw-qbsq3-qbsq4', {
+              currency: config.currency,
+              conversion_id: transactionId,
+              email_address: null,
+              phone_number: null
+            });
+          }
         }
         
         // Redirect to generate-report page with order ID and URL
