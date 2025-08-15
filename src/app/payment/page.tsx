@@ -7,7 +7,7 @@ import { triggerGA4Purchase } from '../../utils/conversionTracking';
 import { config } from '@/config/config';
 import Link from 'next/link';
 
-export const CountdownTimer = () => {
+const CountdownTimer = () => {
   const [timeLeft, setTimeLeft] = useState({
     hours: 0,
     minutes: 5,
