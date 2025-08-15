@@ -22,7 +22,7 @@ export default function UrlForm({ url, setUrl, loading, validatingShopify = fals
         <button
           type="submit"
           disabled={loading || validatingShopify}
-          className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2"
+          className="px-6 py-3 bg-gray-900 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2"
         >
           {validatingShopify ? (
             <>
@@ -35,7 +35,7 @@ export default function UrlForm({ url, setUrl, loading, validatingShopify = fals
               Processing...
             </>
           ) : (
-            'Pay & Get Analysis'
+            'Get Analysis'
           )}
         </button>
       </div>

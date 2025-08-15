@@ -1,5 +1,6 @@
 export const config = {
   apiUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000',
+  backendUrl: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000',
   appName: 'CRO Analysis',
   paymentAmount: parseInt(process.env.NEXT_PUBLIC_PAYMENT_AMOUNT || '149', 10),
   currency: process.env.NEXT_PUBLIC_CURRENCY || 'USD',
