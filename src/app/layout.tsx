@@ -5,6 +5,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ToastProvider } from "@/contexts/ToastContext";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import FloatingButton from "@/components/ui/FloatingButton";
 import "./font.css";
 import "../style/style.scss"
 import "../style/ui.scss"
@@ -101,6 +102,7 @@ export default function RootLayout({
            
             {children}
             <Footer />
+            {/* <FloatingButton /> */}
           </ToastProvider>
         </AuthProvider>
       </body>

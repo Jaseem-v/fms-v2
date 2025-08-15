@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import UrlForm from '../components/home/UrlForm';
 import StatusDisplay from '../components/report/StatusDisplay';
 import ScreenshotDisplay from '../components/report/ScreenshotDisplay';
@@ -22,6 +23,7 @@ import ConversionQuotes from '../components/report/ConversionQuotes';
 import Calandly from '@/components/home/Calandly';
 import BeforeAfter from '@/components/home/BeforeAfter';
 import { config } from '@/config/config';
+import FloatingButton from '@/components/ui/FloatingButton';
 
 
 interface UserInfo {
@@ -46,6 +48,7 @@ interface Report {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [selectedScreenshot, setSelectedScreenshot] = useState<{ pageType: string, url: string } | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(true);
   const [showFormModal, setShowFormModal] = useState(false);
@@ -204,9 +207,9 @@ export default function Home() {
       }
     }
 
-    // Redirect to analyzing page with URL as query parameter
-    const analyzingUrl = `/analyzing?url=${encodeURIComponent(url)}`;
-    window.location.href = analyzingUrl;
+    // Redirect to payment page with URL as query parameter
+    const paymentUrl = `/payment?url=${encodeURIComponent(url)}`;
+    router.push(paymentUrl);
   };
 
   // Keyboard support for screenshot modal
@@ -225,7 +228,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-green-50 relative overflow-hidden">
-    
+
 
       {/* Schema Markup */}
       <script
@@ -280,14 +283,14 @@ export default function Home() {
         }}
       />
 
-<div className="announcment-bar">
-            <p>
-              Free 20-min strategy call included | Only <span>
-                 7 spots left
-              </span> this week
-            </p>
-          </div>
-          
+      <div className="announcment-bar">
+        <p>
+          Free 20-min strategy call included | Only <span>
+            7 spots left
+          </span> this week
+        </p>
+      </div>
+
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=&quot;25&quot; height=&quot;25&quot; viewBox=&quot;0 0 25 25&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cpath d=&quot;M1 1h1v1H1V1zm0 23h1v1H1v-1zm23 0h1v1h-1v-1zm0-23h1v1h-1V1z&quot; stroke=&quot;%23e5e7eb&quot; stroke-width=&quot;0.5&quot;/%3E%3C/svg%3E')] opacity-30"></div>
 
@@ -337,11 +340,11 @@ export default function Home() {
             <div className='mt-15'>
               <div className="text-center mb-12 flex flex-col gap-8">
                 <h2 className="section-header__title">
-                The CRO Team Behind Million-Dollar Shopify Plus Stores
+                  The CRO Team Behind Million-Dollar Shopify Plus Stores
 
                 </h2>
                 <p className='section-header__description'>
-                We’ve helped some of the biggest brands turn more clicks into customers. When you work with us, you’re getting proven expertise, not guesswork. Book your call today.
+                  We’ve helped some of the biggest brands turn more clicks into customers. When you work with us, you’re getting proven expertise, not guesswork. Book your call today.
 
                 </p>
               </div>
@@ -423,6 +426,9 @@ export default function Home() {
         onClose={() => setShowFormModal(false)}
         websiteUrl={url}
       />
+
+      <FloatingButton />
+
     </div>
   );
 } 

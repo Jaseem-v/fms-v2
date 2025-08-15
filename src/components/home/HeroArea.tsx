@@ -67,14 +67,22 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
     const [isSticky, setIsSticky] = useState<boolean>(false);
     const inputWrapperRef = useRef<HTMLDivElement>(null);
     const inputContainerRef = useRef<HTMLFormElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        // Auto-focus the input field when component mounts
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, []);
 
     useEffect(() => {
         const handleScroll = () => {
             if (!inputWrapperRef.current || !inputContainerRef.current) return;
-            
+
             const wrapperRect = inputWrapperRef.current.getBoundingClientRect();
             const isMobile = window.innerWidth <= 768;
-            
+
             if (isMobile && wrapperRect.top <= 0) {
                 setIsSticky(true);
                 document.body.style.paddingBottom = '90px';
@@ -144,24 +152,27 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                     </div>
                 </div>
                 <h1 className='hero__details-title hidden md:block'>
-                Plenty of Traffic, But Few Orders?
+                    Your store is leaking, <br />
+                    Let's fix it!
                 </h1>
                 <h1 className='hero__details-title  md:hidden'>
-                Plenty of Traffic, But Few Orders?
+                    Your store is leaking,
+                    Let's fix it!
                 </h1>
                 <p className='hero__details-description'>
-                Get a detailed audit of your Shopify store, with insights from million-dollar brands and app recommendations for easy implementation.
+                    Discover what's blocking your store sales.  Fix your store now!
                 </p>
             </div>
 
 
             <div className="hero__input-wrapper" ref={inputWrapperRef}>
-                <form 
-                    className={`hero__input-container ${isSticky ? 'hero__input-container--sticky' : ''}`} 
+                <form
+                    className={`hero__input-container ${isSticky ? 'hero__input-container--sticky' : ''}`}
                     onSubmit={handleSubmit}
                     ref={inputContainerRef}
                 >
                     <input
+                        ref={inputRef}
                         type="text"
                         placeholder='Enter your store URL'
                         className={`hero__input-field ${urlError ? 'hero__input-field--error' : ''}`}
@@ -185,11 +196,11 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                     </div>
                 )}
 
-               
+
 
                 <div className='hero__input-guarantee'>
                     <span>
-                    One Time Payment
+                        $149 One Time Payment
                     </span>
                     <span className='hidden md:block'>
                         •
@@ -198,7 +209,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                         |
                     </span>
                     <span>
-                    7-Day Refund Option
+                        Full Store Audit
                     </span>
                     <span className='hidden md:block'>
                         •
@@ -207,7 +218,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                         |
                     </span>
                     <span>
-                    No Hidden Fee
+                        One-on-One Consultation
                     </span>
                 </div>
 
@@ -253,7 +264,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
             </ul>
 
             <div className="flex justify-center">
-                <img src="/shopify.svg" alt="" />
+                <img src="/shopify.svg" alt="" style={{ width: "250px" }} />
             </div>
 
         </div>

@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import reportService from '../../../services/reportService';
 import AnalysisReport from '../../../components/report/AnalysisReport';
 import OverallSummary from '../../../components/report/OverallSummary';
 import ReportLoading from '../../../components/report/ReportLoading';
 import DownloadModal from '@/components/report/DownloadModal';
+import FloatingButton from '@/components/ui/FloatingButton';
 import { useAnalysis } from '@/hooks/useAnalysis';
 
 export default function ReportPage() {
@@ -26,6 +27,15 @@ export default function ReportPage() {
   });
   const [downloadLoading, setDownloadLoading] = useState(false);
 
+  // Sticky input field states
+  const [newUrl, setNewUrl] = useState<string>('');
+  const [urlError, setUrlError] = useState<string>('');
+  const [isSticky, setIsSticky] = useState<boolean>(false);
+  const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
+  const inputWrapperRef = useRef<HTMLDivElement>(null);
+  const inputContainerRef = useRef<HTMLFormElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const {
     showModal,
     setShowModal,
@@ -33,12 +43,100 @@ export default function ReportPage() {
     setUrl
   } = useAnalysis();
 
+  // Hide main layout's FloatingButton when on report page
+  useEffect(() => {
+    const mainFloatingButton = document.querySelector('.fixed.bottom-6.right-6.z-50') as HTMLElement;
+    if (mainFloatingButton) {
+      mainFloatingButton.style.display = 'none';
+    }
+
+    return () => {
+      if (mainFloatingButton) {
+        mainFloatingButton.style.display = 'block';
+      }
+    };
+  }, []);
+
+  // Sticky input field scroll handler
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!inputWrapperRef.current || !inputContainerRef.current) return;
+
+      const wrapperRect = inputWrapperRef.current.getBoundingClientRect();
+      const isMobile = window.innerWidth <= 768;
+
+      if (isMobile && wrapperRect.top <= 0) {
+        setIsSticky(true);
+        document.body.style.paddingBottom = '90px';
+      } else {
+        setIsSticky(false);
+        document.body.style.paddingBottom = '0px';
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.body.style.paddingBottom = '0px';
+    };
+  }, []);
+
+  // URL validation helper
+  const validateUrl = (url: string): boolean => {
+    if (!url || url.trim() === '') return false;
+
+    try {
+      const normalizedUrl = url.match(/^https?:\/\//) ? url : `https://${url}`;
+      const urlObj = new URL(normalizedUrl);
+      const hasValidHostname = Boolean(urlObj.hostname) && urlObj.hostname.includes('.');
+      const hasValidProtocol = urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+
+      return hasValidHostname && hasValidProtocol;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  // Handle new analysis submission
+  const handleNewAnalysis = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    setUrlError('');
+
+    if (!validateUrl(newUrl)) {
+      setUrlError('Please enter a valid website URL (e.g., example.com or https://example.com)');
+      return;
+    }
+
+    try {
+      setIsAnalyzing(true);
+      const normalizedUrl = newUrl.match(/^https?:\/\//) ? newUrl : `https://${newUrl}`;
+
+      // Redirect to analyze page with new URL
+      window.location.href = `/payment?url=${encodeURIComponent(normalizedUrl)}`;
+    } catch (error) {
+      console.error('Error starting new analysis:', error);
+      setUrlError('Failed to start analysis. Please try again.');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const handleNewUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newUrlValue = e.target.value;
+    setNewUrl(newUrlValue);
+
+    if (urlError) {
+      setUrlError('');
+    }
+  };
+
   // Custom download handler for report page
   const handleUserInfoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       setDownloadLoading(true);
-      
+
       // Use the local report state instead of the hook's report state
       if (!report || typeof report !== 'object' || Object.keys(report).length === 0) {
         throw new Error('No report data available for download');
@@ -127,7 +225,7 @@ export default function ReportPage() {
         }
 
         console.log("result.report.websiteUrl", result.report.websiteUrl);
-        
+
 
         setUrl(result.report.websiteUrl);
 
@@ -239,15 +337,50 @@ export default function ReportPage() {
           <p className="text-gray-600">
             {isInProgress ? 'Analysis in progress...' : 'Comprehensive analysis of your Shopify store'}
           </p> */}
-          {reportData && (
-            <div className="mt-4 text-sm text-gray-500">
-              {/* <p>Website: {reportData.websiteUrl}</p> */}
-              <p>Created: {new Date(reportData.createdAt).toLocaleString()}</p>
+          {/* {reportData && (
+            <div className="mt-4 text-sm text-gray-500"> */}
+          {/* <p>Website: {reportData.websiteUrl}</p> */}
+          {/* <p>Created: {new Date(reportData.createdAt).toLocaleString()}</p>
               {reportData.status === 'pending' && reportData.progress && (
                 <p>Progress: Step {reportData.progress.currentStep} of {reportData.progress.totalSteps}</p>
-              )}
-            </div>
-          )}
+              )} */}
+          {/* </div>
+          )} */}
+        </div>
+
+        {/* Sticky Input Field for New Analysis */}
+        <div className="mb-8">
+          <div className="hero__input-wrapper" ref={inputWrapperRef}>
+            <form
+              className={`hero__input-container desktop-hidden  hero__input-container--sticky`}
+              onSubmit={handleNewAnalysis}
+              ref={inputContainerRef}
+            >
+              <input
+                ref={inputRef}
+                type="text"
+                placeholder='Analyze another store URL'
+                className={`hero__input-field ${urlError ? 'hero__input-field--error' : ''}`}
+                value={newUrl}
+                onChange={handleNewUrlChange}
+
+              />
+
+              <button className='hero__input-button' type='submit' disabled={isAnalyzing}>
+                {isAnalyzing ? 'Starting...' : 'Analyze Store'}
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M13 17L18 12L13 7M6 17L11 12L6 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+            </form>
+
+            {urlError && (
+              <div className="hero__input-error">
+                {urlError}
+              </div>
+            )}
+          </div>
         </div>
 
         {isInProgress && (
@@ -292,6 +425,9 @@ export default function ReportPage() {
           />
         </div>
       </div>
+
+      {/* Report page specific FloatingButton that navigates to /payment */}
+      <FloatingButton path="/payment" />
     </div>
   );
 }
