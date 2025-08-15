@@ -164,7 +164,7 @@ function PaymentForm() {
 
             <div>
               <h2 className="mt-6  text-sm font-extrabold text-gray-900 payment-header">
-              Get Your Audit – Fill Out the Form Below!
+                Fill Out the Form Below!
               </h2>
             </div>
 
@@ -220,7 +220,7 @@ function PaymentForm() {
                     />
                   </div>
 
-                  <div className="mb-6">
+                  {/* <div className="mb-6">
                     <label htmlFor="discountCode" className="block text-sm font-medium text-gray-700 mb-2 payment-label">
                       Discount Code
                     </label>
@@ -250,7 +250,7 @@ function PaymentForm() {
                         {discountVerification.message}
                       </div>
                     )}
-                  </div>
+                  </div> */}
                 </div>
 
                 {error && (

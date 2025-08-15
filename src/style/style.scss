@@ -1924,14 +1924,16 @@ body:not([data-admin="true"]) main {
 .payment-header {
     color: #101314;
     font-family: "Instrument Sans";
-    font-size: 30px;
+    font-size: 28px;
     font-style: normal;
     font-weight: 600;
     line-height: 100%;
+    text-align: center;
     /* 40px */
     text-transform: capitalize;
+
     @media (max-width: 480px) {
-        font-size: 28px;
+        font-size: 25px;
     }
 }
 
@@ -1954,6 +1956,7 @@ body:not([data-admin="true"]) main {
         opacity: 0;
         transform: translateY(100%);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
