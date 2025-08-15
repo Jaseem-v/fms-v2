@@ -7,7 +7,7 @@ import { triggerGA4Purchase } from '../../utils/conversionTracking';
 import { config } from '@/config/config';
 import Link from 'next/link';
 
-const CountdownTimer = () => {
+export const CountdownTimer = () => {
   const [timeLeft, setTimeLeft] = useState({
     hours: 0,
     minutes: 5,
@@ -169,7 +169,7 @@ function PaymentForm() {
           <div className="max-w-2xl w-full mx-auto space-y-8">
             <div>
               <h2 className="mt-6  text-2xl font-extrabold text-gray-900 payment-header">
-                Get 20+ Oppurtunities to increase sale!
+                Get 20+ Opportunities to increase sale!
               </h2>
             </div>
 

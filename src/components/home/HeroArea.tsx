@@ -247,7 +247,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
 
             </div>
 
-            <ul className="hero__pages-list">
+            {/* <ul className="hero__pages-list">
 
                 {pages.map((page, index) => (
                     <li className={`hero__pages-item ${activePage === index ? 'active' : ''}`} key={index} onMouseEnter={() => handleMouseEnter(index)} onMouseLeave={handleMouseLeave}>
@@ -261,7 +261,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                     </li>
                 ))}
 
-            </ul>
+            </ul> */}
 
             <div className="flex justify-center">
                 <img src="/shopify.svg" alt="" style={{ width: "250px" }} />

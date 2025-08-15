@@ -24,6 +24,7 @@ import Calandly from '@/components/home/Calandly';
 import BeforeAfter from '@/components/home/BeforeAfter';
 import { config } from '@/config/config';
 import FloatingButton from '@/components/ui/FloatingButton';
+import { CountdownTimer } from './payment/page';
 
 
 interface UserInfo {
@@ -285,9 +286,7 @@ export default function Home() {
 
       <div className="announcment-bar">
         <p>
-          Free 20-min strategy call included | Only <span>
-            7 spots left
-          </span> this week
+          Grab it in 5 mins, <span>85% Off </span> for <CountdownTimer />
         </p>
       </div>
 

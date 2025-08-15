@@ -1832,9 +1832,9 @@ body:not([data-admin="true"]) main {
         line-height: 131%;
         /* 17.03px */
 
-        @media (max-width: 480px) {
-            font-size: 10px;
-        }
+        // @media (max-width: 480px) {
+        //     font-size: 10px;
+        // }
 
         span {
             font-weight: 600;
