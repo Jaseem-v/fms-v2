@@ -287,11 +287,9 @@ export default function Home() {
 
       <div className="announcment-bar">
         <p>
-          Hurry Up! <span className='line-through text-sm'>
-            $997
-          </span> <strong> $149</strong> |
+          Limited time - $149 Only - Offer ends in
+          <CountdownTimer />
         </p>
-        <CountdownTimer />
       </div>
 
       {/* Background Pattern */}

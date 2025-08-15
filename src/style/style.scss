@@ -1822,6 +1822,8 @@ body:not([data-admin="true"]) main {
     gap: 10px;
     flex-shrink: 0;
 
+    font-weight: 700;
+
     p {
         color: #FFF;
         text-align: center;
@@ -1830,11 +1832,13 @@ body:not([data-admin="true"]) main {
         font-style: normal;
         font-weight: 400;
         line-height: 131%;
+        display: inline-flex;
+        gap: 7px;
         /* 17.03px */
 
-        // @media (max-width: 480px) {
-        //     font-size: 10px;
-        // }
+        @media (max-width: 480px) {
+            font-size: 14px;
+        }
 
         span {
             // font-weight: 600;
