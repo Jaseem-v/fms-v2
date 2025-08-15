@@ -291,7 +291,7 @@ function PaymentForm() {
                         </div>
                         <div className="flex items-center space-x-2 gap-4 mb-4">
                           <span className="text-green-600">✓</span>
-                          <span className="text-gray-700">One - On - One consultation <span className="font-semibold">(Worth ${config.pricing.oneOnOneConsultation})</span></span>
+                          <span className="text-gray-700">One-On-One consultation <span className="font-semibold">(Worth ${config.pricing.oneOnOneConsultation})</span></span>
                         </div>
                         <div className="flex items-center space-x-2 gap-4">
                           <span className="text-green-600">✓</span>
