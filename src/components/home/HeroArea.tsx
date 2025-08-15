@@ -113,10 +113,10 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
         setUrlError('');
 
         // Validate URL
-        if (!validateUrl(url)) {
-            setUrlError('Please enter a valid website URL (e.g., example.com or https://example.com)');
-            return;
-        }
+        // if (!validateUrl(url)) {
+        //     setUrlError('Please enter a valid website URL (e.g., example.com or https://example.com)');
+        //     return;
+        // }
 
         // Normalize the URL before submitting
         const normalizedUrl = normalizeUrl(url);
@@ -264,7 +264,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
             </ul> */}
 
             <div className="flex justify-center">
-                <img src="/shopify.svg" alt="" style={{ width: "250px" }} />
+                <img src="https://cdn-daoob.nitrocdn.com/LCiYkAjyMYQllcWpSRewurPZnOGNoosN/assets/images/optimized/rev-5e03d09/arulmjoseph.com/wp-content/uploads/2024/08/Shopify-Partner.png" alt="" style={{ width: "250px" }} />
             </div>
 
         </div>

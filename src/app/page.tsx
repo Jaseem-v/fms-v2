@@ -287,8 +287,11 @@ export default function Home() {
 
       <div className="announcment-bar">
         <p>
-          Grab it in 5 mins, <span>85% Off </span> for <CountdownTimer />
+          Hurry Up! <span className='line-through text-sm'>
+            $997
+          </span> <strong> $149</strong> |
         </p>
+        <CountdownTimer />
       </div>
 
       {/* Background Pattern */}
