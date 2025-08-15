@@ -118,10 +118,9 @@ function PaymentForm() {
   return (
     <>
       <div className="bg-black text-white p-4  text-center flex justify-center items-center gap-1 sticky top-0 z-10">
-        <div className="text-sm md:text-lg font-semibold">Grab it in 5 mins, 85% Off for </div>
-        <div className="text-sm md:text-2xl font-bold font-mono">
-          <CountdownTimer />
-        </div>
+        <div className="text-sm md:text-lg font-semibold flex items-center gap-1">  Limited time - $149 Only - Offer ends in
+          <CountdownTimer /> </div>
+
       </div>
 
       <div className="min-h-screen bg-green-50 flex flex-col">
