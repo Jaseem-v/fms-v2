@@ -24,7 +24,8 @@ import Calandly from '@/components/home/Calandly';
 import BeforeAfter from '@/components/home/BeforeAfter';
 import { config } from '@/config/config';
 import FloatingButton from '@/components/ui/FloatingButton';
-import { CountdownTimer } from './payment/page';
+import CountdownTimer from '@/components/ui/CountdownTimer';
+// import { CountdownTimer } from './payment/page';
 
 
 interface UserInfo {
