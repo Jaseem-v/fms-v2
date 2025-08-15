@@ -233,15 +233,15 @@ export default function ReportPage() {
 
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          {/* <h1 className="text-3xl font-bold text-gray-900 mb-2">
             CRO Analysis Report
           </h1>
           <p className="text-gray-600">
             {isInProgress ? 'Analysis in progress...' : 'Comprehensive analysis of your Shopify store'}
-          </p>
+          </p> */}
           {reportData && (
             <div className="mt-4 text-sm text-gray-500">
-              <p>Website: {reportData.websiteUrl}</p>
+              {/* <p>Website: {reportData.websiteUrl}</p> */}
               <p>Created: {new Date(reportData.createdAt).toLocaleString()}</p>
               {reportData.status === 'pending' && reportData.progress && (
                 <p>Progress: Step {reportData.progress.currentStep} of {reportData.progress.totalSteps}</p>

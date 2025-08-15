@@ -6,7 +6,8 @@ import { ToastProvider } from "@/contexts/ToastContext";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import "./font.css";
-import "./style.scss"
+import "../style/style.scss"
+import "../style/ui.scss"
 import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
