@@ -56,18 +56,32 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
   const [selectedImage, setSelectedImage] = useState<ImageReference | null>(null);
   const [selectedAppReference, setSelectedAppReference] = useState<AppReference | null>(null);
   const [selectedScreenshot, setSelectedScreenshot] = useState<string | null>(null);
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
+
+  // Initialize expandedItems with first item of each page expanded by default
+  const getDefaultExpandedItems = (): Set<string> => {
+    if (!report) return new Set<string>();
+
+    const defaultExpanded = new Set<string>();
+    Object.keys(report).forEach(page => {
+      if (report[page] && report[page].length > 0) {
+        defaultExpanded.add(`${page}-0`);
+      }
+    });
+    return defaultExpanded;
+  };
+
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(getDefaultExpandedItems());
 
   const toggleItem = (page: string, itemIndex: number) => {
     const itemKey = `${page}-${itemIndex}`;
     const newExpandedItems = new Set(expandedItems);
-    
+
     if (newExpandedItems.has(itemKey)) {
       newExpandedItems.delete(itemKey);
     } else {
       newExpandedItems.add(itemKey);
     }
-    
+
     setExpandedItems(newExpandedItems);
   };
 
@@ -112,7 +126,7 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
 
   return (
     <div className="space-y-6">
-     
+
 
       {/* Analysis for current tab */}
 
@@ -125,8 +139,8 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
                 {analysis.map((item, index) => {
                   return (
 
-                    <div key={index} className="report__item-content">
-                      <h3 
+                    <div key={index} className={`report__item-content ${isItemExpanded(page, index) ? 'expanded' : ''}`}>
+                      <h3
                         className="report__item-title"
                         onClick={() => toggleItem(page, index)}
                       >
@@ -135,7 +149,7 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
                           {isItemExpanded(page, index) ? '▼' : '▶'}
                         </span>
                       </h3>
-                      
+
                       {isItemExpanded(page, index) && (
                         <>
                           <div className="report__item-element">
@@ -150,39 +164,45 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
 
                           {item.relevantImages && item.relevantImages.length > 0 && (
                             <div className="report__item-element">
-                              <div className="report__item-element-icon" />
+                              <div className="report__item-element-icon reference-icon" />
                               <div className="report__item-element-content">
                                 <h3 className="report__item-element-title">
                                   References
                                 </h3>
                                 <div className="report__item-images">
-                                  {item.relevantImages.map((image) => (
-                                    <div
-                                      key={image.id}
-                                      className="border border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-                                      onClick={() => setSelectedImage(image)}
-                                    >
-                                      <div className="aspect-video bg-gray-100">
-                                        <img
-                                          src={`${backendUrl}${image.imageUrl}`}
-                                          alt="Relevant example"
-                                          className="w-full h-full object-cover"
-                                          onError={(e) => {
-                                            const target = e.target as HTMLImageElement;
-                                            target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjOUI5QkEwIi8+CjxwYXRoIGQ9Ik02MCAxMDBDNjAgODguOTU0MyA2OC45NTQzIDgwIDgwIDgwQzkxLjA0NTcgODAgMTAwIDg4Ljk1NDMgMTAwIDEwMEMxMDAgMTExLjA0NiA5MS4wNDU3IDEyMCA4MCAxMjBDNjguOTU0MyAxMjAgNjAgMTExLjA0NiA2MCAxMDBaIiBmaWxsPSIjOUI5QkEwIi8+CjxwYXRoIGQ9Ik04MCAxNDBDNjguOTU0MyAxNDAgNjAgMTMxLjA0NiA2MCAxMjBMMTAwIDEyMEMxMDAgMTMxLjA0NiA5MS4wNDU3IDE0MCA4MCAxNDBaIiBmaWxsPSIjOUI5QkEwIi8+Cjwvc3ZnPgo=';
-                                          }}
-                                        />
-                                      </div>
-                                      <div className="p-3">
+                                  {item.relevantImages.map((image) => {
+
+                                    const imageUrl = image.imageUrl.includes('/report-img/') ? image.imageUrl : `${backendUrl}${image.imageUrl}`;
+
+                                    return (
+                                      <div
+                                        key={image.id}
+                                        className="overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                                        onClick={() => setSelectedImage(image)}
+                                      >
+                                        <div className=" bg-gray-100">
+                                          <img
+                                            src={imageUrl}
+                                            alt="Relevant example"
+                                            className="w-full h-full"
+                                            onError={(e) => {
+                                              const target = e.target as HTMLImageElement;
+                                              target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjOUI5QkEwIi8+CjxwYXRoIGQ9Ik02MCAxMDBDNjAgODguOTU0MyA2OC45NTQzIDgwIDgwIDgwQzkxLjA0NTcgODAgMTAwIDg4Ljk1NDMgMTAwIDEwMEMxMDAgMTExLjA0NiA5MS4wNDU3IDEyMCA4MCAxMjBDNjguOTU0MyAxMjAgNjAgMTExLjA0NiA2MCAxMDBaIiBmaWxsPSIjOUI5QkEwIi8+CjxwYXRoIGQ9Ik04MCAxNDBDNjguOTU0MyAxNDAgNjAgMTMxLjA0NiA2MCAxMjBMMTAwIDEyMEMxMDAgMTMxLjA0NiA5MS4wNDU3IDE0MCA4MCAxNDBaIiBmaWxsPSIjOUI5QkEwIi8+Cjwvc3ZnPgo=';
+                                            }}
+                                          />
+                                        </div>
+                                        {/* <div className="p-3">
                                         <p className="text-sm text-gray-700 line-clamp-2">
                                           {image.useCases.join(', ').length > 80
                                             ? `${image.useCases.join(', ').substring(0, 80)}...`
                                             : image.useCases.join(', ')
                                           }
                                         </p>
+                                      </div> */}
                                       </div>
-                                    </div>
-                                  ))}
+                                    )
+                                  }
+                                  )}
                                 </div>
                               </div>
                             </div>

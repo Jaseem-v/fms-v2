@@ -9,13 +9,14 @@ import ReportLoading from '../../../components/report/ReportLoading';
 import DownloadModal from '@/components/report/DownloadModal';
 import FloatingButton from '@/components/ui/FloatingButton';
 import { useAnalysis } from '@/hooks/useAnalysis';
+import { initialReport } from '@/utils/initialReport';
 
 export default function ReportPage() {
   const params = useParams();
   const slug = params.slug as string;
 
-  const [report, setReport] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [report, setReport] = useState<any>(initialReport);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>('');
   const [reportData, setReportData] = useState<any>(null);
@@ -193,11 +194,11 @@ export default function ReportPage() {
   };
 
 
-  useEffect(() => {
-    if (slug) {
-      loadReport();
-    }
-  }, [slug]);
+  // useEffect(() => {
+  //   if (slug) {
+  //     loadReport();
+  //   }
+  // }, [slug]);
 
   const loadReport = async () => {
     try {
@@ -403,6 +404,7 @@ export default function ReportPage() {
                 setShowModal={setShowModal}
                 noViewReport={true}
                 reportUrl={reportUrl}
+                performanceScore={59}
               />
 
               <AnalysisReport

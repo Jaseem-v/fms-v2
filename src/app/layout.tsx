@@ -46,6 +46,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Instrument+Serif:ital@0;1&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
         <Script
           id="google-tag-manager"
           strategy="afterInteractive"

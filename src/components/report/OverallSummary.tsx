@@ -17,10 +17,12 @@ interface OverallSummaryProps {
   setShowModal: (show: boolean) => void;
   reportUrl?: string | null;
   noViewReport?: boolean;
+  performanceScore?: number;
 }
 
-export default function OverallSummary({ report, analysisInProgress, setShowModal, reportUrl, noViewReport }: OverallSummaryProps) {
+export default function OverallSummary({ report, analysisInProgress, setShowModal, reportUrl, noViewReport, performanceScore }: OverallSummaryProps) {
   const [svgSize, setSvgSize] = useState({ width: 307, height: 308, viewBox: "0 0 307 308" });
+  // const [performanceScore, setPerformanceScore] = useState(performanceScore || 0);
   const [coordinates, setCoordinates] = useState({
     centerX: 153.5,
     centerY: 154.058,
@@ -83,7 +85,8 @@ export default function OverallSummary({ report, analysisInProgress, setShowModa
   }, 0);
 
   // Calculate performance score (100 - problems * 1.5, minimum 0)
-  const performanceScore = Math.max(0, Math.round(100 - (totalProblems)));
+
+  const finalPerformanceScore = performanceScore || Math.max(0, Math.round(100 - (totalProblems)));
 
   // Get background color based on performance score
   const getScoreColor = (score: number) => {
@@ -168,16 +171,16 @@ export default function OverallSummary({ report, analysisInProgress, setShowModa
 
               {/* Performance arc */}
               <path
-                d={createArcPath(performanceScore)}
+                d={createArcPath(finalPerformanceScore)}
                 fill="none"
-                stroke={getScoreColor(performanceScore)}
+                stroke={getScoreColor(finalPerformanceScore)}
                 strokeWidth={coordinates.arcWidth}
                 strokeLinecap="round"
               />
             </svg>
           </div>
           <div className="gauge-content">
-            <div className="score-number">{performanceScore}/100</div>
+            <div className="score-number">{finalPerformanceScore}/100</div>
             <div className="flex items-center gap-2">
               <h2 className="score-label ">FMS <span>score</span> </h2>
               <svg
@@ -196,7 +199,7 @@ export default function OverallSummary({ report, analysisInProgress, setShowModa
         </div>
 
         <div className="performance-summary">
-          Based on our audit, <span>{performanceScore}</span>% is your <span>Fix My Store score </span> (FMS score)
+          Based on our audit, <span>{finalPerformanceScore}</span>% is your <span>Fix My Store score </span> (FMS score)
         </div>
       </div>
 
