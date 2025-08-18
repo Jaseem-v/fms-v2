@@ -174,7 +174,8 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                     <input
                         ref={inputRef}
                         type="text"
-                        placeholder='Enter your store URL'
+                        name='siteUrl'
+                        placeholder='https://shopify.com'
                         className={`hero__input-field ${urlError ? 'hero__input-field--error' : ''}`}
                         value={url}
                         onChange={handleUrlChange}
