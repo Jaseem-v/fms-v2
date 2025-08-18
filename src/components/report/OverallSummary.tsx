@@ -210,7 +210,7 @@ export default function OverallSummary({ report, analysisInProgress, setShowModa
         </div>
 
         <div className="flex flex-col gap-4">
-          <h3 className="overall-summary__hint">75 Opportunities to Increase Sales!</h3>
+          <h3 className="overall-summary__hint">${totalProblems} Opportunities to Increase Sales!</h3>
           <div className="overall-summary__steps grid grid-cols-2 gap-4">
             <div className={`overall-summary__step ${isHomepageComplete ? 'overall-summary__step--complete' : ''}`}>
               <span className={`overall-summary__step-count `}>{problemsByPage.homepage}</span>
