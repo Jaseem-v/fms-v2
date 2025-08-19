@@ -86,6 +86,15 @@ export default function RootLayout({
             `,
           }}
         />
+        <Script
+          id="crisp-chat"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.$crisp=[];window.CRISP_WEBSITE_ID="5068cab5-525c-4428-8ad6-8de243a09cb2";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();
+            `,
+          }}
+        />
       </head>
       <body className={inter.className}>
         <noscript>
