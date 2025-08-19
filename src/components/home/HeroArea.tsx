@@ -31,13 +31,11 @@ const pages = [
 
 // Sample site names for typing animation
 const sampleSites = [
-    'boat.com',
-    'kodiakcakes.com',
-    'nishhair.com',
-    'bouqs.com',
-    'thecomfy.com',
-    'madrabbit.in',
-    'spicestoryworld.com'
+    'fentybeauty.com',
+    'gymshark.com',
+    'kyliecosmetics.com',
+    'brooklinen.com',
+    'huel.com'
 ];
 
 // Helper function to normalize URL by adding https:// if no protocol is present
