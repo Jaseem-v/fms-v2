@@ -29,6 +29,17 @@ const pages = [
     }
 ]
 
+// Sample site names for typing animation
+const sampleSites = [
+    'boat.com',
+    'kodiakcakes.com',
+    'nishhair.com',
+    'bouqs.com',
+    'thecomfy.com',
+    'madrabbit.in',
+    'spicestoryworld.com'
+];
+
 // Helper function to normalize URL by adding https:// if no protocol is present
 const normalizeUrl = (url: string): string => {
     if (!url) return url;
@@ -65,6 +76,9 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
     const [activePage, setActivePage] = useState<number | null>(null);
     const [urlError, setUrlError] = useState<string>('');
     const [isSticky, setIsSticky] = useState<boolean>(false);
+    const [typingText, setTypingText] = useState<string>('');
+    const [currentSiteIndex, setCurrentSiteIndex] = useState<number>(0);
+    const [isTyping, setIsTyping] = useState<boolean>(true);
     const inputWrapperRef = useRef<HTMLDivElement>(null);
     const inputContainerRef = useRef<HTMLFormElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -75,6 +89,49 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
             inputRef.current.focus();
         }
     }, []);
+
+    // Typing animation effect
+    useEffect(() => {
+        if (!isTyping || url.trim() !== '') return;
+
+        let currentText = '';
+        let currentCharIndex = 0;
+        const targetSite = sampleSites[currentSiteIndex];
+
+        const typeInterval = setInterval(() => {
+            if (currentCharIndex < targetSite.length) {
+                currentText += targetSite[currentCharIndex];
+                setTypingText(currentText);
+                currentCharIndex++;
+            } else {
+                // Wait a bit before starting to delete
+                setTimeout(() => {
+                    const deleteInterval = setInterval(() => {
+                        if (currentText.length > 0) {
+                            currentText = currentText.slice(0, -1);
+                            setTypingText(currentText);
+                        } else {
+                            clearInterval(deleteInterval);
+                            // Move to next site
+                            setCurrentSiteIndex((prev) => (prev + 1) % sampleSites.length);
+                        }
+                    }, 100);
+                }, 1500);
+                clearInterval(typeInterval);
+            }
+        }, 150);
+
+        return () => clearInterval(typeInterval);
+    }, [currentSiteIndex, isTyping, url]);
+
+    // Stop typing animation when user starts typing
+    useEffect(() => {
+        if (url.trim() !== '') {
+            setIsTyping(false);
+        } else {
+            setIsTyping(true);
+        }
+    }, [url]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -138,6 +195,14 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
         }
     };
 
+    // Get placeholder text - show typing animation when empty, show static text when user is typing
+    const getPlaceholderText = () => {
+        if (url.trim() === '' && isTyping) {
+            return typingText;
+        }
+        return 'https://shopify.com';
+    };
+
     return (
         <div className='hero__content' id='payment'>
             <div className="hero__details">
@@ -175,7 +240,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                         ref={inputRef}
                         type="text"
                         name='siteUrl'
-                        placeholder='https://shopify.com'
+                        placeholder={getPlaceholderText()}
                         className={`hero__input-field ${urlError ? 'hero__input-field--error' : ''}`}
                         value={url}
                         onChange={handleUrlChange}
@@ -229,7 +294,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                         // onClick={handleSeeSample}
                         className="link-btn"
                     >
-                        See Sample Report
+                        See Sample Audit
 
                     </Link>
                     {">"}

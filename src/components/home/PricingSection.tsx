@@ -10,7 +10,7 @@ const PricingSection: React.FC = () => {
   return (
     <section className="py-16 ">
       <div className="container mx-auto max-w-4xl">
-        <div className="text-center mb-12">
+        <div className="text-center mb-4">
           <h2 className="section-header__title">
             One time payment
           </h2>

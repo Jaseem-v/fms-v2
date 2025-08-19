@@ -4,7 +4,7 @@ export default function BeforeAfter() {
     return (
         <section className="py-16 bg-green-50 pb-0">
             <div className="container mx-auto max-w-4xl">
-                <div className="text-center md:mb-12 mb-6">
+                <div className="text-center mb-4">
                     <h2 className="section-header__title instrument-sans before-after-title">
                         Meet <span>Felix</span>
                     </h2>
@@ -22,7 +22,7 @@ export default function BeforeAfter() {
             </div>
 
             <div className="container mx-auto max-w-4xl mt-16 ">
-                <div className="text-center md:mb-12 mb-6">
+                <div className="text-center mb-4">
                     <h2 className="section-header__title instrument-sans before-after-title">
                         Now    Meet <span>Felix</span>
                     </h2>

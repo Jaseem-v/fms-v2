@@ -8,8 +8,23 @@ export default function CountdownTimer() {
     });
 
     useEffect(() => {
-        // Set end time to 5 minutes from when component mounts
-        const endTime = Date.now() + (5 * 60 * 1000);
+        // Check if there's an existing end time in localStorage
+        const storedEndTime = localStorage.getItem('countdownEndTime');
+        let endTime: number;
+
+        if (storedEndTime) {
+            endTime = parseInt(storedEndTime);
+            // Check if the stored time has already passed
+            if (endTime <= Date.now()) {
+                // Reset to 5 minutes if time has passed
+                endTime = Date.now() + (5 * 60 * 1000);
+                localStorage.setItem('countdownEndTime', endTime.toString());
+            }
+        } else {
+            // Set initial end time to 5 minutes from now
+            endTime = Date.now() + (5 * 60 * 1000);
+            localStorage.setItem('countdownEndTime', endTime.toString());
+        }
 
         const updateTimer = () => {
             const now = Date.now();
@@ -22,6 +37,8 @@ export default function CountdownTimer() {
                 setTimeLeft({ hours: 0, minutes, seconds });
             } else {
                 setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
+                // Clear the stored end time when countdown finishes
+                localStorage.removeItem('countdownEndTime');
             }
         };
 

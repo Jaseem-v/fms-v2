@@ -104,10 +104,10 @@ export default function ReportPage() {
 
     setUrlError('');
 
-    if (!validateUrl(newUrl)) {
-      setUrlError('Please enter a valid website URL (e.g., example.com or https://example.com)');
-      return;
-    }
+    // if (!validateUrl(newUrl)) {
+    //   setUrlError('Please enter a valid website URL (e.g., example.com or https://example.com)');
+    //   return;
+    // }
 
     try {
       setIsAnalyzing(true);

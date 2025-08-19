@@ -324,7 +324,7 @@ function PaymentForm() {
                     // target='_blank'
                     className="link-btn"
                   >
-                    See Sample Report
+                    See Sample Audit
 
                   </Link>
                   {">"}

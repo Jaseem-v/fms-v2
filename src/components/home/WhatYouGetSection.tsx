@@ -11,9 +11,9 @@ const WhatYouGetSection: React.FC = () => {
   };
 
   return (
-    <section className="py-16 bg-green-50 pb-0">
+    <section className=" bg-green-50 pb-0 py-6">
       <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-12">
+        <div className="text-center mb-4">
           <h2 className="section-header__title">
             What You Get
           </h2>
@@ -23,12 +23,12 @@ const WhatYouGetSection: React.FC = () => {
         </div>
 
         {/* Store Audit Section */}
-        <div className="mb-16">
+        <div className="mb-12">
           <h3 className="section-header__sub-title">
             Store Audit (Worth ${config.pricing.storeAudit})
           </h3>
 
-          <div className="grid md:grid-cols-3 gap-6 mb-8 mt-8">
+          <div className="grid md:grid-cols-3 gap-6 mb-8 mt-4">
             {/* Card 1: Complete Store Analysis */}
             <div className="what-get__item what-get__audit-item">
               <div className="what-get__audit-item-details">
@@ -87,13 +87,13 @@ const WhatYouGetSection: React.FC = () => {
               // onClick={handleSeeSample}
               className="download-button"
             >
-              See Sample Report
+              See Sample Audit
             </Link>
           </div>
         </div>
 
         {/* One-on-One Consultation Section */}
-        <div className="mb-16">
+        <div className="mb-12">
           <div className="what-get__item">
             <div className="what-get__details">
               <h3 className="section-header__sub-title">
