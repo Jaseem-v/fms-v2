@@ -68,7 +68,7 @@ export default function ReportPage() {
 
       if (isMobile && wrapperRect.top <= 0) {
         setIsSticky(true);
-        document.body.style.paddingBottom = '90px';
+        document.body.style.paddingBottom = '60px';
       } else {
         setIsSticky(false);
         document.body.style.paddingBottom = '0px';
@@ -368,7 +368,7 @@ export default function ReportPage() {
               />
 
               <button className='hero__input-button' type='submit' disabled={isAnalyzing}>
-                {isAnalyzing ? 'Starting...' : 'Analyze Store'}
+                {isAnalyzing ? 'Starting...' : 'Fix My Store'}
 
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path d="M13 17L18 12L13 7M6 17L11 12L6 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />

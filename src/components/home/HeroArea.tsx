@@ -140,7 +140,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
 
             if (isMobile && wrapperRect.top <= 0) {
                 setIsSticky(true);
-                document.body.style.paddingBottom = '90px';
+                document.body.style.paddingBottom = '60px';
             } else {
                 setIsSticky(false);
                 document.body.style.paddingBottom = '0px';

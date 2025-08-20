@@ -116,6 +116,14 @@
                 animation: slideUp 0.3s ease-out;
                 max-width: 100%;
                 margin: 0 20px;
+                z-index: 1000;
+                // /* background: linear-gradient(#fff0 0%, #fff 32.5%); */
+                max-width: 93%;
+                bottom: 5px;
+                left: 16px;
+                right: 0px;
+
+                // background: linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 32.5%);
 
                 @media (max-width: 768px) {
                     margin: 0 10px;
@@ -430,8 +438,8 @@
         &__input {
             &-container {
                 padding: 10px;
-                padding-left: 15px;
-                border-radius: 10px;
+                padding-left: 25px;
+                border-radius: 40px;
             }
 
             &-field {
@@ -439,9 +447,9 @@
             }
 
             &-button {
-                font-size: 12px;
-                border-radius: 10px;
-                padding: 8px 15px;
+                font-size: 13px;
+                border-radius: 40px;
+                padding: 11px 15px;
                 gap: 4px;
 
                 svg {
@@ -1972,4 +1980,9 @@ body:not([data-admin="true"]) main {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+
+.crisp-client .cc-1brb6[data-full-view=true] .cc-1yy0g .cc-1m2mf {
+    bottom: 90px !important;
 }
