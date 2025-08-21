@@ -147,14 +147,19 @@ export default function AnalyzeHomepage() {
                       }`}>
                       <div className="flex items-start gap-3">
                         <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 mt-1 ${item.status === 'PASS'
-                            ? 'bg-green-100 text-green-600'
-                            : 'bg-red-100 text-red-600'
+                          ? 'bg-green-100 text-green-600'
+                          : 'bg-red-100 text-red-600'
                           }`}>
                           {item.status === 'PASS' ? '✓' : '✗'}
                         </div>
                         <div className="flex-1">
                           <h4 className="font-semibold text-gray-800 mb-2">{
                             item.status === 'FAIL' ? item.problem : item.checklistItem}</h4>
+                          {/* {item.status === 'FAIL' && item.image_reference && (
+                            <div className="text-xs text-gray-500 mb-2">
+                              📸 Reference ID: {item.image_reference}
+                            </div>
+                          )} */}
                           {/* <div className={`text-sm font-medium mb-2 ${item.status === 'PASS' ? 'text-green-600' : 'text-red-600'
                             }`}>
                             Status: {item.status}
@@ -175,6 +180,83 @@ export default function AnalyzeHomepage() {
                                   <span className="font-semibold">Solution:</span> {item.solution}
                                 </p>
                               </div>
+
+                              {/* Image Reference Example */}
+                              {item.image_reference && (
+                                <>
+                                  {item.imageReferenceObject ? (
+                                    <div className="mt-4 bg-gray-50 border border-gray-200 rounded-lg p-4">
+                                      <h5 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                                        <span className="text-blue-600">📸</span>
+                                        Example Reference
+                                      </h5>
+                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {/* Example Image */}
+                                        <div className="border rounded-lg overflow-hidden">
+                                          <img
+                                            src={`https://server.fixmystore.com${item.imageReferenceObject.imageUrl}`}
+                                            alt={`Example: ${item.imageReferenceObject.id}`}
+                                            className="w-full h-auto object-cover"
+                                          />
+                                        </div>
+
+                                        {/* Example Details */}
+                                        <div className="space-y-3">
+                                          {/* <div>
+                                            <span className="text-sm font-medium text-gray-500">Page Type:</span>
+                                            <p className="text-sm text-gray-700 capitalize">{item.imageReferenceObject.page}</p>
+                                          </div>
+                                          
+                                          {item.imageReferenceObject.industry && (
+                                            <div>
+                                              <span className="text-sm font-medium text-gray-500">Industry:</span>
+                                              <p className="text-sm text-gray-700">{item.imageReferenceObject.industry}</p>
+                                            </div>
+                                          )}
+                                          
+                                          {item.imageReferenceObject.country && (
+                                            <div>
+                                              <span className="text-sm font-medium text-gray-500">Country:</span>
+                                              <p className="text-sm text-gray-700">{item.imageReferenceObject.country}</p>
+                                            </div>
+                                          )} */}
+                                          
+                                          {item.imageReferenceObject.useCases && item.imageReferenceObject.useCases.length > 0 && (
+                                            <div>
+                                              <span className="text-sm font-medium text-gray-500">Use Cases:</span>
+                                              <div className="mt-1 space-y-1">
+                                                {item.imageReferenceObject.useCases.map((useCase: string, idx: number) => (
+                                                  <p key={idx} className="text-xs text-gray-600 bg-white px-2 py-1 rounded border">
+                                                    {useCase}
+                                                  </p>
+                                                ))}
+                                                {/* {item.imageReferenceObject.useCases.length > 2 && (
+                                                  <p className="text-xs text-gray-500">
+                                                    +{item.imageReferenceObject.useCases.length - 2} more use cases
+                                                  </p>
+                                                )} */}
+                                              </div>
+                                            </div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                      <h5 className="font-semibold text-yellow-700 mb-2 flex items-center gap-2">
+                                        <span className="text-yellow-600">📸</span>
+                                        Example Reference
+                                      </h5>
+                                      <p className="text-sm text-yellow-600">
+                                        Reference ID: {item.image_reference}
+                                      </p>
+                                      <p className="text-xs text-yellow-500 mt-1">
+                                        Image reference object not available
+                                      </p>
+                                    </div>
+                                  )}
+                                </>
+                              )}
                             </>
                           )}
 
