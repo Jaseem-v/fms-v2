@@ -2,20 +2,10 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Metadata } from 'next';
 import Link from 'next/link';
 import paymentService from '../../../services/paymentService';
 import { triggerPurchaseConversion } from '../../../utils/conversionTracking';
 import { config } from '@/config/config';
-
-export const metadata: Metadata = {
-  title: 'Payment Success - FixMyStore',
-  description: 'Payment completed successfully. Your CRO analysis is being processed.',
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
 
 function PaymentSuccessContent() {
   const searchParams = useSearchParams();

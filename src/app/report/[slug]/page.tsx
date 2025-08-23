@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'next/navigation';
-import { Metadata } from 'next';
 import reportService from '../../../services/reportService';
 import AnalysisReport from '../../../components/report/AnalysisReport';
 import OverallSummary from '../../../components/report/OverallSummary';
@@ -11,15 +10,6 @@ import DownloadModal from '@/components/report/DownloadModal';
 import FloatingButton from '@/components/ui/FloatingButton';
 import { useAnalysis } from '@/hooks/useAnalysis';
 import { initialReport } from '@/utils/initialReport';
-
-export const metadata: Metadata = {
-  title: 'CRO Analysis Report - FixMyStore',
-  description: 'Your personalized store analysis report',
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
 
 const PAGE_TITLES: Record<string, string> = {
   homepage: 'Homepage',

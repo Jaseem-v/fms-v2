@@ -1,16 +1,6 @@
 'use client';
 
-import { Metadata } from 'next';
 import Link from 'next/link';
-
-export const metadata: Metadata = {
-  title: 'Payment Cancelled - FixMyStore',
-  description: 'Payment was cancelled. No charges were made to your account.',
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
 
 export default function PaymentCancelPage() {
   return (

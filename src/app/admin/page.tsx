@@ -1,14 +1,3 @@
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Admin Dashboard - FixMyStore',
-  description: 'Admin dashboard for FixMyStore management',
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
-
 export default function AdminDashboard() {
   return (
     <div className="py-6">
