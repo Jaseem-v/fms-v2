@@ -632,6 +632,18 @@
     position: relative;
     overflow: hidden;
 
+    @media screen and (max-width: 768px) {
+        padding: 10px 20px;
+        font-size: 14px;
+        border-radius: 8px;
+        gap: 8px;
+        // display: none;
+        svg {
+            width: 16px;
+            height: 16px;
+        }
+    }
+
 
     &.view {
         background: transparent;

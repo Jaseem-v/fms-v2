@@ -26,6 +26,7 @@ import { config } from '@/config/config';
 import FloatingButton from '@/components/ui/FloatingButton';
 import CountdownTimer from '@/components/ui/CountdownTimer';
 // import { CountdownTimer } from './payment/page';
+import { HomepageAnalysisResult } from '@/hooks/useHomepageAnalysis';
 
 
 interface UserInfo {
@@ -39,14 +40,8 @@ interface StatusMessage {
   step: number;
 }
 
-interface AnalysisItem {
-  problem: string;
-  solution: string;
-  summary: string;
-}
-
 interface Report {
-  [key: string]: AnalysisItem[];
+  [key: string]: HomepageAnalysisResult;
 }
 
 export default function Home() {
@@ -191,8 +186,26 @@ export default function Home() {
   console.log('Report data:', report);
 
   // Wrapper function to handle form submission with authentication check
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    try {
+      // Check server settings for flow configuration
+      const response = await fetch(`${config.backendUrl}/settings`);
+      if (response.ok) {
+        const settingsData = await response.json();
+        const serverFlow = settingsData.data?.flow || 'payment';
+        
+        if (serverFlow === 'homepage-analysis') {
+          // Redirect to analyzing page for homepage analysis
+          const analysisUrl = `/analyzing?url=${encodeURIComponent(url)}`;
+          router.push(analysisUrl);
+          return;
+        }
+      }
+    } catch (error) {
+      console.error('Error checking server settings:', error);
+    }
 
     // Check localStorage for admin settings
     const adminSettingsStr = localStorage.getItem('adminSettings');
@@ -209,7 +222,7 @@ export default function Home() {
       }
     }
 
-    // Redirect to payment page with URL as query parameter
+    // Default: Redirect to payment page with URL as query parameter
     const paymentUrl = `/payment?url=${encodeURIComponent(url)}`;
     router.push(paymentUrl);
   };

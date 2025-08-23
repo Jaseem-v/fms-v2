@@ -1,5 +1,6 @@
 'use client';
 
+import { HomepageAnalysisResult } from '@/hooks/useHomepageAnalysis';
 import { useState } from 'react';
 
 interface ImageReference {
@@ -8,15 +9,6 @@ interface ImageReference {
   useCases: string[];
   uploadDate: string;
   fileName: string;
-}
-
-interface AnalysisItem {
-  problem: string;
-  solution: string;
-  summary: string;
-  relevantImages?: ImageReference[];
-  relevantAppReferences?: AppReference[];
-  screenshotUrl?: string;
 }
 
 interface AppReference {
@@ -31,7 +23,7 @@ interface AppReference {
 }
 
 interface Report {
-  [key: string]: AnalysisItem[];
+  [key: string]: HomepageAnalysisResult;
 }
 
 interface AnalysisReportProps {
@@ -63,7 +55,7 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
 
     const defaultExpanded = new Set<string>();
     Object.keys(report).forEach(page => {
-      if (report[page] && report[page].length > 0) {
+      if (report[page]?.checklistAnalysis?.length > 0) {
         defaultExpanded.add(`${page}-0`);
       }
     });
@@ -91,7 +83,7 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
   };
 
   // Get available page types with data
-  const availablePages = report ? Object.keys(report).filter((key) => report[key] && report[key].length > 0) : [];
+  const availablePages = report ? Object.keys(report).filter((key) => report[key]?.checklistAnalysis?.length > 0) : [];
 
 
 
@@ -111,18 +103,17 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
 
   // Use activeTab if it's available and valid, otherwise default to first available
   const currentTab = activeTab && availablePages.includes(activeTab) ? activeTab : availablePages[0];
-  const analysis = report[currentTab] || [];
+
 
   // Debug logging for current tab
   console.log('[AnalysisReport] Current tab:', currentTab);
 
-  // Show all screenshots above the report
-  const screenshotPageOrder = ['homepage', 'collection', 'product', 'cart'];
-
-  const hasScreenshots = availablePages.length > 0 && availablePages.some(page => {
-    const pageAnalysis = report[page];
-    return pageAnalysis && pageAnalysis.length > 0 && pageAnalysis[0].screenshotUrl;
-  });
+  const imagePath = (url: string) => {
+    if (url.includes('report-img')) {
+      return url;
+    }
+    return `${backendUrl}${url}`;
+  }
 
   return (
     <div className="space-y-6">
@@ -131,12 +122,17 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
       {/* Analysis for current tab */}
 
       <div className="report__list">
-        {Object.entries(report).map(([page, analysis], index) => {
+        {Object.entries(report).map(([page, analysis]) => {
+          // Skip pages that don't have analysis data
+          if (!analysis?.checklistAnalysis) {
+            return null;
+          }
+
           return (
-            <div key={index} className="report__item">
+            <div key={page} className="report__item" id={page}>
               <h2 className='report__item-page'>{page}</h2>
               <div className="report__item-list">
-                {analysis.map((item, index) => {
+                {analysis.checklistAnalysis?.map((checklistItem, index) => {
                   return (
 
                     <div key={index} className={`report__item-content ${isItemExpanded(page, index) ? 'expanded' : ''}`}>
@@ -144,7 +140,7 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
                         className="report__item-title"
                         onClick={() => toggleItem(page, index)}
                       >
-                        {item.problem}
+                        {checklistItem.problem}
                         <span className="toggle-indicator">
                           {isItemExpanded(page, index) ? '▼' : '▶'}
                         </span>
@@ -152,116 +148,81 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
 
                       {isItemExpanded(page, index) && (
                         <>
-                          <div className="report__item-element">
-                            <div className="report__item-element-icon" />
+                          <div className="report__item-element report__item-element--reason">
+                            {/* <div className="report__item-element-icon" /> */}
                             <div className="report__item-element-content">
-                              <h3 className="report__item-element-title">
-                                Solution
-                              </h3>
-                              <p className="report__item-description">{item.solution}</p>
+                              {/* <h3 className="report__item-element-title">
+                                Status
+                              </h3> */}
+                              <p className="report__item-description">
+                                {/* {checklistItem.status} */}
+                                {checklistItem.reason && ` ${checklistItem.reason}`}
+                              </p>
                             </div>
                           </div>
 
-                          {item.relevantImages && item.relevantImages.length > 0 && (
-                            <div className="report__item-element">
-                              <div className="report__item-element-icon reference-icon" />
+
+                          {checklistItem.solution && (
+                            <div className="report__item-element report__item-element--solution">
+                              {/* <div className="report__item-element-icon" /> */}
                               <div className="report__item-element-content">
                                 <h3 className="report__item-element-title">
-                                  References
+                                  Solution
                                 </h3>
-                                <div className="report__item-images">
-                                  {item.relevantImages.map((image) => {
+                                <p className="report__item-description">{checklistItem.solution}</p>
+                              </div>
+                            </div>
+                          )}
 
-                                    const imageUrl = image.imageUrl.includes('/report-img/') ? image.imageUrl : `${backendUrl}${image.imageUrl}`;
+                          {/* Image Reference Section */}
+                          {checklistItem.imageReferenceObject && (
+                            <div className="report__item-element">
+                              <div className="report__item-element-icon" />
+                              <div className="report__item-element-content">
+                                <h3 className="report__item-element-title">
+                                  Example Reference
+                                </h3>
+                                <div className="mt-3">
+                                  <img
+                                    src={imagePath(checklistItem.imageReferenceObject.imageUrl)}
+                                    alt="Example"
+                                    className="rounded-lg  cursor-pointer hover:opacity-80 transition-opacity w-1/2"
+                                    onClick={() => setSelectedImage(checklistItem.imageReferenceObject)}
+                                  />
 
-                                    return (
-                                      <div
-                                        key={image.id}
-                                        className="overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-                                        onClick={() => setSelectedImage(image)}
-                                      >
-                                        <div className=" bg-gray-100">
-                                          <img
-                                            src={imageUrl}
-                                            alt="Relevant example"
-                                            className="w-full h-full"
-                                            onError={(e) => {
-                                              const target = e.target as HTMLImageElement;
-                                              target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjOUI5QkEwIi8+CjxwYXRoIGQ9Ik02MCAxMDBDNjAgODguOTU0MyA2OC45NTQzIDgwIDgwIDgwQzkxLjA0NTcgODAgMTAwIDg4Ljk1NDMgMTAwIDEwMEMxMDAgMTExLjA0NiA5MS4wNDU3IDEyMCA4MCAxMjBDNjguOTU0MyAxMjAgNjAgMTExLjA0NiA2MCAxMDBaIiBmaWxsPSIjOUI5QkEwIi8+CjxwYXRoIGQ9Ik04MCAxNDBDNjguOTU0MyAxNDAgNjAgMTMxLjA0NiA2MCAxMjBMMTAwIDEyMEMxMDAgMTMxLjA0NiA5MS4wNDU3IDE0MCA4MCAxNDBaIiBmaWxsPSIjOUI5QkEwIi8+Cjwvc3ZnPgo=';
-                                            }}
-                                          />
-                                        </div>
-                                        {/* <div className="p-3">
-                                        <p className="text-sm text-gray-700 line-clamp-2">
-                                          {image.useCases.join(', ').length > 80
-                                            ? `${image.useCases.join(', ').substring(0, 80)}...`
-                                            : image.useCases.join(', ')
-                                          }
-                                        </p>
-                                      </div> */}
-                                      </div>
-                                    )
-                                  }
-                                  )}
                                 </div>
                               </div>
                             </div>
                           )}
 
-                          {item.relevantAppReferences && item.relevantAppReferences.length > 0 && (
+                          {/* App Reference Section */}
+                          {checklistItem.appReferenceObject && (
                             <div className="report__item-element">
                               <div className="report__item-element-icon" />
                               <div className="report__item-element-content">
                                 <h3 className="report__item-element-title">
-                                  Recommended Apps
+                                  Recommended App
                                 </h3>
-                                <div className="report__item-images">
-                                  {item.relevantAppReferences.map((app) => (
-                                    <div
-                                      key={app._id}
-                                      className="border border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-                                      onClick={() => setSelectedAppReference(app)}
+                                <div className="flex items-center space-x-3 mt-3">
+                                  {checklistItem.appReferenceObject.iconUrl && (
+                                    <img
+                                      src={checklistItem.appReferenceObject.iconUrl}
+                                      alt={checklistItem.appReferenceObject.name}
+                                      className="w-16 h-16 rounded-lg object-cover"
+                                    />
+                                  )}
+                                  <div className="flex-1">
+                                    <h4 className="font-medium text-gray-900 mb-1">
+                                      {checklistItem.appReferenceObject.name}
+                                    </h4>
+
+                                    <button
+                                      onClick={() => setSelectedAppReference(checklistItem.appReferenceObject)}
+                                      className="text-sm text-blue-600 hover:text-blue-800 font-medium"
                                     >
-                                      <div className="p-4">
-                                        <div className="flex items-center space-x-3 mb-3">
-                                          {app.iconUrl && (
-                                            <img
-                                              src={app.iconUrl}
-                                              alt={app.name}
-                                              className="w-12 h-12 rounded-lg object-cover"
-                                            />
-                                          )}
-                                          <div className="flex-1 min-w-0">
-                                            <h5 className="text-sm font-medium text-gray-900 truncate">{app.name}</h5>
-                                            <span className="inline-block px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                                              {app.category}
-                                            </span>
-                                          </div>
-                                        </div>
-                                        <p className="text-sm text-gray-700 line-clamp-2">
-                                          {app.description.length > 100
-                                            ? `${app.description.substring(0, 80)}...`
-                                            : app.description
-                                          }
-                                        </p>
-                                        <div className="mt-3 flex flex-wrap gap-1">
-                                          {app.useCases.slice(0, 2).map((useCase, index) => (
-                                            <span
-                                              key={index}
-                                              className="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full"
-                                            >
-                                              {useCase}
-                                            </span>
-                                          ))}
-                                          {app.useCases.length > 2 && (
-                                            <span className="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full">
-                                              +{app.useCases.length - 2} more
-                                            </span>
-                                          )}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  ))}
+                                      {checklistItem.appReferenceObject.shopifyAppUrl}
+                                    </button>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -272,12 +233,12 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
 
                   )
                 })}
+
+
               </div>
             </div>
           )
         })}
-
-
       </div>
       {/* Modal for image details */}
       {selectedImage && (

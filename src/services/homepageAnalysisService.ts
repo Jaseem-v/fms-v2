@@ -10,6 +10,10 @@ interface HomepageAnalysisResult {
     problemName?: string;
     problem?: string;
     solution?: string;
+    image_reference?: string;
+    imageReferenceObject?: any;
+    app_reference?: string;
+    appReferenceObject?: any;
   }>;
 }
 

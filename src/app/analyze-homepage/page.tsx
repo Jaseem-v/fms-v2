@@ -129,14 +129,14 @@ export default function AnalyzeHomepage() {
               </div>
 
               {/* Image Analysis */}
-              <div className="mb-8">
+              {/* <div className="mb-8">
                 <h3 className="text-lg font-semibold text-gray-700 mb-4">Layout Analysis</h3>
                 <div className="bg-gray-50 rounded-lg p-4">
                   <pre className="whitespace-pre-wrap text-sm text-gray-700 font-mono">
                     {result.imageAnalysis}
                   </pre>
                 </div>
-              </div>
+              </div> */}
 
               {/* Checklist Analysis */}
               <div className="mb-8">
@@ -223,13 +223,13 @@ export default function AnalyzeHomepage() {
                                           
                                           {item.imageReferenceObject.useCases && item.imageReferenceObject.useCases.length > 0 && (
                                             <div>
-                                              <span className="text-sm font-medium text-gray-500">Use Cases:</span>
+                                              {/* <span className="text-sm font-medium text-gray-500">Use Cases:</span> */}
                                               <div className="mt-1 space-y-1">
-                                                {item.imageReferenceObject.useCases.map((useCase: string, idx: number) => (
+                                                {/* {item.imageReferenceObject.useCases.map((useCase: string, idx: number) => (
                                                   <p key={idx} className="text-xs text-gray-600 bg-white px-2 py-1 rounded border">
                                                     {useCase}
                                                   </p>
-                                                ))}
+                                                ))} */}
                                                 {/* {item.imageReferenceObject.useCases.length > 2 && (
                                                   <p className="text-xs text-gray-500">
                                                     +{item.imageReferenceObject.useCases.length - 2} more use cases
@@ -252,6 +252,96 @@ export default function AnalyzeHomepage() {
                                       </p>
                                       <p className="text-xs text-yellow-500 mt-1">
                                         Image reference object not available
+                                      </p>
+                                    </div>
+                                  )}
+                                </>
+                              )}
+
+                              {/* App Reference Example */}
+                              {item.app_reference && (
+                                <>
+                                  {item.appReferenceObject ? (
+                                    <div className="mt-4 bg-white border border-green-200 rounded-lg p-4">
+                                      <h5 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                                        <span className="text-green-600">🔧</span>
+                                        Recommended App
+                                      </h5>
+                                      <div className="flex items-center gap-4">
+                                        {/* App Icon */}
+                                        <div className=" flex items-center justify-center">
+                                          {item.appReferenceObject.iconUrl ? (
+                                            <img
+                                              src={item.appReferenceObject.iconUrl}
+                                              alt={item.appReferenceObject.name}
+                                              className="w-16 h-16 object-cover rounded-lg"
+                                            />
+                                          ) : (
+                                            <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+                                              <span className="text-gray-400 text-2xl">🔧</span>
+                                            </div>
+                                          )}
+                                        </div>
+
+                                        {/* App Details */}
+                                        <div className="space-y-3">
+                                          <div>
+                                            <span className="text-sm font-medium text-gray-500">App Name:</span>
+                                            <p className="text-sm font-semibold text-gray-700">{item.appReferenceObject.name}</p>
+                                          </div>
+                                          
+                                          {/* <div>
+                                            <span className="text-sm font-medium text-gray-500">Category:</span>
+                                            <p className="text-sm text-gray-700">{item.appReferenceObject.category}</p>
+                                          </div>
+                                          
+                                          <div>
+                                            <span className="text-sm font-medium text-gray-500">Description:</span>
+                                            <p className="text-sm text-gray-700">{item.appReferenceObject.description}</p>
+                                          </div> */}
+                                          
+                                          {/* {item.appReferenceObject.useCases && item.appReferenceObject.useCases.length > 0 && (
+                                            <div>
+                                              <span className="text-sm font-medium text-gray-500">Use Cases:</span>
+                                              <div className="mt-1 space-y-1">
+                                                {item.appReferenceObject.useCases.map((useCase: string, idx: number) => (
+                                                  <p key={idx} className="text-xs text-gray-600 bg-white px-2 py-1 rounded border">
+                                                    {useCase}
+                                                  </p>
+                                                ))}
+                                              </div>
+                                            </div>
+                                          )} */}
+                                          
+                                          {item.appReferenceObject.shopifyAppUrl && (
+                                            <div className="">
+                                              <a
+                                                href={item.appReferenceObject.shopifyAppUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center text-blue-600 text-sm font-medium hover:text-blue-700 transition-colors border-b border-blue-600 hover:border-blue-700"
+                                              >
+                                                View on Shopify App Store
+                                                <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                </svg>
+                                              </a>
+                                            </div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                      <h5 className="font-semibold text-yellow-700 mb-2 flex items-center gap-2">
+                                        <span className="text-yellow-600">🔧</span>
+                                        Recommended App
+                                      </h5>
+                                      <p className="text-sm text-yellow-600">
+                                        App Reference ID: {item.app_reference}
+                                      </p>
+                                      <p className="text-xs text-yellow-500 mt-1">
+                                        App reference object not available
                                       </p>
                                     </div>
                                   )}

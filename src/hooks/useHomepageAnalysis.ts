@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import homepageAnalysisService from '../services/homepageAnalysisService';
+import { initialHomeReport } from '@/utils/rawData';
 
-interface HomepageAnalysisResult {
+export interface HomepageAnalysisResult {
   screenshotPath: string;
   imageAnalysis: string;
   checklistAnalysis: Array<{
@@ -13,6 +14,8 @@ interface HomepageAnalysisResult {
     solution?: string;
     image_reference?: string;
     imageReferenceObject?: any;
+    app_reference?: string;
+    appReferenceObject?: any;
   }>;
 }
 

@@ -11,6 +11,13 @@ import FloatingButton from '@/components/ui/FloatingButton';
 import { useAnalysis } from '@/hooks/useAnalysis';
 import { initialReport } from '@/utils/initialReport';
 
+const PAGE_TITLES: Record<string, string> = {
+  homepage: 'Homepage',
+  collection: 'Collection Page',
+  product: 'Product Page',
+  cart: 'Cart Page',
+};
+
 export default function ReportPage() {
   const params = useParams();
   const slug = params.slug as string;
@@ -18,7 +25,7 @@ export default function ReportPage() {
   const [report, setReport] = useState<any>(initialReport);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<string>('');
+  const [activeTab, setActiveTab] = useState<string>('homepage');
   const [reportData, setReportData] = useState<any>(null);
   const [isInProgress, setIsInProgress] = useState(false);
   const [userInfo, setUserInfo] = useState({
@@ -82,6 +89,43 @@ export default function ReportPage() {
     };
   }, []);
 
+  // Auto-switch tabs based on scroll position
+  useEffect(() => {
+    const handleScrollForTabs = () => {
+      const pageSections = Object.keys(PAGE_TITLES);
+      let currentSection = '';
+
+      // Find which section is currently most visible in the viewport
+      for (const section of pageSections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          const elementTop = rect.top;
+          const elementBottom = rect.bottom;
+          const viewportHeight = window.innerHeight;
+
+          // Check if the section is significantly visible in the viewport
+          if (elementTop <= viewportHeight * 0.3 && elementBottom >= viewportHeight * 0.3) {
+            currentSection = section;
+            break;
+          }
+        }
+      }
+
+      // Update activeTab if we found a new section and it's different from current
+      if (currentSection && currentSection !== activeTab) {
+        setActiveTab(currentSection);
+      }
+    };
+
+    // Add scroll listener for tab switching
+    window.addEventListener('scroll', handleScrollForTabs);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScrollForTabs);
+    };
+  }, [activeTab]);
+
   // URL validation helper
   const validateUrl = (url: string): boolean => {
     if (!url || url.trim() === '') return false;
@@ -105,7 +149,7 @@ export default function ReportPage() {
     setUrlError('');
 
     // if (!validateUrl(newUrl)) {
-    //   setUrlError('Please enter a valid website URL (e.g., example.com or https://example.com)');
+    //   setUrlError('Please enter a valid website URL (e.g., example.com or https://shopify.com)');
     //   return;
     // }
 
@@ -395,7 +439,7 @@ export default function ReportPage() {
           </div>
         )}
 
-        <div className="space-y-8">
+        <div className="space-y-4">
           {Object.keys(report).length > 0 && (
             <>
               <OverallSummary
@@ -405,7 +449,33 @@ export default function ReportPage() {
                 noViewReport={true}
                 reportUrl={reportUrl}
                 performanceScore={59}
+                isSampleReport={true}
+
               />
+
+              <div className="rounded-lg overflow-hidden sticky top-0 z-10">
+                <div className="report__tabs">
+                  {Object.entries(PAGE_TITLES).map(([key, title]) => (
+                    <button
+                      key={key}
+                      className={`report__tab ${activeTab === key ? 'active' : ''}`}
+                      onClick={() => {
+                        setActiveTab(key);
+                        // Scroll to the corresponding page section
+                        const element = document.getElementById(key);
+                        if (element) {
+                          element.scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                          });
+                        }
+                      }}
+                    >
+                      {title.replace('Page', '')}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
               <AnalysisReport
                 report={report}

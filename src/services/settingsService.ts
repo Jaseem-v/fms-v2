@@ -6,6 +6,7 @@ interface ServerSettings {
   report_mode: 'MANUAL' | 'AUTO';
   report_manual_time: number;
   ai_provider: 'openai' | 'gemini';
+  flow: 'payment' | 'homepage-analysis';
 }
 
 interface AIProviderStatus {
@@ -32,7 +33,8 @@ const DEFAULT_LOCAL_SETTINGS: LocalSettings = {
 const DEFAULT_SERVER_SETTINGS: ServerSettings = {
   report_mode: 'AUTO',
   report_manual_time: 24,
-  ai_provider: 'openai'
+  ai_provider: 'openai',
+  flow: 'payment'
 };
 
 class SettingsService {
@@ -171,6 +173,9 @@ class SettingsService {
     }
     if ('ai_provider' in settings) {
       serverSettings.ai_provider = settings.ai_provider;
+    }
+    if ('flow' in settings) {
+      serverSettings.flow = settings.flow;
     }
 
     // Save local settings

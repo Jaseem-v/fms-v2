@@ -169,7 +169,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
 
         // Validate URL
         // if (!validateUrl(url)) {
-        //     setUrlError('Please enter a valid website URL (e.g., example.com or https://example.com)');
+        //     setUrlError('Please enter a valid website URL (e.g., example.com or https://shopify.com)');
         //     return;
         // }
 

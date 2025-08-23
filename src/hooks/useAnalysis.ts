@@ -3,7 +3,7 @@ import analysisService from '../services/analysisService';
 import shopifyValidationService from '../services/shopifyValidationService';
 import reportService from '../services/reportService';
 import settingsService from '../services/settingsService';
-import { initialReport } from '@/utils/rawData';
+import { HomepageAnalysisResult } from './useHomepageAnalysis';
 
 // Helper function to normalize URL (add https:// if no protocol is present)
 const normalizeUrl = (url: string): string => {
@@ -42,44 +42,8 @@ interface UserInfo {
   mobile: string;
 }
 
-export interface AnalysisItem {
-  problem: string;
-  solution: string;
-  summary: string;
-  screenshotUrl?: string;
-  relevantImages?: {
-    id: string;
-    imageUrl: string;
-    useCases: string[];
-    uploadDate: string;
-    fileName: string;
-    createdAt: string;
-    updatedAt: string;
-    page: string;
-    country?: string;
-    industry?: string;
-    url?: string;
-  }[];
-  relevantAppReferences?: {
-    _id: string;
-    id: string;
-    name: string;
-    iconUrl: string;
-    description: string;
-    useCases: string[];
-    shopifyAppUrl: string;
-    category: string;
-    scrapedAt: string;
-    createdAt: string;
-    updatedAt: string;
-    page: string;
-    // country: string;
-    industry?: string;
-  }[];
-}
-
 export interface Report {
-  [key: string]: AnalysisItem[];
+  [key: string]: HomepageAnalysisResult;
 }
 
 interface StatusMessage {
@@ -361,7 +325,7 @@ export function useAnalysis() {
 
       // Validate and normalize URL
       if (!validateUrl(url)) {
-        setError('Please enter a valid website URL (e.g., example.com or https://example.com)');
+        setError('Please enter a valid website URL (e.g., example.com or https://shopify.com)');
         setValidatingShopify(false);
         setLoading(false);
         setTimerActive(false);
@@ -605,10 +569,27 @@ export function useAnalysis() {
 
               if (screenshotUrl && status.analysis[pageType]) {
                 // Add screenshot URL to each analysis item
-                finalReport[pageType] = status.analysis[pageType].map((item: any) => ({
+                const itemsWithScreenshots = status.analysis[pageType].map((item: any) => ({
                   ...item,
                   screenshotUrl: screenshotUrl
                 }));
+                
+                // Convert to HomepageAnalysisResult format
+                finalReport[pageType] = {
+                  screenshotPath: itemsWithScreenshots[0]?.screenshotUrl || '',
+                  imageAnalysis: `Analysis of ${pageType} page with ${itemsWithScreenshots.length} items`,
+                  checklistAnalysis: itemsWithScreenshots.map((item: any) => ({
+                    checklistItem: item.summary || 'Analysis item',
+                    status: item.problem ? 'FAIL' : 'PASS',
+                    reason: item.problem || 'This item is properly implemented',
+                    problem: item.problem,
+                    solution: item.solution,
+                    image_reference: item.relevantImages?.[0]?.id,
+                    imageReferenceObject: item.relevantImages?.[0],
+                    app_reference: item.relevantAppReferences?.[0]?._id,
+                    appReferenceObject: item.relevantAppReferences?.[0]
+                  }))
+                };
               }
             });
 
@@ -705,13 +686,44 @@ export function useAnalysis() {
                 }
 
                 if (screenshotUrl && status.analysis[pageType]) {
-                  // Add screenshot URL to each analysis item
-                  newReport[pageType] = status.analysis[pageType].map((item: any) => ({
+                  // Add screenshot URL to each analysis item and convert to HomepageAnalysisResult
+                  const itemsWithScreenshots = status.analysis[pageType].map((item: any) => ({
                     ...item,
                     screenshotUrl: screenshotUrl
                   }));
+                  
+                  newReport[pageType] = {
+                    screenshotPath: itemsWithScreenshots[0]?.screenshotUrl || '',
+                    imageAnalysis: `Analysis of ${pageType} page with ${itemsWithScreenshots.length} items`,
+                    checklistAnalysis: itemsWithScreenshots.map((item: any) => ({
+                      checklistItem: item.summary || 'Analysis item',
+                      status: item.problem ? 'FAIL' : 'PASS',
+                      reason: item.problem || 'This item is properly implemented',
+                      problem: item.problem,
+                      solution: item.solution,
+                      image_reference: item.relevantImages?.[0]?.id,
+                      imageReferenceObject: item.relevantImages?.[0],
+                      app_reference: item.relevantAppReferences?.[0]?._id,
+                      appReferenceObject: item.relevantAppReferences?.[0]
+                    }))
+                  };
                 } else {
-                  newReport[pageType] = status.analysis[pageType];
+                  // Convert to HomepageAnalysisResult format even without screenshots
+                  newReport[pageType] = {
+                    screenshotPath: '',
+                    imageAnalysis: `Analysis of ${pageType} page with ${status.analysis[pageType].length} items`,
+                    checklistAnalysis: status.analysis[pageType].map((item: any) => ({
+                      checklistItem: item.summary || 'Analysis item',
+                      status: item.problem ? 'FAIL' : 'PASS',
+                      reason: item.problem || 'This item is properly implemented',
+                      problem: item.problem,
+                      solution: item.solution,
+                      image_reference: item.relevantImages?.[0]?.id,
+                      imageReferenceObject: item.relevantImages?.[0],
+                      app_reference: item.relevantAppReferences?.[0]?._id,
+                      appReferenceObject: item.relevantAppReferences?.[0]
+                    }))
+                  };
                 }
               });
 

@@ -9,6 +9,7 @@ interface Settings {
   paymentEnabled: boolean;
   report_mode: 'MANUAL' | 'AUTO';
   report_manual_time: number;
+  flow: 'payment' | 'homepage-analysis';
 }
 
 interface AIProviderStatus {
@@ -24,7 +25,8 @@ export default function SettingsPage() {
   const [settings, setSettings] = useState<Settings>({
     paymentEnabled: true,
     report_mode: 'AUTO',
-    report_manual_time: 24
+    report_manual_time: 24,
+    flow: 'payment'
   });
   const [isLoading, setIsLoading] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
@@ -135,6 +137,11 @@ export default function SettingsPage() {
     }
   };
 
+  const handleFlowChange = async (flow: 'payment' | 'homepage-analysis') => {
+    const newSettings = { ...settings, flow };
+    await saveSettings(newSettings);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -147,6 +154,54 @@ export default function SettingsPage() {
 
       {/* Settings Sections */}
       <div className="space-y-8">
+        {/* Flow Settings */}
+        <div className="bg-white shadow rounded-lg">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <div className="flex items-center">
+              <CogIcon className="h-6 w-6 text-gray-400 mr-3" />
+              <h2 className="text-lg font-medium text-gray-900">Flow Settings</h2>
+            </div>
+          </div>
+          <div className="px-6 py-4">
+            <div>
+              <label className="text-sm font-medium text-gray-900">User Flow</label>
+              <p className="text-sm text-gray-500 mt-1 mb-3">
+                Choose the flow users will follow when they submit a URL.
+              </p>
+              <div className="flex space-x-4">
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="flow"
+                    value="payment"
+                    checked={settings.flow === 'payment'}
+                    onChange={(e) => handleFlowChange(e.target.value as 'payment' | 'homepage-analysis')}
+                    disabled={isLoading}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 disabled:opacity-50"
+                  />
+                  <span className="ml-2 text-sm text-gray-900">Payment Flow</span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="flow"
+                    value="homepage-analysis"
+                    checked={settings.flow === 'homepage-analysis'}
+                    onChange={(e) => handleFlowChange(e.target.value as 'payment' | 'homepage-analysis')}
+                    disabled={isLoading}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 disabled:opacity-50"
+                  />
+                  <span className="ml-2 text-sm text-gray-900">Homepage Analysis Flow</span>
+                </label>
+              </div>
+              <div className="mt-3 text-sm text-gray-600">
+                <p><strong>Payment Flow:</strong> Users are redirected to payment page before analysis</p>
+                <p><strong>Homepage Analysis Flow:</strong> Users go directly to homepage analysis without payment</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Payment Settings */}
         <div className="bg-white shadow rounded-lg">
           <div className="px-6 py-4 border-b border-gray-200">
@@ -381,6 +436,9 @@ export default function SettingsPage() {
                   <strong>Payment Enabled:</strong> {settings.paymentEnabled ? 'Yes' : 'No'}
                 </p>
                 <p>
+                  <strong>User Flow:</strong> {settings.flow === 'payment' ? 'Payment Flow' : 'Homepage Analysis Flow'}
+                </p>
+                <p>
                   <strong>Report Mode:</strong> {settings.report_mode}
                 </p>
                 {settings.report_mode === 'MANUAL' && (
@@ -401,6 +459,19 @@ export default function SettingsPage() {
           <h3 className="text-sm font-medium text-gray-900 mb-2">Current Behavior</h3>
           <div className="text-sm text-gray-600 space-y-2">
             <p>
+              <strong>User Flow:</strong>
+            </p>
+            <ul className="list-disc list-inside ml-4 space-y-1">
+              <li>Flow Type: {settings.flow === 'payment' ? 'Payment Flow' : 'Homepage Analysis Flow'}</li>
+              {settings.flow === 'payment' && (
+                <li>Users will be redirected to payment page before analysis</li>
+              )}
+              {settings.flow === 'homepage-analysis' && (
+                <li>Users will go directly to homepage analysis without payment</li>
+              )}
+            </ul>
+            
+            <p className="mt-3">
               <strong>Payment Settings:</strong>
             </p>
             <ul className="list-disc list-inside ml-4 space-y-1">
