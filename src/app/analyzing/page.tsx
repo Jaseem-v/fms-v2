@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { Metadata } from 'next';
 import ReportLoading from '../../components/report/ReportLoading';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Navbar from '../../components/layout/Navbar';
@@ -11,6 +12,15 @@ import shopifyValidationService from '@/services/shopifyValidationService';
 import { useHomepageAnalysis } from '../../hooks/useHomepageAnalysis';
 import AnalysisReport from '../../components/report/AnalysisReport';
 import OverallSummary from '../../components/report/OverallSummary';
+
+export const metadata: Metadata = {
+  title: 'Analyzing Store - FixMyStore',
+  description: 'Analyzing your Shopify store for conversion optimization opportunities',
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 const PAGE_TITLES: Record<string, string> = {
   homepage: 'Homepage',

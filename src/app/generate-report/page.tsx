@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { Metadata } from 'next';
 import paymentService from '../../services/paymentService';
 import settingsService from '../../services/settingsService';
 import { useAnalysis } from '../../hooks/useAnalysis';
@@ -9,6 +10,15 @@ import ReportLoading from '../../components/report/ReportLoading';
 import OverallSummary from '../../components/report/OverallSummary';
 import AnalysisReport from '../../components/report/AnalysisReport';
 import DownloadModal from '../../components/report/DownloadModal';
+
+export const metadata: Metadata = {
+  title: 'Generating Report - FixMyStore',
+  description: 'Generating your CRO analysis report. Please wait while we analyze your store.',
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 function GenerateReportContent() {
   const searchParams = useSearchParams();

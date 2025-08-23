@@ -2,12 +2,21 @@
 
 import { useState, Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { Metadata } from 'next';
 import paymentService, { PaymentRequest, DiscountVerification } from '../../services/paymentService';
 import { triggerGA4Purchase } from '../../utils/conversionTracking';
 import { config } from '@/config/config';
 import Link from 'next/link';
 import CountdownTimer from '@/components/ui/CountdownTimer';
 
+export const metadata: Metadata = {
+  title: 'Payment - FixMyStore CRO Analysis',
+  description: 'Complete your payment for FixMyStore CRO analysis services',
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 
 function PaymentForm() {

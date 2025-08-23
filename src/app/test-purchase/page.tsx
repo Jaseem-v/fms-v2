@@ -1,7 +1,17 @@
 'use client';
 
 import { useState } from 'react';
+import { Metadata } from 'next';
 import { triggerGA4Purchase } from '../../utils/conversionTracking';
+
+export const metadata: Metadata = {
+  title: 'Test Purchase - FixMyStore',
+  description: 'Test page for purchase tracking events',
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default function TestPurchasePage() {
   const [email, setEmail] = useState('test@example.com');

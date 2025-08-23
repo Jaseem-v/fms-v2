@@ -1,7 +1,18 @@
 'use client';
 
+import { Metadata } from 'next';
 import PricingSection from "@/components/home/PricingSection";
 import { config } from "@/config/config";
+
+export const metadata: Metadata = {
+  title: 'Pricing Plans - FixMyStore CRO Audit Services',
+  description: 'Choose from our affordable CRO audit plans. Get professional conversion rate optimization analysis starting at $97. Transform your Shopify store performance.',
+  keywords: 'CRO audit pricing, conversion optimization cost, Shopify CRO services, affordable CRO analysis',
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default function PricingPage() {
   const plans = [
@@ -58,4 +69,4 @@ export default function PricingPage() {
       </div>
     </div>
   );
-} 
+}
