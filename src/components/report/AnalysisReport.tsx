@@ -31,7 +31,7 @@ interface AnalysisReportProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   setShowModal: (show: boolean) => void;
-  isSampleReport: boolean;
+  isSampleReport?: boolean;
 }
 
 const backendUrl = process.env.NEXT_PUBLIC_IMAGE_PATH_URL || 'http://localhost:4000';
