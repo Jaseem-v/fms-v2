@@ -14,7 +14,7 @@ export interface HomepageAnalysisResult {
     solution?: string;
     image_reference?: string;
     imageReferenceObject?: any;
-    app_reference?: string;
+    app_reference?: any;
     appReferenceObject?: any;
   }>;
 }

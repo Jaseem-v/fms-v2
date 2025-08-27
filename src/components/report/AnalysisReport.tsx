@@ -31,6 +31,7 @@ interface AnalysisReportProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   setShowModal: (show: boolean) => void;
+  isSampleReport: boolean;
 }
 
 const backendUrl = process.env.NEXT_PUBLIC_IMAGE_PATH_URL || 'http://localhost:4000';
@@ -44,7 +45,7 @@ const PAGE_TITLES: Record<string, string> = {
 
 
 
-export default function AnalysisReport({ report, activeTab, setActiveTab, setShowModal }: AnalysisReportProps) {
+export default function AnalysisReport({ report, activeTab, setActiveTab, setShowModal, isSampleReport }: AnalysisReportProps) {
   const [selectedImage, setSelectedImage] = useState<ImageReference | null>(null);
   const [selectedAppReference, setSelectedAppReference] = useState<AppReference | null>(null);
   const [selectedScreenshot, setSelectedScreenshot] = useState<string | null>(null);
@@ -128,18 +129,31 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
             return null;
           }
 
+
+
           return (
             <div key={page} className="report__item" id={page}>
               <h2 className='report__item-page'>{page}</h2>
               <div className="report__item-list">
                 {analysis.checklistAnalysis?.map((checklistItem, index) => {
+                  const isFirstItem = isSampleReport && index === 0 && page === 'homepage';
                   return (
 
                     <div key={index} className={`report__item-content ${isItemExpanded(page, index) ? 'expanded' : ''}`}>
+
+
+
                       <h3
                         className="report__item-title"
                         onClick={() => toggleItem(page, index)}
                       >
+                        {isFirstItem && <div className='report__item-explainer'>
+                          <div className='report__item-explainer-line' />
+                          <div className='report__item-explainer-title'>
+                            Clearly mentioned problem
+                          </div>
+                        </div>}
+
                         {checklistItem.problem}
                         <span className="toggle-indicator">
                           {isItemExpanded(page, index) ? '▼' : '▶'}
@@ -150,6 +164,8 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
                         <>
                           <div className="report__item-element report__item-element--reason">
                             {/* <div className="report__item-element-icon" /> */}
+
+
                             <div className="report__item-element-content">
                               {/* <h3 className="report__item-element-title">
                                 Status
@@ -166,6 +182,13 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
                             <div className="report__item-element report__item-element--solution">
                               {/* <div className="report__item-element-icon" /> */}
                               <div className="report__item-element-content">
+                                {isFirstItem && <div className='report__item-explainer report__item-explainer--solution'>
+                                  <div className='report__item-explainer-line' />
+
+                                  <div className='report__item-explainer-title'>
+                                    Solution
+                                  </div>
+                                </div>}
                                 <h3 className="report__item-element-title">
                                   Solution
                                 </h3>
@@ -182,11 +205,18 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
                                 <h3 className="report__item-element-title">
                                   Example Reference
                                 </h3>
-                                <div className="mt-3">
+                                <div className="mt-3 relative">
+                                  {isFirstItem && <div className='report__item-explainer report__item-explainer--image'>
+                                    <div className='report__item-explainer-title'>
+                                      Reference from million-dollar brands
+                                    </div>
+                                    <div className='report__item-explainer-line' />
+
+                                  </div>}
                                   <img
                                     src={imagePath(checklistItem.imageReferenceObject.imageUrl)}
                                     alt="Example"
-                                    className="rounded-lg  cursor-pointer hover:opacity-80 transition-opacity w-1/2"
+                                    className="rounded-lg  cursor-pointer hover:opacity-80 transition-opacity md:w-3/4 w-full"
                                     onClick={() => setSelectedImage(checklistItem.imageReferenceObject)}
                                   />
 
@@ -203,7 +233,7 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
                                 <h3 className="report__item-element-title">
                                   Recommended App
                                 </h3>
-                                <div className="flex items-center space-x-3 mt-3">
+                                <div className="flex items-center space-x-3 mt-3 flex-wrap">
                                   {checklistItem.appReferenceObject.iconUrl && (
                                     <img
                                       src={checklistItem.appReferenceObject.iconUrl}

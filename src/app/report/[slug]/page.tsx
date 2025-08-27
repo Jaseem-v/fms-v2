@@ -375,26 +375,10 @@ export default function ReportPage() {
     <div className="min-h-screen bg-gray-50">
 
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="mb-8">
-          {/* <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            CRO Analysis Report
-          </h1>
-          <p className="text-gray-600">
-            {isInProgress ? 'Analysis in progress...' : 'Comprehensive analysis of your Shopify store'}
-          </p> */}
-          {/* {reportData && (
-            <div className="mt-4 text-sm text-gray-500"> */}
-          {/* <p>Website: {reportData.websiteUrl}</p> */}
-          {/* <p>Created: {new Date(reportData.createdAt).toLocaleString()}</p>
-              {reportData.status === 'pending' && reportData.progress && (
-                <p>Progress: Step {reportData.progress.currentStep} of {reportData.progress.totalSteps}</p>
-              )} */}
-          {/* </div>
-          )} */}
-        </div>
+       
 
         {/* Sticky Input Field for New Analysis */}
-        <div className="mb-8">
+        <div className="">
           <div className="hero__input-wrapper" ref={inputWrapperRef}>
             <form
               className={`hero__input-container desktop-hidden  hero__input-container--sticky`}
@@ -482,6 +466,8 @@ export default function ReportPage() {
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
                 setShowModal={setShowModal}
+                isSampleReport={true}
+
               />
             </>
           )}
