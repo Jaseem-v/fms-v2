@@ -24,12 +24,12 @@ export const useHomepageAnalysis = () => {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<HomepageAnalysisResult | null>(null);
 
-  const analyzeHomepage = async (url: string) => {
+  const analyzeHomepage = async (url: string, pageType: string = 'homepage') => {
     try {
       setLoading(true);
       setError(null);
       
-      const analysisResult = await homepageAnalysisService.analyzeHomepage(url);
+      const analysisResult = await homepageAnalysisService.analyzeHomepage(url, pageType);
       setResult(analysisResult);
       
       return analysisResult;

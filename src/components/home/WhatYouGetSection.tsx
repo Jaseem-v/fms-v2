@@ -4,7 +4,8 @@ import Link from 'next/link';
 import React from 'react';
 import { config } from '@/config/config';
 
-const WhatYouGetSection: React.FC = () => {
+
+const WhatYouGetSection = ({ noResource = false }: { noResource?: boolean }) => {
   const handleSeeSample = () => {
     // Add sample report functionality
     console.log('See sample report clicked');
@@ -36,7 +37,7 @@ const WhatYouGetSection: React.FC = () => {
                   Complete Store Analysis
                 </h4>
                 <p className="section-header__description mb-4">
-                FixMyStore will analyze your store’s images, copy, and layout across the home, collection, product, and cart pages.
+                  FixMyStore will analyze your store’s images, copy, and layout across the home, collection, product, and cart pages.
 
                 </p>
               </div>
@@ -53,7 +54,7 @@ const WhatYouGetSection: React.FC = () => {
                   Screenshots for Reference
                 </h4>
                 <p className="section-header__description mb-4">
-                Audit includes screenshots from Shopify Plus brands, showing how to improve your store based on proven examples.
+                  Audit includes screenshots from Shopify Plus brands, showing how to improve your store based on proven examples.
                 </p>
               </div>
               <div className="what-get__img">
@@ -70,7 +71,7 @@ const WhatYouGetSection: React.FC = () => {
                   App Recommendations
                 </h4>
                 <p className="section-header__description mb-4">
-                FixMyStore will recommend the best Shopify apps to resolve the issues identified in the audit report.
+                  FixMyStore will recommend the best Shopify apps to resolve the issues identified in the audit report.
 
                 </p>
               </div>
@@ -93,7 +94,7 @@ const WhatYouGetSection: React.FC = () => {
         </div>
 
         {/* One-on-One Consultation Section */}
-        <div className="mb-12">
+        {!noResource && <div className="mb-12">
           <div className="what-get__item">
             <div className="what-get__details">
               <h3 className="section-header__sub-title">
@@ -101,11 +102,11 @@ const WhatYouGetSection: React.FC = () => {
               </h3>
 
               <p className="section-header__description">
-              Get a free 20-minute consultation call from our CRO experts on how to boost your Shopify sales! 
+                Get a free 20-minute consultation call from our CRO experts on how to boost your Shopify sales!
                 <span> (Only 7 spots left! )</span>
               </p>
             </div>
-            <div className="what-get__img mt-10" style={{marginTop:"16px",borderRadius:"10px"}}>
+            <div className="what-get__img mt-10" style={{ marginTop: "16px", borderRadius: "10px" }}>
               <img src="/screenshots/cro-call.gif" alt="screenshot" />
             </div>
 
@@ -114,10 +115,10 @@ const WhatYouGetSection: React.FC = () => {
             </div> */}
             {/* pdf-cro.gif */}
           </div>
-        </div>
+        </div>}
 
         {/* CRO Resources Section */}
-        <div>
+        {!noResource && <div>
           <div className="what-get__item">
             <div className="what-get__details">
               <h3 className="section-header__sub-title">
@@ -125,12 +126,12 @@ const WhatYouGetSection: React.FC = () => {
               </h3>
 
               <p className="section-header__description">
-              Discover the 100-point CRO checklist that powers Allbirds, Nike, Adidas & more to make millions.
+                Discover the 100-point CRO checklist that powers Allbirds, Nike, Adidas & more to make millions.
 
               </p>
             </div>
 
-            <div className="what-get__img mt-10" style={{marginTop:"16px",borderRadius:"10px"}}>
+            <div className="what-get__img mt-10" style={{ marginTop: "16px", borderRadius: "10px" }}>
               <img src="/screenshots/cro-resource.gif" alt="screenshot" />
             </div>
 
@@ -138,7 +139,7 @@ const WhatYouGetSection: React.FC = () => {
               <span className="text-gray-500 font-medium">GIF</span>
             </div> */}
           </div>
-        </div>
+        </div>}
       </div>
     </section>
   );

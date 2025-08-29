@@ -20,14 +20,14 @@ interface HomepageAnalysisResult {
 class HomepageAnalysisService {
   private baseUrl = config.backendUrl;
 
-  async analyzeHomepage(url: string): Promise<HomepageAnalysisResult> {
+  async analyzeHomepage(url: string, pageType: string = 'homepage'): Promise<HomepageAnalysisResult> {
     try {
       const response = await fetch(`${this.baseUrl}/homepage-analysis/analyze`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url, pageType }),
       });
 
       if (!response.ok) {

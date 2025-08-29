@@ -8,6 +8,7 @@ import { config } from '@/config/config';
 
 export default function AnalyzeHomepage() {
   const [url, setUrl] = useState('');
+  const [pageType, setPageType] = useState('homepage');
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(true);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
@@ -40,7 +41,7 @@ export default function AnalyzeHomepage() {
     if (!url.trim()) return;
 
     try {
-      await analyzeHomepage(url);
+      await analyzeHomepage(url, pageType);
     } catch (error) {
       console.error('Analysis failed:', error);
     }
@@ -68,19 +69,21 @@ export default function AnalyzeHomepage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <div className="container mx-auto px-4 py-8">
-        <div className="text-center mb-12">
-          {/* <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">
-            Homepage Analysis
-          </h1> */}
-          {/* <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Get a comprehensive analysis of your homepage with actionable insights to improve conversion rates
-          </p> */}
-        </div>
+        {/* <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">
+            {pageType === 'homepage' ? 'Homepage' : pageType === 'collection' ? 'Collection Page' : 'Product Page'} Analysis
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Get a comprehensive analysis of your {pageType === 'homepage' ? 'homepage' : pageType === 'collection' ? 'collection page' : 'product page'} with actionable insights to improve conversion rates
+          </p>
+        </div> */}
 
         <div className="max-w-4xl mx-auto mb-16">
           <UrlForm
             url={url}
             setUrl={setUrl}
+            pageType={pageType}
+            setPageType={setPageType}
             loading={loading}
             validatingShopify={false}
             onSubmit={handleSubmit}
@@ -91,7 +94,9 @@ export default function AnalyzeHomepage() {
           <div className="max-w-4xl mx-auto">
             <div className="bg-white rounded-lg shadow-lg p-8 text-center">
               <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Analyzing Homepage</h3>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                Analyzing {pageType === 'homepage' ? 'Homepage' : pageType === 'collection' ? 'Collection Page' : 'Product Page'}
+              </h3>
               <p className="text-gray-600">Capturing screenshot and analyzing with AI...</p>
             </div>
           </div>
@@ -118,11 +123,13 @@ export default function AnalyzeHomepage() {
 
               {/* Screenshot */}
               <div className="mb-8">
-                <h3 className="text-lg font-semibold text-gray-700 mb-4">Homepage Screenshot</h3>
+                <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                  {pageType === 'homepage' ? 'Homepage' : pageType === 'collection' ? 'Collection Page' : 'Product Page'} Screenshot
+                </h3>
                 <div className="border rounded-lg overflow-hidden">
                   <img
                     src={`${config.backendUrl.replace('/api', '')}/screenshots/${result.screenshotPath.split('/').pop()}`}
-                    alt="Homepage Screenshot"
+                    alt={`${pageType === 'homepage' ? 'Homepage' : pageType === 'collection' ? 'Collection Page' : 'Product Page'} Screenshot`}
                     className="w-full h-auto"
                   />
                 </div>
