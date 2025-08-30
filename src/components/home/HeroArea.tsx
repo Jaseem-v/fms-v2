@@ -8,6 +8,8 @@ interface HeroAreaProps {
     validatingShopify: boolean;
     onSubmit: (e: React.FormEvent) => void;
     // setShowModal: (show: boolean) => void;
+    isSplitPages?: boolean;
+    type?: 'homepage' | 'collection' | 'product' | 'cart';
 }
 
 const pages = [
@@ -69,7 +71,7 @@ const validateUrl = (url: string): boolean => {
     }
 };
 
-export default function HeroArea({ url, setUrl, loading, validatingShopify, onSubmit }: HeroAreaProps) {
+export default function HeroArea({ url, setUrl, loading, validatingShopify, onSubmit, isSplitPages, type }: HeroAreaProps) {
 
     const [activePage, setActivePage] = useState<number | null>(null);
     const [urlError, setUrlError] = useState<string>('');
@@ -201,6 +203,112 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
         return 'https://shopify.com';
     };
 
+    const getTitleContent = () => {
+        if (!isSplitPages) {
+            return (
+                <>
+                    Your store is leaking, <br />
+                    Let's fix it
+                </>
+            );
+        }
+
+        switch (type) {
+            case 'homepage':
+                return (
+                    <>
+                        Fix Revenue Leaks Starting <br />
+                        From Your Homepage
+                    </>
+                );
+            case 'collection':
+                return (
+                    <>
+                        Are Shoppers Dropping Off on <br />
+                        Your Collection Page
+                    </>
+                );
+            case 'product':
+                return (
+                    <>
+                        Stop Losing Sales on <br />
+                        Your Product Page
+                    </>
+                );
+            case 'cart':
+                return (
+                    <>
+                        High Cart Abandonment? <br />
+                        Let's Fix Your Cart Page.
+                    </>
+                );
+            default:
+                return (
+                    <>
+                        Your store is leaking, <br />
+                        Let's fix it
+                    </>
+                );
+        }
+    };
+
+    const getMobileTitleContent = () => {
+        if (!isSplitPages) {
+            return 'Your store is leaking, Let\'s fix it!';
+        }
+
+        switch (type) {
+            case 'homepage':
+                return 'Fix Revenue Leaks Starting From Your Homepage';
+            case 'collection':
+                return 'Are Shoppers Dropping Off on Your Collection Page';
+            case 'product':
+                return 'Stop Losing Sales on Your Product Page';
+            case 'cart':
+                return 'High Cart Abandonment? Let\'s Fix Your Cart Page.';
+            default:
+                return 'Your store is leaking, Let\'s fix it!';
+        }
+    };
+
+    const getDescriptionContent = () => {
+        if (!isSplitPages) {
+            return 'Discover what\'s blocking your store sales. Fix your store now!';
+        }
+
+        switch (type) {
+            case 'homepage':
+                return `If your homepage isn't optimized, visitors won't explore further. Let us audit and show you what to fix.`;
+            case 'collection':
+                return `Your collection pages should guide customers to products not confuse them. Let us audit and fix it.`;
+            case 'product':
+                return `Get a detailed audit of your product pages, with image references and app recommendations to stop revenue leaks.`;
+            case 'cart':
+                return `Your cart page is the last step before checkout. A small tweak could save thousands in lost revenue.`;
+            default:
+                return 'Discover what\'s blocking your store sales. Fix your store now!';
+        }
+    };
+
+    const getButtonText = () => {
+        if (!isSplitPages) {
+            return 'Fix My Store';
+        }
+
+        switch (type) {
+            case 'homepage':
+                return 'Fix My Homepage';
+            case 'collection':
+                return 'Fix My Collection Page';
+            case 'product':
+                return 'Fix My Product Page';
+            case 'cart':
+                return 'Fix My Cart Page';
+            default:
+                return 'Fix My Store';
+        }
+    };
+
     return (
         <div className='hero__content' id='payment'>
             <div className="hero__details">
@@ -215,15 +323,13 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                     </div>
                 </div>
                 <h1 className='hero__details-title hidden md:block'>
-                    Your store is leaking, <br />
-                    Let's fix it!
+                    {getTitleContent()}
                 </h1>
                 <h1 className='hero__details-title  md:hidden'>
-                    Your store is leaking,
-                    Let's fix it!
+                    {getMobileTitleContent()}
                 </h1>
                 <p className='hero__details-description'>
-                    Discover what's blocking your store sales.  Fix your store now!
+                    {getDescriptionContent()}
                 </p>
             </div>
 
@@ -245,7 +351,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                     />
 
                     <button className='hero__input-button' type='submit' disabled={loading}>
-                        {loading ? 'Analyzing...' : 'Fix My Store'}
+                        {loading ? 'Analyzing...' : getButtonText()}
 
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                             <path d="M13 17L18 12L13 7M6 17L11 12L6 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -286,16 +392,21 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                     </span>
                 </div>
 
-                <div className="text-center flex items-center justify-center gap-2 border-b border-gray-700 w-max mx-auto">
+                <div className="text-center flex items-center justify-center gap-2 w-max mx-auto">
                     <Link
                         href="/report/sitteer-com-1754311226618-955541-yhb6og"
                         // onClick={handleSeeSample}
                         className="link-btn"
                     >
+                        <div className="link-btn__icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
+                                <path d="M0.71875 5.39844H9.46875M9.46875 5.39844L5.09375 1.02344M9.46875 5.39844L5.09375 9.77344" stroke="white" stroke-width="1.27312" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </div>
                         See Sample Audit
 
                     </Link>
-                    {">"}
+
                 </div>
 
 

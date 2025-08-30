@@ -40,11 +40,11 @@ export default function ProductPage() {
                     validatingShopify={false}
                     onSubmit={() => { }}
                     isSplitPages={true}
-                    type="product"
+                    type="collection"
 
                 />
 
-                <PageSpecificFeatures type="product" />
+                <PageSpecificFeatures type="collection" />
 
 
 
@@ -59,7 +59,7 @@ export default function ProductPage() {
                     <AboutSections />
                     <PricingSection 
                     isSplitPage={true}
-                    type="product"
+                    type="collection"
                     />
                     <div className='mt-15'>
                         <div className="text-center mb-12 flex flex-col gap-8">
@@ -76,7 +76,7 @@ export default function ProductPage() {
                     </div>
                     <FAQSection
                     isSplitPage={true}
-                    type="product"
+                    type="collection"
                     />
 
 

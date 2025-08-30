@@ -8,11 +8,11 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  const allowedPaths = ['/', '/pricing', '/privacy', '/terms', '/analyzing'];
+  // const allowedPaths = ['/', '/pricing', '/privacy', '/terms', '/analyzing'];
 
-  if (!allowedPaths.includes(pathname)) {
-    return null;
-  }
+  // if (!allowedPaths.includes(pathname)) {
+  //   return null;
+  // }
 
   const navItems = [
     { name: 'Home', href: '/' },
@@ -27,7 +27,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-green-50">
+    <nav className="">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-center items-center h-16">
           {/* Logo */}

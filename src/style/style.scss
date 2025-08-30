@@ -64,7 +64,7 @@
             color: #101314;
             text-align: center;
             font-family: "Instrument Serif";
-            font-size: clamp(46px, 8vw, 90px);
+            font-size: clamp(46px, 8vw, 80px);
             font-style: normal;
             font-weight: 400;
             line-height: 100%;
@@ -637,6 +637,7 @@
         font-size: 14px;
         border-radius: 8px;
         gap: 8px;
+
         // display: none;
         svg {
             width: 16px;
@@ -1775,14 +1776,43 @@ body:not([data-admin="true"]) main {
     font-family: "Instrument Sans";
     font-size: 20px;
     font-style: normal;
-    font-weight: 400;
+    font-weight: 500;
+
     line-height: 1;
+
+    
+    /* 17.225px */
     // text-decoration: underline;
     cursor: pointer;
     transition: all 0.3s ease;
     // background: #272727;
     // padding: 10px 20px;
     // border-radius: 12px;
+
+    display: inline-flex;
+    height: 38.194px;
+    align-items: center;
+    flex-shrink: 0;
+    border-radius: 31.828px;
+    border: 0.637px solid rgba(68, 124, 87, 0.25);
+    background: rgba(160, 255, 192, 0.15);
+    padding-right: 13px;
+
+    gap: 10px;
+
+    &__icon {
+        border-radius: 31.828px;
+        background: #447C57;
+
+        display: flex;
+        width: 38.194px;
+        height: 38.194px;
+        padding: 12.731px;
+        justify-content: center;
+        align-items: center;
+        gap: 5.407px;
+        aspect-ratio: 1/1;
+    }
 
     @media (max-width: 480px) {
         font-size: 16px;

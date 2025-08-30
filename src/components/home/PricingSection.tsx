@@ -4,15 +4,15 @@ import Link from 'next/link';
 import React from 'react';
 import { config } from '@/config/config';
 
-const PricingSection: React.FC = () => {
-  
+const PricingSection: React.FC<{ isSplitPage?: boolean, type?: 'home' | 'collection' | 'product' | 'cart' }> = ({ isSplitPage, type }) => {
+
 
   return (
     <section className="py-16 ">
       <div className="container mx-auto max-w-4xl">
         <div className="text-center mb-4">
           <h2 className="section-header__title">
-            One time payment
+            {isSplitPage ? 'Flexible pricing plan' : 'One time payment'}
           </h2>
         </div>
 
@@ -31,8 +31,8 @@ const PricingSection: React.FC = () => {
                 {/* Pricing */}
 
                 <div className="payment-card__price">
-                  <span className="payment-card__price-value">${config.pricing.mainPrice}</span>
-                  <span className="payment-card__price-old">${config.pricing.oldPrice}</span>
+                  <span className="payment-card__price-value">${isSplitPage ? "29" : config.pricing.mainPrice}</span>
+                  <span className="payment-card__price-old">${isSplitPage ? "199" : config.pricing.oldPrice}</span>
                 </div>
 
 
@@ -59,12 +59,12 @@ const PricingSection: React.FC = () => {
                     <div className="space-y-4">
                       <div className="flex items-center gap-3">
                         <span className="text-gray-900 text-lg mt-0.5">✓</span>
-                        <span className="text-gray-900">Detailed store audit - Worth $349</span>
+                        <span className="text-gray-900">Detailed {type ? `${type} page` : "store"} audit - Worth ${isSplitPage ? "69" : "349"}</span>
                       </div>
-                      <div className="flex items-start gap-3">
+                      {!isSplitPage && <div className="flex items-start gap-3">
                         <span className="text-gray-900 text-lg mt-0.5">✓</span>
                         <span className="text-gray-900">One-On-One consultation - Worth $349</span>
-                      </div>
+                      </div>}
                       <div className="flex items-start gap-3">
                         <span className="text-gray-900 text-lg mt-0.5">✓</span>
                         <span className="text-gray-900">CRO Resources - Worth $299</span>

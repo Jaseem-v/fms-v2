@@ -317,17 +317,22 @@ function PaymentForm() {
                   </div>
                 </div>
 
-                <div className="text-center flex items-center justify-center gap-2 border-b border-gray-700 w-max mx-auto">
+
+                <div className="text-center flex items-center justify-center gap-2 w-max mx-auto">
                   <Link
                     href="/report/sitteer-com-1754311226618-955541-yhb6og"
                     // onClick={handleSeeSample}
-                    // target='_blank'
                     className="link-btn"
                   >
+                    <div className="link-btn__icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
+                        <path d="M0.71875 5.39844H9.46875M9.46875 5.39844L5.09375 1.02344M9.46875 5.39844L5.09375 9.77344" stroke="white" stroke-width="1.27312" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </div>
                     See Sample Audit
 
                   </Link>
-                  {">"}
+
                 </div>
 
                 <div className="bg-white border border-gray-200 rounded-md p-6 shadow-sm">

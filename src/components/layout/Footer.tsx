@@ -6,11 +6,11 @@ import { usePathname } from 'next/navigation';
 export default function Footer() {
   const pathname = usePathname();
 
-  const allowedPaths = ['/', '/pricing', '/privacy', '/terms'];
+  // const allowedPaths = ['/', '/pricing', '/privacy', '/terms'];
 
-  if (!allowedPaths.includes(pathname)) {
-    return null;
-  }
+  // if (!allowedPaths.includes(pathname)) {
+  //   return null;
+  // }
 
   return (
     <footer className=" text-white footer">

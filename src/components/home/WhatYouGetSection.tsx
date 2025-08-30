@@ -5,7 +5,7 @@ import React from 'react';
 import { config } from '@/config/config';
 
 
-const WhatYouGetSection = ({ noResource = false }: { noResource?: boolean }) => {
+const WhatYouGetSection = ({ isSplitPage = false }: { isSplitPage?: boolean }) => {
   const handleSeeSample = () => {
     // Add sample report functionality
     console.log('See sample report clicked');
@@ -18,16 +18,16 @@ const WhatYouGetSection = ({ noResource = false }: { noResource?: boolean }) => 
           <h2 className="section-header__title">
             What You Get
           </h2>
-          <p className="section-header__description">
+         {!isSplitPage && <p className="section-header__description">
             Everything you need to transform your Shopify store and boost conversions
-          </p>
+          </p>}
         </div>
 
         {/* Store Audit Section */}
         <div className="mb-12">
-          <h3 className="section-header__sub-title">
+       { !isSplitPage && <h3 className="section-header__sub-title">
             Store Audit (Worth ${config.pricing.storeAudit})
-          </h3>
+          </h3>}
 
           <div className="grid md:grid-cols-3 gap-6 mb-8 mt-4">
             {/* Card 1: Complete Store Analysis */}
@@ -86,7 +86,7 @@ const WhatYouGetSection = ({ noResource = false }: { noResource?: boolean }) => 
             <Link
               href="/report/sitteer-com-1754311226618-955541-yhb6og"
               // onClick={handleSeeSample}
-              className="download-button"
+              className="download-button sample-audit-btn"
             >
               See Sample Audit
             </Link>
@@ -94,7 +94,7 @@ const WhatYouGetSection = ({ noResource = false }: { noResource?: boolean }) => 
         </div>
 
         {/* One-on-One Consultation Section */}
-        {!noResource && <div className="mb-12">
+        {!isSplitPage && <div className="mb-12">
           <div className="what-get__item">
             <div className="what-get__details">
               <h3 className="section-header__sub-title">
@@ -118,7 +118,7 @@ const WhatYouGetSection = ({ noResource = false }: { noResource?: boolean }) => 
         </div>}
 
         {/* CRO Resources Section */}
-        {!noResource && <div>
+        {!isSplitPage && <div>
           <div className="what-get__item">
             <div className="what-get__details">
               <h3 className="section-header__sub-title">
