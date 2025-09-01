@@ -14,6 +14,10 @@ export default function Navbar() {
   //   return null;
   // }
 
+  if (pathname.startsWith("/admin")) {
+    return null;
+  }
+
   const navItems = [
     { name: 'Home', href: '/' },
     { name: 'Pricing', href: '/pricing' }

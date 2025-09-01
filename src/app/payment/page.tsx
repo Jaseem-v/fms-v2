@@ -334,27 +334,37 @@ function PaymentForm() {
                   </Link>
 
                 </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Summary</h3>
 
-                <div className="bg-white border border-gray-200 rounded-md p-6 shadow-sm">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Summary</h3>
+                <div className="bg-white border border-gray-200 rounded-md pt-6 shadow-sm">
                   <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-700">Original Price:</span>
-                      <span className="text-gray-500">${config.pricing.oldPrice}</span>
+                    <div className="flex justify-between items-center px-6 ">
+                      <span className="text-gray-700">Detailed store audit:</span>
+                      <span className="text-gray-700">$349</span>
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-700 font-bold">Discounted Price:</span>
-                      <span className="text-gray-700 font-bold">${originalAmount}</span>
+                    <div className="flex justify-between items-center px-6 ">
+                      <span className="text-gray-700">One-On-One consultation:</span>
+                      <span className="text-gray-700">$349</span>
+                    </div>
+                    <div className="flex justify-between items-center px-6 ">
+                      <span className="text-gray-700">CRO Resources:</span>
+                      <span className="text-gray-700">$299</span>
                     </div>
                     {discountVerification?.valid && (
-                      <div className="flex justify-between items-center">
+                      <div className="flex justify-between items-center px-6 ">
                         <span className="text-green-700">Coupon Discount:</span>
                         <span className="text-green-700 font-bold">${discountVerification.discountAmount}</span>
                       </div>
                     )}
                     <div className="border-t border-gray-300 pt-3">
-                      <div className="flex justify-between items-center">
+                      <div className="flex justify-between items-center px-6 ">
                         <span className="text-md font-bold text-gray-900">Total Price:</span>
+                        <span className="text-md font-bold text-gray-900">$997</span>
+                      </div>
+                    </div>
+                    <div className="py-4 px-6" style={{ background: "#C8F4D7" }}>
+                      <div className="flex justify-between items-center " >
+                        <span className="text-md font-bold text-gray-900">Discounted price:</span>
                         <span className="text-md font-bold text-gray-900">${finalAmount}</span>
                       </div>
                     </div>

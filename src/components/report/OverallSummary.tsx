@@ -28,6 +28,8 @@ export default function OverallSummary({ report, analysisInProgress, setShowModa
     arcWidth: 25
   });
 
+  console.log("coordinates reports", report);
+
 
   useEffect(() => {
     const updateSvgSize = () => {
@@ -211,20 +213,20 @@ export default function OverallSummary({ report, analysisInProgress, setShowModa
             <h3 className="overall-summary__hint">{totalProblems} Opportunities to Increase Sales!</h3>
             <div className="overall-summary__steps grid grid-cols-2 gap-4">
               <div className={`overall-summary__step ${isHomepageComplete ? 'overall-summary__step--complete' : ''}`}>
-                <span className={`overall-summary__step-count `}>{problemsByPage.homepage}</span>
+                <span className={`overall-summary__step-count `}>{problemsByPage.homepage ? problemsByPage.homepage : "🔒"}</span>
                 <p className="overall-summary__step-text">Home <span>page</span></p>
 
               </div>
               <div className={`overall-summary__step ${isCollectionComplete ? 'overall-summary__step--complete' : ''}`}>
-                <span className={`overall-summary__step-count `}>{reportCompleted ? problemsByPage.collection : "🔒"}</span>
+                <span className={`overall-summary__step-count `}>{problemsByPage.collection ? problemsByPage.collection : "🔒"}</span>
                 <p className="overall-summary__step-text">Collection <span>page</span></p>
               </div>
               <div className={`overall-summary__step ${isProductComplete ? 'overall-summary__step--complete' : ''}`}>
-                <span className={`overall-summary__step-count `}>{reportCompleted ? problemsByPage.product : "🔒"}</span>
+                <span className={`overall-summary__step-count `}>{problemsByPage.product ? problemsByPage.product : "🔒"}</span>
                 <p className="overall-summary__step-text">Product <span>page</span></p>
               </div>
               <div className={`overall-summary__step ${isCartComplete ? 'overall-summary__step--complete' : ''}`}>
-                <span className={`overall-summary__step-count`}>{reportCompleted ? problemsByPage.cart : "🔒"}</span>
+                <span className={`overall-summary__step-count`}>{problemsByPage.cart ? problemsByPage.cart : "🔒"}</span>
                 <p className="overall-summary__step-text">Cart <span>page</span></p>
               </div>
             </div>

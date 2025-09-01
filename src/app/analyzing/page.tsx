@@ -24,9 +24,10 @@ function AnalyzingPageContent() {
   const router = useRouter();
   const { showToast } = useToast();
   const websiteUrl = searchParams.get('url');
+  const pageType = searchParams.get('pageType') || 'homepage';
 
   const [showLoading, setShowLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('homepage');
+  const [activeTab, setActiveTab] = useState(pageType);
   const [progress, setProgress] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [isValidating, setIsValidating] = useState(true);
@@ -41,7 +42,7 @@ function AnalyzingPageContent() {
   } = useHomepageAnalysis();
 
   console.log("analysisResult", analysisResult);
-
+  console.log("pageType", pageType);
 
   // Check flow setting on component mount
   useEffect(() => {
@@ -60,7 +61,7 @@ function AnalyzingPageContent() {
     checkFlow();
   }, []);
 
-  // Auto-analyze homepage if flow is homepage-analysis
+  // Auto-analyze page if flow is homepage-analysis
   useEffect(() => {
     if (flow === 'homepage-analysis' && websiteUrl && !analysisResult && !analysisLoading) {
       setShowLoading(true);
@@ -76,11 +77,12 @@ function AnalyzingPageContent() {
         }
       }, 100);
       
-      analyzeHomepage(websiteUrl);
+      // Pass the pageType to the analysis
+      analyzeHomepage(websiteUrl, pageType);
 
       return () => clearInterval(progressInterval);
     }
-  }, [flow, websiteUrl, analysisResult, analysisLoading, analyzeHomepage]);
+  }, [flow, websiteUrl, analysisResult, analysisLoading, analyzeHomepage, pageType]);
 
   // Handle analysis completion
   useEffect(() => {
@@ -272,7 +274,7 @@ function AnalyzingPageContent() {
               isValidating 
                 ? "Validating Shopify store..." 
                 : flow === 'homepage-analysis' && analysisLoading
-                ? "Analyzing homepage with AI..."
+                ? `Analyzing ${PAGE_TITLES[pageType]} with AI...`
                 : "Analyzing your store for conversion optimization opportunities..."
             }
             showProgress={true}
@@ -302,7 +304,7 @@ function AnalyzingPageContent() {
       return (
         <div className="text-center py-12">
           <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">Analyzing Homepage</h3>
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">Analyzing {PAGE_TITLES[pageType]}</h3>
           <p className="text-gray-600">Capturing screenshot and analyzing with AI...</p>
         </div>
       );
@@ -313,7 +315,7 @@ function AnalyzingPageContent() {
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
           <p className="text-red-600 text-lg">{analysisError}</p>
           <button
-            onClick={() => analyzeHomepage(websiteUrl || '')}
+            onClick={() => analyzeHomepage(websiteUrl || '', pageType)}
             className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
           >
             Try Again
@@ -325,7 +327,7 @@ function AnalyzingPageContent() {
     if (analysisResult) {
       // Use the HomepageAnalysisResult data directly - no conversion needed
       const reportData = {
-        homepage: analysisResult
+        [pageType]: analysisResult
       };
 
       return (
@@ -352,12 +354,18 @@ function AnalyzingPageContent() {
             </div>
           </div>
 
-          {isHomepage && <AnalysisReport
-            report={reportData}
-            activeTab="homepage"
-            setActiveTab={() => { }}
-            setShowModal={() => { }}
-          />}
+          {/* Show analysis report only for the analyzed page type */}
+          {activeTab === pageType && (
+            <AnalysisReport
+              report={reportData}
+              activeTab={pageType}
+              setActiveTab={() => { }}
+              setShowModal={() => { }}
+            />
+          )}
+
+          {/* Show blurred content for tabs that don't have analysis results */}
+          {activeTab !== pageType && renderBlurredContent()}
         </div>
       );
     }
@@ -367,10 +375,6 @@ function AnalyzingPageContent() {
 
   // Render blurred content for other tabs or when flow is payment
   const renderBlurredContent = () => {
-    if (activeTab === 'homepage' && flow === 'homepage-analysis' && analysisResult) {
-      return null;
-    }
-
     return (
       <div className="relative mt-4">
         <div className="w-full rounded-lg overflow-hidden">
@@ -385,7 +389,10 @@ function AnalyzingPageContent() {
                 {PAGE_TITLES[activeTab]} Analysis
               </h3>
               <p className="text-sm opacity-90 mb-6">
-                Unlock detailed insights and actionable recommendations
+                {analysisResult 
+                  ? `You've unlocked ${PAGE_TITLES[pageType]} analysis. Upgrade to unlock ${PAGE_TITLES[activeTab]} analysis too!`
+                  : 'Unlock detailed insights and actionable recommendations'
+                }
               </p>
               <button
                 onClick={handlePaymentClick}
@@ -407,7 +414,6 @@ function AnalyzingPageContent() {
         <div className="rounded-lg overflow-hidden">
           <div className="">
             {renderHomepageContent()}
-            {renderBlurredContent()}
           </div>
         </div>
       </div>

@@ -224,8 +224,8 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
             case 'collection':
                 return (
                     <>
-                        Are Shoppers Dropping Off on <br />
-                        Your Collection Page
+                        Are Shoppers Dropping Off  <br />
+                        on Your Collection Page
                     </>
                 );
             case 'product':
