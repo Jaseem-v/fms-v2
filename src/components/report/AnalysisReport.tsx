@@ -1,6 +1,6 @@
 'use client';
 
-import { HomepageAnalysisResult } from '@/hooks/useHomepageAnalysis';
+import { PagewiseAnalysisResult } from '@/hooks/useHomepageAnalysis';
 import { useState } from 'react';
 
 interface ImageReference {
@@ -23,7 +23,7 @@ interface AppReference {
 }
 
 interface Report {
-  [key: string]: HomepageAnalysisResult;
+  [key: string]: PagewiseAnalysisResult;
 }
 
 interface AnalysisReportProps {

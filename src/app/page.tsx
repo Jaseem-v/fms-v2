@@ -26,7 +26,7 @@ import { config } from '@/config/config';
 import FloatingButton from '@/components/ui/FloatingButton';
 import CountdownTimer from '@/components/ui/CountdownTimer';
 // import { CountdownTimer } from './payment/page';
-import { HomepageAnalysisResult } from '@/hooks/useHomepageAnalysis';
+import { PagewiseAnalysisResult } from '@/hooks/useHomepageAnalysis';
 
 
 interface UserInfo {
@@ -41,7 +41,7 @@ interface StatusMessage {
 }
 
 interface Report {
-  [key: string]: HomepageAnalysisResult;
+  [key: string]: PagewiseAnalysisResult;
 }
 
 export default function Home() {

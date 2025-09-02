@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import UrlForm from '../../components/home/UrlForm';
 import authService from '../../services/authService';
-import { useHomepageAnalysis } from '../../hooks/useHomepageAnalysis';
+import { usePagewiseAnalysis } from '../../hooks/useHomepageAnalysis';
 import { config } from '@/config/config';
 
 export default function AnalyzeHomepage() {
@@ -16,9 +16,9 @@ export default function AnalyzeHomepage() {
     loading,
     error,
     result,
-    analyzeHomepage,
+    analyzePage,
     reset
-  } = useHomepageAnalysis();
+  } = usePagewiseAnalysis();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -41,7 +41,7 @@ export default function AnalyzeHomepage() {
     if (!url.trim()) return;
 
     try {
-      await analyzeHomepage(url, pageType);
+      await analyzePage(url, pageType);
     } catch (error) {
       console.error('Analysis failed:', error);
     }

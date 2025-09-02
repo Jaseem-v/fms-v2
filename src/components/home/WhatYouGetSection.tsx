@@ -84,7 +84,7 @@ const WhatYouGetSection = ({ isSplitPage = false }: { isSplitPage?: boolean }) =
           {/* Call to Action Button */}
           <div className="text-center">
             <Link
-              href="/report/sitteer-com-1754311226618-955541-yhb6og"
+              href="/report/sitteer-com-1754311226618-955541-yhb6og?isSampleReport=true"
               // onClick={handleSeeSample}
               className="download-button sample-audit-btn"
             >

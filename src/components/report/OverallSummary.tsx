@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { HomepageAnalysisResult } from "@/hooks/useHomepageAnalysis";
+import { PagewiseAnalysisResult } from "@/hooks/useHomepageAnalysis";
+import { useToast } from "@/contexts/ToastContext";
 
 interface Report {
-  [key: string]: HomepageAnalysisResult;
+  [key: string]: PagewiseAnalysisResult;
 }
 
 interface OverallSummaryProps {
@@ -27,6 +28,7 @@ export default function OverallSummary({ report, analysisInProgress, setShowModa
     innerRadius: 100,
     arcWidth: 25
   });
+  const { showToast } = useToast();
 
   console.log("coordinates reports", report);
 
@@ -233,9 +235,54 @@ export default function OverallSummary({ report, analysisInProgress, setShowModa
 
           </div>
 
-          <div className="performance-summary">
-            Based on our audit, <span>{reportCompleted ? finalPerformanceScore : "🔒"}</span>% is your <span>Fix My Store score </span> (FMS score)
+          <div>
+
+            <div className="performance-summary">
+              Based on our audit, <span>{reportCompleted ? finalPerformanceScore : "🔒"}</span>% is your <span>Fix My Store score </span> (FMS score)
+            </div>
+            {reportUrl && (
+              <div className="report-url-section">
+                <div className="report-url-container">
+                  <div className="report-url-input-wrapper">
+                    <div className="report-url-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                        <path d="M10.1311 13.5039C10.5605 14.078 11.1084 14.5531 11.7376 14.8968C12.3668 15.2406 13.0626 15.445 13.7777 15.4962C14.4929 15.5474 15.2106 15.4442 15.8824 15.1937C16.5542 14.9431 17.1642 14.5509 17.6711 14.0439L20.6711 11.0439C21.5819 10.1009 22.0858 8.83785 22.0744 7.52687C22.063 6.21588 21.5372 4.96182 20.6102 4.03478C19.6831 3.10774 18.429 2.58189 17.1181 2.5705C15.8071 2.55911 14.5441 3.06308 13.6011 3.97387L11.8811 5.68387M14.1311 11.5039C13.7016 10.9297 13.1537 10.4547 12.5245 10.1109C11.8953 9.76717 11.1996 9.56276 10.4844 9.51154C9.76927 9.46032 9.05147 9.5635 8.37971 9.81409C7.70795 10.0647 7.09794 10.4568 6.59106 10.9639L3.59106 13.9639C2.68027 14.9069 2.1763 16.1699 2.18769 17.4809C2.19908 18.7919 2.72493 20.0459 3.65197 20.973C4.57901 21.9 5.83307 22.4259 7.14405 22.4372C8.45504 22.4486 9.71805 21.9447 10.6611 21.0339L12.3711 19.3239" stroke="#131313" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </div>
+                    <input
+                      type="text"
+                      value={`https://fixmystore.com/report/${reportUrl}`}
+                      readOnly
+                      className="report-url-input"
+                      onClick={(e) => e.currentTarget.select()}
+                    />
+                                         <button
+                       className="report-url-copy-btn"
+                       onClick={async () => {
+                         try {
+                           await navigator.clipboard.writeText(`https://fixmystore.com/report/${reportUrl}`);
+                           showToast('Link copied to clipboard!', 'success');
+                         } catch (err) {
+                           showToast('Failed to copy link', 'error');
+                         }
+                       }}
+                       title="Copy link"
+                     >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                        <path d="M5.63281 15.5H4.63281C4.10238 15.5 3.59367 15.2893 3.2186 14.9142C2.84353 14.5391 2.63281 14.0304 2.63281 13.5V4.5C2.63281 3.96957 2.84353 3.46086 3.2186 3.08579C3.59367 2.71071 4.10238 2.5 4.63281 2.5H13.6328C14.1632 2.5 14.672 2.71071 15.047 3.08579C15.4221 3.46086 15.6328 3.96957 15.6328 4.5V5.5M11.6328 9.5H20.6328C21.7374 9.5 22.6328 10.3954 22.6328 11.5V20.5C22.6328 21.6046 21.7374 22.5 20.6328 22.5H11.6328C10.5282 22.5 9.63281 21.6046 9.63281 20.5V11.5C9.63281 10.3954 10.5282 9.5 11.6328 9.5Z" stroke="#5760E2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+
+
+
+
           </div>
+
 
           {/* Download Report Button */}
           {/* <div className="download-section flex justify-center gap-4">

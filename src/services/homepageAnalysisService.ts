@@ -1,6 +1,6 @@
 import { config } from '../config/config';
 
-interface HomepageAnalysisResult {
+interface PagewiseAnalysisResult {
   screenshotPath: string;
   imageAnalysis: string;
   checklistAnalysis: Array<{
@@ -17,12 +17,12 @@ interface HomepageAnalysisResult {
   }>;
 }
 
-class HomepageAnalysisService {
+class PagewiseAnalysisService {
   private baseUrl = config.backendUrl;
 
-  async analyzeHomepage(url: string, pageType: string = 'homepage'): Promise<HomepageAnalysisResult> {
+  async analyzePage(url: string, pageType: string = 'homepage'): Promise<PagewiseAnalysisResult> {
     try {
-      const response = await fetch(`${this.baseUrl}/homepage-analysis/analyze`, {
+      const response = await fetch(`${this.baseUrl}/pagewise-analysis/analyze`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -38,10 +38,10 @@ class HomepageAnalysisService {
       const result = await response.json();
       return result.data;
     } catch (error) {
-      console.error('Error analyzing homepage:', error);
+      console.error('Error analyzing page:', error);
       throw error;
     }
   }
 }
 
-export default new HomepageAnalysisService();
+export default new PagewiseAnalysisService();

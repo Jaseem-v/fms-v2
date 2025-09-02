@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import homepageAnalysisService from '../services/homepageAnalysisService';
+import pagewiseAnalysisService from '../services/homepageAnalysisService';
 import { initialHomeReport } from '@/utils/rawData';
 
-export interface HomepageAnalysisResult {
+export interface PagewiseAnalysisResult {
   screenshotPath: string;
   imageAnalysis: string;
   checklistAnalysis: Array<{
@@ -17,19 +17,20 @@ export interface HomepageAnalysisResult {
     app_reference?: any;
     appReferenceObject?: any;
   }>;
+  slug?: string;
 }
 
-export const useHomepageAnalysis = () => {
+export const usePagewiseAnalysis = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<HomepageAnalysisResult | null>(null);
+  const [result, setResult] = useState<PagewiseAnalysisResult | null>(null);
 
-  const analyzeHomepage = async (url: string, pageType: string = 'homepage') => {
+  const analyzePage = async (url: string, pageType: string = 'homepage') => {
     try {
       setLoading(true);
       setError(null);
       
-      const analysisResult = await homepageAnalysisService.analyzeHomepage(url, pageType);
+      const analysisResult = await pagewiseAnalysisService.analyzePage(url, pageType);
       setResult(analysisResult);
       
       return analysisResult;
@@ -52,7 +53,7 @@ export const useHomepageAnalysis = () => {
     loading,
     error,
     result,
-    analyzeHomepage,
+    analyzePage,
     reset
   };
 };

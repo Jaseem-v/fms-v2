@@ -3,7 +3,7 @@ import analysisService from '../services/analysisService';
 import shopifyValidationService from '../services/shopifyValidationService';
 import reportService from '../services/reportService';
 import settingsService from '../services/settingsService';
-import { HomepageAnalysisResult } from './useHomepageAnalysis';
+import { PagewiseAnalysisResult } from './useHomepageAnalysis';
 
 // Helper function to normalize URL (add https:// if no protocol is present)
 const normalizeUrl = (url: string): string => {
@@ -43,7 +43,7 @@ interface UserInfo {
 }
 
 export interface Report {
-  [key: string]: HomepageAnalysisResult;
+  [key: string]: PagewiseAnalysisResult;
 }
 
 interface StatusMessage {
@@ -574,7 +574,7 @@ export function useAnalysis() {
                   screenshotUrl: screenshotUrl
                 }));
                 
-                // Convert to HomepageAnalysisResult format
+                // Convert to PagewiseAnalysisResult format
                 finalReport[pageType] = {
                   screenshotPath: itemsWithScreenshots[0]?.screenshotUrl || '',
                   imageAnalysis: `Analysis of ${pageType} page with ${itemsWithScreenshots.length} items`,
@@ -686,7 +686,7 @@ export function useAnalysis() {
                 }
 
                 if (screenshotUrl && status.analysis[pageType]) {
-                  // Add screenshot URL to each analysis item and convert to HomepageAnalysisResult
+                  // Add screenshot URL to each analysis item and convert to PagewiseAnalysisResult
                   const itemsWithScreenshots = status.analysis[pageType].map((item: any) => ({
                     ...item,
                     screenshotUrl: screenshotUrl
@@ -708,7 +708,7 @@ export function useAnalysis() {
                     }))
                   };
                 } else {
-                  // Convert to HomepageAnalysisResult format even without screenshots
+                  // Convert to PagewiseAnalysisResult format even without screenshots
                   newReport[pageType] = {
                     screenshotPath: '',
                     imageAnalysis: `Analysis of ${pageType} page with ${status.analysis[pageType].length} items`,

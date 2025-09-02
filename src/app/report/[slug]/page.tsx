@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import reportService from '../../../services/reportService';
+import pageAuditService from '../../../services/pageAuditService';
 import AnalysisReport from '../../../components/report/AnalysisReport';
 import OverallSummary from '../../../components/report/OverallSummary';
 import ReportLoading from '../../../components/report/ReportLoading';
@@ -22,7 +23,21 @@ export default function ReportPage() {
   const params = useParams();
   const slug = params.slug as string;
 
-  const [report, setReport] = useState<any>(initialReport);
+  // Check URL parameters for isSampleReport flag
+  const [searchParams] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return new URLSearchParams(window.location.search);
+    }
+    return new URLSearchParams();
+  });
+
+  // Check if this is a sample report either by URL parameter or by slug pattern
+  const isSampleReport = searchParams.get('isSampleReport') === 'true' ||
+    slug === 'sitteer-com-1754311226618-955541-yhb6og' ||
+    slug.startsWith('sample-') ||
+    slug.includes('sample');
+
+  const [report, setReport] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>('homepage');
@@ -120,7 +135,7 @@ export default function ReportPage() {
 
     // Add scroll listener for tab switching
     window.addEventListener('scroll', handleScrollForTabs);
-    
+
     return () => {
       window.removeEventListener('scroll', handleScrollForTabs);
     };
@@ -238,50 +253,66 @@ export default function ReportPage() {
   };
 
 
-  // useEffect(() => {
-  //   if (slug) {
-  //     loadReport();
-  //   }
-  // }, [slug]);
+  useEffect(() => {
+    if (slug) {
+      loadReport();
+    }
+  }, [slug, isSampleReport]);
 
   const loadReport = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const result = await reportService.getReportBySlug(slug);
+      console.log('Loading report for slug:', slug);
+      console.log('isSampleReport:', isSampleReport);
 
-      if (result.success && result.report) {
-        setReportData(result.report);
-
-        // Check if report is still in progress
-        if (result.report.status === 'pending') {
-          setIsInProgress(true);
-          // If in progress, show progress indicator
-          if (result.report.progress) {
-            setReport(result.report.analysisData || {});
-
-          } else {
-            setReport({});
-          }
-        } else {
-          setIsInProgress(false);
-          setReport(result.report.analysisData);
-        }
-
-        console.log("result.report.websiteUrl", result.report.websiteUrl);
-
-
-        setUrl(result.report.websiteUrl);
-
+      if (isSampleReport) {
+        console.log('Loading sample report data');
+        // Use initialReport for sample reports
+        setReport(initialReport);
+        setReportData({
+          websiteUrl: 'https://example.com',
+          status: 'completed',
+          analysisData: initialReport
+        });
+        setUrl('https://example.com');
 
         // Set the first page type as active tab
-        const pageTypes = Object.keys(result.report.analysisData || {});
+        const pageTypes = Object.keys(initialReport);
         if (pageTypes.length > 0) {
           setActiveTab(pageTypes[0]);
         }
+        setIsInProgress(false);
       } else {
-        setError(result.message || 'Report not found');
+        console.log('Loading real pageAudit data');
+        // Load real data using pageAuditService
+        const result = await pageAuditService.getPageAuditBySlug(slug);
+
+        if (result.success && result.pageAudit) {
+          const pageAudit = result.pageAudit;
+
+          // Transform pageAudit data to match report format
+          const transformedReport = {
+            [pageAudit.pageType]: {
+              screenshotPath: pageAudit.screenshotPath,
+              imageAnalysis: pageAudit.imageAnalysis,
+              checklistAnalysis: pageAudit.checklistAnalysis
+            }
+          };
+
+          setReport(transformedReport);
+          setReportData({
+            websiteUrl: pageAudit.url,
+            status: 'completed',
+            analysisData: transformedReport
+          });
+          setUrl(pageAudit.url);
+          setActiveTab(pageAudit.pageType);
+          setIsInProgress(false);
+        } else {
+          setError(result.message || 'Page audit not found');
+        }
       }
     } catch (error) {
       console.error('Error loading report:', error);
@@ -291,31 +322,34 @@ export default function ReportPage() {
     }
   };
 
-  // Poll for updates if report is in progress
-  useEffect(() => {
-    if (!isInProgress || !reportData) return;
+  // Poll for updates if report is in progress (only for non-sample reports using reportService)
+  // useEffect(() => {
+  //   if (!isInProgress || !reportData || isSampleReport) return;
 
-    const pollInterval = setInterval(async () => {
-      try {
-        const result = await reportService.getReportBySlug(slug);
+  //   const pollInterval = setInterval(async () => {
+  //     try {
+  //       const result = await reportService.getReportBySlug(slug);
 
-        if (result.success && result.report) {
-          setReportData(result.report);
+  //       if (result.success && result.report) {
+  //         setReportData(result.report);
 
-          if (result.report.status === 'completed') {
-            setIsInProgress(false);
-            setReport(result.report.analysisData);
-          } else if (result.report.analysisData) {
-            setReport(result.report.analysisData);
-          }
-        }
-      } catch (error) {
-        console.error('Error polling report:', error);
-      }
-    }, 5000); // Poll every 5 seconds
+  //         if (result.report.status === 'completed') {
+  //           setIsInProgress(false);
+  //           setReport(result.report.analysisData);
+  //         } else if (result.report.analysisData) {
+  //           setReport(result.report.analysisData);
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error('Error polling report:', error);
+  //     }
+  //   }, 5000); // Poll every 5 seconds
 
-    return () => clearInterval(pollInterval);
-  }, [isInProgress, reportData, slug]);
+  //   return () => clearInterval(pollInterval);
+  // }, [isInProgress, reportData, slug, isSampleReport]);
+
+  console.log("reportData", report, reportData);
+
 
   if (loading) {
     return (
@@ -375,7 +409,7 @@ export default function ReportPage() {
     <div className="min-h-screen bg-gray-50">
 
       <div className="max-w-6xl mx-auto px-4 py-8">
-       
+
 
         {/* Sticky Input Field for New Analysis */}
         <div className="">
@@ -431,11 +465,13 @@ export default function ReportPage() {
                 analysisInProgress={{}}
                 setShowModal={setShowModal}
                 noViewReport={true}
-                reportUrl={reportUrl}
+                websiteUrl={reportData.websiteUrl}
                 performanceScore={59}
                 isSampleReport={true}
 
               />
+
+              {}
 
               <div className="rounded-lg overflow-hidden sticky top-0 z-10">
                 <div className="report__tabs">
@@ -448,7 +484,7 @@ export default function ReportPage() {
                         // Scroll to the corresponding page section
                         const element = document.getElementById(key);
                         if (element) {
-                          element.scrollIntoView({ 
+                          element.scrollIntoView({
                             behavior: 'smooth',
                             block: 'start'
                           });

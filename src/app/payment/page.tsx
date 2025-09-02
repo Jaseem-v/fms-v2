@@ -320,7 +320,7 @@ function PaymentForm() {
 
                 <div className="text-center flex items-center justify-center gap-2 w-max mx-auto">
                   <Link
-                    href="/report/sitteer-com-1754311226618-955541-yhb6og"
+                    href="/report/sitteer-com-1754311226618-955541-yhb6og?isSampleReport=true"
                     // onClick={handleSeeSample}
                     className="link-btn"
                   >

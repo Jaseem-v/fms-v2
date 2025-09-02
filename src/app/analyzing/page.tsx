@@ -8,7 +8,7 @@ import Navbar from '../../components/layout/Navbar';
 import { config } from '@/config/config';
 import { useToast } from '@/contexts/ToastContext';
 import shopifyValidationService from '@/services/shopifyValidationService';
-import { useHomepageAnalysis } from '../../hooks/useHomepageAnalysis';
+import { usePagewiseAnalysis } from '../../hooks/useHomepageAnalysis';
 import AnalysisReport from '../../components/report/AnalysisReport';
 import OverallSummary from '../../components/report/OverallSummary';
 
@@ -37,9 +37,9 @@ function AnalyzingPageContent() {
     loading: analysisLoading,
     error: analysisError,
     result: analysisResult,
-    analyzeHomepage,
+    analyzePage,
     reset
-  } = useHomepageAnalysis();
+  } = usePagewiseAnalysis();
 
   console.log("analysisResult", analysisResult);
   console.log("pageType", pageType);
@@ -78,11 +78,11 @@ function AnalyzingPageContent() {
       }, 100);
       
       // Pass the pageType to the analysis
-      analyzeHomepage(websiteUrl, pageType);
+      analyzePage(websiteUrl, pageType);
 
       return () => clearInterval(progressInterval);
     }
-  }, [flow, websiteUrl, analysisResult, analysisLoading, analyzeHomepage, pageType]);
+  }, [flow, websiteUrl, analysisResult, analysisLoading, analyzePage, pageType]);
 
   // Handle analysis completion
   useEffect(() => {
@@ -315,7 +315,7 @@ function AnalyzingPageContent() {
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
           <p className="text-red-600 text-lg">{analysisError}</p>
           <button
-            onClick={() => analyzeHomepage(websiteUrl || '', pageType)}
+            onClick={() => analyzePage(websiteUrl || '', pageType)}
             className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
           >
             Try Again
@@ -325,7 +325,7 @@ function AnalyzingPageContent() {
     }
 
     if (analysisResult) {
-      // Use the HomepageAnalysisResult data directly - no conversion needed
+      // Use the PagewiseAnalysisResult data directly - no conversion needed
       const reportData = {
         [pageType]: analysisResult
       };
@@ -338,6 +338,7 @@ function AnalyzingPageContent() {
             setShowModal={() => { }}
             noViewReport={true}
             websiteUrl={websiteUrl}
+            reportUrl={analysisResult.slug}
           />
 
           <div className="rounded-lg overflow-hidden sticky top-0 z-10">

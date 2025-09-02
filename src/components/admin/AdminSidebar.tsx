@@ -28,7 +28,7 @@ const navigation = [
   { name: 'App Reference', href: '/admin/app-reference', icon: PhotoIcon },
   { name: 'Screenshots', href: '/admin/screenshots', icon: CameraIcon },
   { name: 'Industry Management', href: '/admin/industries', icon: BuildingOfficeIcon },
-  { name: 'Dynamic Prompts', href: '/admin/prompts', icon: ChatBubbleLeftRightIcon },
+
   { name: 'Reports', href: '/admin/reports', icon: DocumentTextIcon },
   { name: 'Analytics', href: '/#', icon: ChartBarIcon },
   { name: 'Users', href: '/#', icon: UserGroupIcon },
