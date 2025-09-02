@@ -10,6 +10,7 @@ interface HeroAreaProps {
     // setShowModal: (show: boolean) => void;
     isSplitPages?: boolean;
     type?: 'homepage' | 'collection' | 'product' | 'cart';
+    placeholder?: string;
 }
 
 const pages = [
@@ -71,7 +72,7 @@ const validateUrl = (url: string): boolean => {
     }
 };
 
-export default function HeroArea({ url, setUrl, loading, validatingShopify, onSubmit, isSplitPages, type }: HeroAreaProps) {
+export default function HeroArea({ url, setUrl, loading, validatingShopify, onSubmit, isSplitPages, type, placeholder }: HeroAreaProps) {
 
     const [activePage, setActivePage] = useState<number | null>(null);
     const [urlError, setUrlError] = useState<string>('');
@@ -197,6 +198,9 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
 
     // Get placeholder text - show typing animation when empty, show static text when user is typing
     const getPlaceholderText = () => {
+        if (placeholder) {
+            return placeholder;
+        }
         if (url.trim() === '' && isTyping) {
             return typingText;
         }

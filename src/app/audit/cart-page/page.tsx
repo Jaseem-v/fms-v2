@@ -61,6 +61,7 @@ export default function CartPage() {
                     onSubmit={handleSubmit}
                     isSplitPages={true}
                     type="cart"
+                    placeholder="Enter product URL (we'll add it to cart and analyze)"
                 />
 
                 <PageSpecificFeatures type="cart" />
