@@ -43,8 +43,7 @@ export default function CollectionPage() {
 
             <div className="announcment-bar">
                 <p>
-                    Limited time - $149 Only - Offer ends in
-                    <CountdownTimer />
+                    Get an audit for FREE
                 </p>
             </div>
 

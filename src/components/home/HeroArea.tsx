@@ -374,7 +374,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
 
                 <div className='hero__input-guarantee'>
                     <span>
-                        $149 One Time Payment
+                        {isSplitPages ? "FREE Audit" : "$149 One Time Payment"}
                     </span>
                     <span className='hidden md:block'>
                         •
@@ -383,7 +383,8 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                         |
                     </span>
                     <span>
-                        Full Store Audit
+                        {isSplitPages ? `${type ? type.charAt(0).toUpperCase() + type.slice(1) : ''} Page Audit` : " Full Store Audit"}
+
                     </span>
                     <span className='hidden md:block'>
                         •
@@ -392,7 +393,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
                         |
                     </span>
                     <span>
-                        One-on-One Consultation
+                        {isSplitPages ? "Increase Sales" : "One-on-One Consultation"}
                     </span>
                 </div>
 
