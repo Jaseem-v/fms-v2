@@ -11,6 +11,7 @@ import shopifyValidationService from '@/services/shopifyValidationService';
 import { usePagewiseAnalysis } from '../../hooks/useHomepageAnalysis';
 import AnalysisReport from '../../components/report/AnalysisReport';
 import OverallSummary from '../../components/report/OverallSummary';
+import BlurredContent from '../../components/report/BlurredContent';
 
 const PAGE_TITLES: Record<string, string> = {
   homepage: 'Homepage',
@@ -251,7 +252,6 @@ function AnalyzingPageContent() {
 
 
 
-  const blurredImg = activeTab === 'homepage' ? '1' : activeTab === 'collection' ? '2' : activeTab === 'product' ? '3' : '4'
   const isHomepage = activeTab === 'homepage'
   
   if (showLoading || isValidating || (flow === 'homepage-analysis' && analysisLoading)) {
@@ -377,34 +377,12 @@ function AnalyzingPageContent() {
   // Render blurred content for other tabs or when flow is payment
   const renderBlurredContent = () => {
     return (
-      <div className="relative mt-4">
-        <div className="w-full rounded-lg overflow-hidden">
-          <img
-            className='w-full md:h-full h-[400px] '
-            src={`/blured/${blurredImg}.png`}
-          />
-          <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-            <div className="text-center text-black">
-              <div className="text-4xl mb-4">🔒</div>
-              <h3 className="text-xl font-semibold mb-2">
-                {PAGE_TITLES[activeTab]} Analysis
-              </h3>
-              <p className="text-sm opacity-90 mb-6">
-                {analysisResult 
-                  ? `You've unlocked ${PAGE_TITLES[pageType]} analysis. Upgrade to unlock ${PAGE_TITLES[activeTab]} analysis too!`
-                  : 'Unlock detailed insights and actionable recommendations'
-                }
-              </p>
-              <button
-                onClick={handlePaymentClick}
-                className="download-button"
-              >
-                Unlock Full Report - ${config.pricing.mainPrice}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <BlurredContent 
+        activeTab={activeTab}
+        pageType={pageType}
+        analysisResult={analysisResult}
+        onPaymentClick={handlePaymentClick}
+      />
     );
   };
 

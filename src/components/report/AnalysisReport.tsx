@@ -2,6 +2,7 @@
 
 import { PagewiseAnalysisResult } from '@/hooks/useHomepageAnalysis';
 import { useState } from 'react';
+import BlurredContent from './BlurredContent';
 
 interface ImageReference {
   id: string;
@@ -116,18 +117,19 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
     return `${backendUrl}${url}`;
   }
 
+  // Check if current active tab has analysis data
+  const hasActiveTabData = report && report[activeTab]?.checklistAnalysis?.length > 0;
+
   return (
     <div className="space-y-6">
-
-
-      {/* Analysis for current tab */}
-
-      <div className="report__list">
-        {Object.entries(report).map(([page, analysis]) => {
-          // Skip pages that don't have analysis data
-          if (!analysis?.checklistAnalysis) {
-            return null;
-          }
+      {/* Show analysis for current tab if it has data, otherwise show blurred content */}
+      {hasActiveTabData ? (
+        <div className="report__list">
+          {Object.entries(report).map(([page, analysis]) => {
+            // Only show the active tab
+            if (page !== activeTab || !analysis?.checklistAnalysis) {
+              return null;
+            }
 
 
 
@@ -269,7 +271,16 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
             </div>
           )
         })}
-      </div>
+        </div>
+      ) : (
+        <BlurredContent 
+          activeTab={activeTab}
+          pageType={Object.keys(report || {}).find(page => report?.[page]?.checklistAnalysis?.length > 0)}
+          analysisResult={report}
+          onPaymentClick={() => window.location.href = '/payment'}
+        />
+      )}
+
       {/* Modal for image details */}
       {selectedImage && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">

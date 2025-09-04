@@ -471,7 +471,7 @@ export default function ReportPage() {
 
               />
 
-              {}
+              { }
 
               <div className="rounded-lg overflow-hidden sticky top-0 z-10">
                 <div className="report__tabs">
@@ -521,7 +521,9 @@ export default function ReportPage() {
       </div>
 
       {/* Report page specific FloatingButton that navigates to /payment */}
-      <FloatingButton path="/payment" />
+      <FloatingButton path={isSampleReport ? "/payment" : "/"} />
     </div>
   );
 }
+
+
