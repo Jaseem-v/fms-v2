@@ -439,6 +439,8 @@ export default function Home() {
         isOpen={showFormModal}
         onClose={() => setShowFormModal(false)}
         websiteUrl={url}
+        isSampleReport={false}
+        pageType="homepage"
       />
 
       <FloatingButton />

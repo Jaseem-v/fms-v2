@@ -543,6 +543,8 @@ export default function ReportPage() {
         isOpen={showFormModal}
         onClose={() => setShowFormModal(false)}
         websiteUrl={reportData?.websiteUrl || ''}
+        isSampleReport={isSampleReport}
+        pageType={activeTab}
       />
     </div>
   );

@@ -7,9 +7,11 @@ interface FormModalProps {
   isOpen: boolean;
   onClose: () => void;
   websiteUrl: string;
+  isSampleReport?: boolean;
+  pageType?: string;
 }
 
-export default function FormModal({ isOpen, onClose, websiteUrl }: FormModalProps) {
+export default function FormModal({ isOpen, onClose, websiteUrl, isSampleReport = false, pageType = 'homepage' }: FormModalProps) {
   const [formData, setFormData] = useState<FormData>({
     name: '',
     websiteUrl: websiteUrl,
@@ -22,6 +24,17 @@ export default function FormModal({ isOpen, onClose, websiteUrl }: FormModalProp
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+
+  // Function to get page type display text
+  const getPageTypeText = (pageType: string): string => {
+    const pageTypeMap: Record<string, string> = {
+      homepage: 'Homepage',
+      cart: 'Cart Page',
+      product: 'Product Page',
+      collection: 'Collection Page',
+    };
+    return pageTypeMap[pageType] || 'Homepage';
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -57,7 +70,7 @@ export default function FormModal({ isOpen, onClose, websiteUrl }: FormModalProp
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || isSampleReport) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -83,7 +96,7 @@ export default function FormModal({ isOpen, onClose, websiteUrl }: FormModalProp
               <ul className="space-y-2">
                 <li className="flex items-start">
                   <span className="text-black mr-2">•</span>
-                  <span className="text-black font-semibold">Your Homepage Audit (PDF)</span>
+                  <span className="text-black font-semibold">Your {getPageTypeText(pageType)} Audit (PDF)</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-black mr-2">•</span>

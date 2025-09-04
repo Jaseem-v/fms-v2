@@ -88,13 +88,19 @@ function AnalyzingPageContent() {
   // Handle analysis completion
   useEffect(() => {
     if (flow === 'homepage-analysis' && analysisResult && !analysisLoading) {
-      // Analysis completed successfully, show 100% progress then hide loading
+      // Analysis completed successfully, show 100% progress then navigate to report page
       setProgress(100);
       setTimeout(() => {
-        setShowLoading(false);
+        // Navigate to report page using the slug from analysis result
+        if (analysisResult.slug) {
+          router.push(`/report/${analysisResult.slug}`);
+        } else {
+          // Fallback: show loading false if no slug available
+          setShowLoading(false);
+        }
       }, 1500);
     }
-  }, [flow, analysisResult, analysisLoading]);
+  }, [flow, analysisResult, analysisLoading, router]);
 
   // Handle analysis error
   useEffect(() => {
