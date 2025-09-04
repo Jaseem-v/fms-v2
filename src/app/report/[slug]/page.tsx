@@ -517,8 +517,7 @@ export default function ReportPage() {
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
                 setShowModal={setShowModal}
-                isSampleReport={true}
-
+                isSampleReport={isSampleReport}
               />
             </>
           )}

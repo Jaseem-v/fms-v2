@@ -122,163 +122,251 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
 
   return (
     <div className="space-y-6">
-      {/* Show analysis for current tab if it has data, otherwise show blurred content */}
-      {hasActiveTabData ? (
+      {/* For sample reports, show all page reports one after another */}
+      {isSampleReport ? (
         <div className="report__list">
           {Object.entries(report).map(([page, analysis]) => {
-            // Only show the active tab
-            if (page !== activeTab || !analysis?.checklistAnalysis) {
+            // Show all pages for sample reports
+            if (!analysis?.checklistAnalysis) {
               return null;
             }
 
-
-
-          return (
-            <div key={page} className="report__item" id={page}>
-              <h2 className='report__item-page'>{page}</h2>
-              <div className="report__item-list">
-                {analysis.checklistAnalysis?.map((checklistItem, index) => {
-                  const isFirstItem = isSampleReport && index === 0 && page === 'homepage';
-                  return (
-
-                    <div key={index} className={`report__item-content ${isItemExpanded(page, index) ? 'expanded' : ''}`}>
-
-
-
-                      <h3
-                        className="report__item-title"
-                        onClick={() => toggleItem(page, index)}
-                      >
-                        {isFirstItem && <div className='report__item-explainer'>
-                          <div className='report__item-explainer-line' />
-                          <div className='report__item-explainer-title'>
-                            Clearly mentioned problem
-                          </div>
-                        </div>}
-
-                        {checklistItem.problem}
-                        <span className="toggle-indicator">
-                          {isItemExpanded(page, index) ? '▼' : '▶'}
-                        </span>
-                      </h3>
-
-                      {isItemExpanded(page, index) && (
-                        <>
-                          <div className="report__item-element report__item-element--reason">
-                            {/* <div className="report__item-element-icon" /> */}
-
-
-                            <div className="report__item-element-content">
-                              {/* <h3 className="report__item-element-title">
-                                Status
-                              </h3> */}
-                              <p className="report__item-description">
-                                {/* {checklistItem.status} */}
-                                {checklistItem.reason && ` ${checklistItem.reason}`}
-                              </p>
+            return (
+              <div key={page} className="report__item" id={page}>
+                <h2 className='report__item-page'>{PAGE_TITLES[page] || page}</h2>
+                <div className="report__item-list">
+                  {analysis.checklistAnalysis?.map((checklistItem, index) => {
+                    const isFirstItem = index === 0 && page === 'homepage';
+                    return (
+                      <div key={index} className={`report__item-content ${isItemExpanded(page, index) ? 'expanded' : ''}`}>
+                        <h3
+                          className="report__item-title"
+                          onClick={() => toggleItem(page, index)}
+                        >
+                          {isFirstItem && <div className='report__item-explainer'>
+                            <div className='report__item-explainer-line' />
+                            <div className='report__item-explainer-title'>
+                              Clearly mentioned problem
                             </div>
-                          </div>
+                          </div>}
 
+                          {checklistItem.problem}
+                          <span className="toggle-indicator">
+                            {isItemExpanded(page, index) ? '▼' : '▶'}
+                          </span>
+                        </h3>
 
-                          {checklistItem.solution && (
-                            <div className="report__item-element report__item-element--solution">
-                              {/* <div className="report__item-element-icon" /> */}
+                        {isItemExpanded(page, index) && (
+                          <>
+                            <div className="report__item-element report__item-element--reason">
                               <div className="report__item-element-content">
-                                {isFirstItem && <div className='report__item-explainer report__item-explainer--solution'>
-                                  <div className='report__item-explainer-line' />
-
-                                  <div className='report__item-explainer-title'>
-                                    Solution
-                                  </div>
-                                </div>}
-                                <h3 className="report__item-element-title">
-                                  Solution
-                                </h3>
-                                <p className="report__item-description">{checklistItem.solution}</p>
+                                <p className="report__item-description">
+                                  {checklistItem.reason && ` ${checklistItem.reason}`}
+                                </p>
                               </div>
                             </div>
-                          )}
 
-                          {/* Image Reference Section */}
-                          {checklistItem.imageReferenceObject && (
-                            <div className="report__item-element">
-                              <div className="report__item-element-icon" />
-                              <div className="report__item-element-content">
-                                <h3 className="report__item-element-title">
-                                  Example Reference
-                                </h3>
-                                <div className="mt-3 relative">
-                                  {isFirstItem && <div className='report__item-explainer report__item-explainer--image'>
-                                    <div className='report__item-explainer-title'>
-                                      Reference from million-dollar brands
-                                    </div>
+                            {checklistItem.solution && (
+                              <div className="report__item-element report__item-element--solution">
+                                <div className="report__item-element-content">
+                                  {isFirstItem && <div className='report__item-explainer report__item-explainer--solution'>
                                     <div className='report__item-explainer-line' />
-
+                                    <div className='report__item-explainer-title'>
+                                      Solution
+                                    </div>
                                   </div>}
-                                  <img
-                                    src={imagePath(checklistItem.imageReferenceObject.imageUrl)}
-                                    alt="Example"
-                                    className="rounded-lg  cursor-pointer hover:opacity-80 transition-opacity md:w-3/4 w-full"
-                                    onClick={() => setSelectedImage(checklistItem.imageReferenceObject)}
-                                  />
-
+                                  <h3 className="report__item-element-title">
+                                    Solution
+                                  </h3>
+                                  <p className="report__item-description">{checklistItem.solution}</p>
                                 </div>
                               </div>
-                            </div>
-                          )}
+                            )}
 
-                          {/* App Reference Section */}
-                          {checklistItem.appReferenceObject && (
-                            <div className="report__item-element">
-                              <div className="report__item-element-icon" />
-                              <div className="report__item-element-content">
-                                <h3 className="report__item-element-title">
-                                  Recommended App
-                                </h3>
-                                <div className="flex items-center space-x-3 mt-3 flex-wrap">
-                                  {checklistItem.appReferenceObject.iconUrl && (
+                            {/* Image Reference Section */}
+                            {checklistItem.imageReferenceObject && (
+                              <div className="report__item-element">
+                                <div className="report__item-element-icon" />
+                                <div className="report__item-element-content">
+                                  <h3 className="report__item-element-title">
+                                    Example Reference
+                                  </h3>
+                                  <div className="mt-3 relative">
+                                    {isFirstItem && <div className='report__item-explainer report__item-explainer--image'>
+                                      <div className='report__item-explainer-title'>
+                                        Reference from million-dollar brands
+                                      </div>
+                                      <div className='report__item-explainer-line' />
+                                    </div>}
                                     <img
-                                      src={checklistItem.appReferenceObject.iconUrl}
-                                      alt={checklistItem.appReferenceObject.name}
-                                      className="w-16 h-16 rounded-lg object-cover"
+                                      src={imagePath(checklistItem.imageReferenceObject.imageUrl)}
+                                      alt="Example"
+                                      className="rounded-lg  cursor-pointer hover:opacity-80 transition-opacity md:w-3/4 w-full"
+                                      onClick={() => setSelectedImage(checklistItem.imageReferenceObject)}
                                     />
-                                  )}
-                                  <div className="flex-1">
-                                    <h4 className="font-medium text-gray-900 mb-1">
-                                      {checklistItem.appReferenceObject.name}
-                                    </h4>
-
-                                    <button
-                                      onClick={() => setSelectedAppReference(checklistItem.appReferenceObject)}
-                                      className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-                                    >
-                                      {checklistItem.appReferenceObject.shopifyAppUrl}
-                                    </button>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          )}
-                        </>
-                      )}
-                    </div>
+                            )}
 
-                  )
-                })}
-
-
+                            {/* App Reference Section */}
+                            {checklistItem.appReferenceObject && (
+                              <div className="report__item-element">
+                                <div className="report__item-element-icon" />
+                                <div className="report__item-element-content">
+                                  <h3 className="report__item-element-title">
+                                    Recommended App
+                                  </h3>
+                                  <div className="flex items-center space-x-3 mt-3 flex-wrap">
+                                    {checklistItem.appReferenceObject.iconUrl && (
+                                      <img
+                                        src={checklistItem.appReferenceObject.iconUrl}
+                                        alt={checklistItem.appReferenceObject.name}
+                                        className="w-16 h-16 rounded-lg object-cover"
+                                      />
+                                    )}
+                                    <div className="flex-1">
+                                      <h4 className="font-medium text-gray-900 mb-1">
+                                        {checklistItem.appReferenceObject.name}
+                                      </h4>
+                                      <button
+                                        onClick={() => setSelectedAppReference(checklistItem.appReferenceObject)}
+                                        className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                                      >
+                                        {checklistItem.appReferenceObject.shopifyAppUrl}
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          })}
         </div>
       ) : (
-        <BlurredContent 
-          activeTab={activeTab}
-          pageType={Object.keys(report || {}).find(page => report?.[page]?.checklistAnalysis?.length > 0)}
-          analysisResult={report}
-          onPaymentClick={() => window.location.href = '/payment'}
-        />
+        // For non-sample reports, show current tab or blurred content
+        hasActiveTabData ? (
+          <div className="report__list">
+            {Object.entries(report).map(([page, analysis]) => {
+              // Only show the active tab
+              if (page !== activeTab || !analysis?.checklistAnalysis) {
+                return null;
+              }
+
+              return (
+                <div key={page} className="report__item" id={page}>
+                  <h2 className='report__item-page'>{PAGE_TITLES[page] || page}</h2>
+                  <div className="report__item-list">
+                    {analysis.checklistAnalysis?.map((checklistItem, index) => {
+                      return (
+                        <div key={index} className={`report__item-content ${isItemExpanded(page, index) ? 'expanded' : ''}`}>
+                          <h3
+                            className="report__item-title"
+                            onClick={() => toggleItem(page, index)}
+                          >
+                            {checklistItem.problem}
+                            <span className="toggle-indicator">
+                              {isItemExpanded(page, index) ? '▼' : '▶'}
+                            </span>
+                          </h3>
+
+                          {isItemExpanded(page, index) && (
+                            <>
+                              <div className="report__item-element report__item-element--reason">
+                                <div className="report__item-element-content">
+                                  <p className="report__item-description">
+                                    {checklistItem.reason && ` ${checklistItem.reason}`}
+                                  </p>
+                                </div>
+                              </div>
+
+                              {checklistItem.solution && (
+                                <div className="report__item-element report__item-element--solution">
+                                  <div className="report__item-element-content">
+                                    <h3 className="report__item-element-title">
+                                      Solution
+                                    </h3>
+                                    <p className="report__item-description">{checklistItem.solution}</p>
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Image Reference Section */}
+                              {checklistItem.imageReferenceObject && (
+                                <div className="report__item-element">
+                                  <div className="report__item-element-icon" />
+                                  <div className="report__item-element-content">
+                                    <h3 className="report__item-element-title">
+                                      Example Reference
+                                    </h3>
+                                    <div className="mt-3 relative">
+                                      <img
+                                        src={imagePath(checklistItem.imageReferenceObject.imageUrl)}
+                                        alt="Example"
+                                        className="rounded-lg  cursor-pointer hover:opacity-80 transition-opacity md:w-3/4 w-full"
+                                        onClick={() => setSelectedImage(checklistItem.imageReferenceObject)}
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* App Reference Section */}
+                              {checklistItem.appReferenceObject && (
+                                <div className="report__item-element">
+                                  <div className="report__item-element-icon" />
+                                  <div className="report__item-element-content">
+                                    <h3 className="report__item-element-title">
+                                      Recommended App
+                                    </h3>
+                                    <div className="flex items-center space-x-3 mt-3 flex-wrap">
+                                      {checklistItem.appReferenceObject.iconUrl && (
+                                        <img
+                                          src={checklistItem.appReferenceObject.iconUrl}
+                                          alt={checklistItem.appReferenceObject.name}
+                                          className="w-16 h-16 rounded-lg object-cover"
+                                        />
+                                      )}
+                                      <div className="flex-1">
+                                        <h4 className="font-medium text-gray-900 mb-1">
+                                          {checklistItem.appReferenceObject.name}
+                                        </h4>
+                                        <button
+                                          onClick={() => setSelectedAppReference(checklistItem.appReferenceObject)}
+                                          className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                                        >
+                                          {checklistItem.appReferenceObject.shopifyAppUrl}
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        ) : (
+          <BlurredContent 
+            activeTab={activeTab}
+            pageType={Object.keys(report || {}).find(page => report?.[page]?.checklistAnalysis?.length > 0)}
+            analysisResult={report}
+            onPaymentClick={() => window.location.href = '/payment'}
+          />
+        )
       )}
 
       {/* Modal for image details */}
