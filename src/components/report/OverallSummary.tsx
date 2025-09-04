@@ -139,7 +139,7 @@ export default function OverallSummary({ report, analysisInProgress, setShowModa
           <p className="overall-summary__site">{websiteUrl ?? "hiutdenim.co.uk"}</p>
         </div>
 
-        <Link href={`/payment?url=${websiteUrl ?? ""}`} className={`download-button flex gap-2 ${isSampleReport ? 'hidden md:flex' : ''}`}>
+        <Link href={`/`} className={`download-button flex gap-2 ${isSampleReport ? 'hidden md:flex' : ''}`}>
           {isSampleReport ? "Get your audit" : "Unlock full audit "}
           {isSampleReport ? <svg xmlns="http://www.w3.org/2000/svg" width="27" height="28" viewBox="0 0 27 28" fill="none">
             <path d="M14.625 19.6252L20.2501 14.0001L14.625 8.375M6.74988 19.6252L12.375 14.0001L6.74988 8.375" stroke="white" stroke-width="2.25004" stroke-linecap="round" stroke-linejoin="round" />

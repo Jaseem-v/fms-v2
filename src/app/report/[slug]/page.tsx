@@ -9,6 +9,7 @@ import OverallSummary from '../../../components/report/OverallSummary';
 import ReportLoading from '../../../components/report/ReportLoading';
 import DownloadModal from '@/components/report/DownloadModal';
 import FloatingButton from '@/components/ui/FloatingButton';
+import FormModal from '@/components/layout/FormModal';
 import { useAnalysis } from '@/hooks/useAnalysis';
 import { initialReport } from '@/utils/initialReport';
 
@@ -49,6 +50,9 @@ export default function ReportPage() {
     mobile: '',
   });
   const [downloadLoading, setDownloadLoading] = useState(false);
+
+  // FormModal state
+  const [showFormModal, setShowFormModal] = useState(false);
 
   // Sticky input field states
   const [newUrl, setNewUrl] = useState<string>('');
@@ -259,6 +263,17 @@ export default function ReportPage() {
     }
   }, [slug, isSampleReport]);
 
+  // Show FormModal after 5 seconds when report is loaded
+  useEffect(() => {
+    if (report && !loading && !error) {
+      const timer = setTimeout(() => {
+        setShowFormModal(true);
+      }, 5000); // 5 seconds delay
+
+      return () => clearTimeout(timer);
+    }
+  }, [report, loading, error]);
+
   const loadReport = async () => {
     try {
       setLoading(true);
@@ -272,11 +287,11 @@ export default function ReportPage() {
         // Use initialReport for sample reports
         setReport(initialReport);
         setReportData({
-          websiteUrl: 'https://example.com',
+          websiteUrl: 'https://hiutdenim.co.uk',
           status: 'completed',
           analysisData: initialReport
         });
-        setUrl('https://example.com');
+        setUrl('https://hiutdenim.co.uk');
 
         // Set the first page type as active tab
         const pageTypes = Object.keys(initialReport);
@@ -522,6 +537,13 @@ export default function ReportPage() {
 
       {/* Report page specific FloatingButton that navigates to /payment */}
       <FloatingButton path={isSampleReport ? "/payment" : "/"} />
+
+      {/* FormModal popup after 5 seconds */}
+      <FormModal
+        isOpen={showFormModal}
+        onClose={() => setShowFormModal(false)}
+        websiteUrl={reportData?.websiteUrl || ''}
+      />
     </div>
   );
 }

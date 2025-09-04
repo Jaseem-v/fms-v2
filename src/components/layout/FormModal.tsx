@@ -13,7 +13,7 @@ export default function FormModal({ isOpen, onClose, websiteUrl }: FormModalProp
   const [formData, setFormData] = useState<FormData>({
     name: '',
     websiteUrl: websiteUrl,
-    phoneNumber: '',
+    phoneNumber: '1234567890',
     email: '',
   });
 
@@ -25,6 +25,8 @@ export default function FormModal({ isOpen, onClose, websiteUrl }: FormModalProp
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
+
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -64,7 +66,7 @@ export default function FormModal({ isOpen, onClose, websiteUrl }: FormModalProp
           <>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-gray-900">
-                Complete Your Analysis
+                Get Now!
               </h2>
               <button
                 onClick={onClose}
@@ -76,9 +78,19 @@ export default function FormModal({ isOpen, onClose, websiteUrl }: FormModalProp
               </button>
             </div>
 
-            <p className="text-gray-600 mb-6">
-              Please provide your details to continue with the analysis. This information will be used to send you the complete report.
-            </p>
+            <div className="text-gray-600 mb-6">
+              {/* <p className="mb-3">Please provide your details to get:</p> */}
+              <ul className="space-y-2">
+                <li className="flex items-start">
+                  <span className="text-black mr-2">•</span>
+                  <span className="text-black font-semibold">Your Homepage Audit (PDF)</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-black mr-2">•</span>
+                  <span className="text-black font-semibold">50+ Conversion Checklist Used in Million Dollar Brands</span>
+                </li>
+              </ul>
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -113,7 +125,7 @@ export default function FormModal({ isOpen, onClose, websiteUrl }: FormModalProp
                 />
               </div>
 
-              <div>
+              {/* <div>
                 <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">
                   Phone Number *
                 </label>
@@ -127,22 +139,23 @@ export default function FormModal({ isOpen, onClose, websiteUrl }: FormModalProp
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your phone number"
                 />
-              </div>
+              </div> */}
 
-              <div>
+              {/* <div>
                 <label htmlFor="websiteUrl" className="block text-sm font-medium text-gray-700 mb-1">
-                  Website URL * <span className="text-xs text-gray-500 font-normal">(pre-filled)</span>
+                  Website URL *
                 </label>
                 <input
                   type="url"
                   id="websiteUrl"
                   name="websiteUrl"
-                  value={websiteUrl}
-                  readOnly
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 cursor-not-allowed"
+                  value={formData.websiteUrl}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your website URL"
                 />
-              </div>
+              </div> */}
 
               {error && (
                 <div className="bg-red-50 border border-red-200 rounded-md p-3">
@@ -161,7 +174,7 @@ export default function FormModal({ isOpen, onClose, websiteUrl }: FormModalProp
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="flex-1 px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {loading ? 'Submitting...' : 'Submit'}
                 </button>
