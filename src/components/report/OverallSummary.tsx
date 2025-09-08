@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { PagewiseAnalysisResult } from "@/hooks/useHomepageAnalysis";
 import { useToast } from "@/contexts/ToastContext";
+import { config } from "@/config/config";
 
 interface Report {
   [key: string]: PagewiseAnalysisResult;
@@ -143,7 +144,7 @@ export default function OverallSummary({ report, analysisInProgress, setShowModa
           {isSampleReport ? "Get your audit" : "Unlock full audit "}
           {isSampleReport ? <svg xmlns="http://www.w3.org/2000/svg" width="27" height="28" viewBox="0 0 27 28" fill="none">
             <path d="M14.625 19.6252L20.2501 14.0001L14.625 8.375M6.74988 19.6252L12.375 14.0001L6.74988 8.375" stroke="white" stroke-width="2.25004" stroke-linecap="round" stroke-linejoin="round" />
-          </svg> : "- $149"}
+          </svg> : "- $" + config.pricing.mainPrice}
         </Link>
       </div>
       <div className="overall-summary">

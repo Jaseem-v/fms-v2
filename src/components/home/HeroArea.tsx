@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { config } from '@/config/config';
 
 interface HeroAreaProps {
     url: string;
@@ -374,7 +375,7 @@ export default function HeroArea({ url, setUrl, loading, validatingShopify, onSu
 
                 <div className='hero__input-guarantee'>
                     <span>
-                        {isSplitPages ? "FREE Audit" : "$149 One Time Payment"}
+                        {isSplitPages ? "FREE Audit" : ("$" + config.pricing.mainPrice + " One Time Payment")}
                     </span>
                     <span className='hidden md:block'>
                         •

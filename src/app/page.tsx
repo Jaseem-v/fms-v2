@@ -300,7 +300,7 @@ export default function Home() {
 
       <div className="announcment-bar">
         <p>
-          Limited time - $149 Only - Offer ends in
+          Limited time - ${config.pricing.mainPrice} Only - Offer ends in
           <CountdownTimer />
         </p>
       </div>

@@ -118,7 +118,7 @@ function PaymentForm() {
   return (
     <>
       <div className="bg-black text-white p-4  text-center flex justify-center items-center gap-1 sticky top-0 z-10">
-        <div className="text-sm md:text-lg font-semibold flex items-center gap-1">  Limited time - $149 Only - Offer ends in
+        <div className="text-sm md:text-lg font-semibold flex items-center gap-1">  Limited time - ${config.pricing.mainPrice} Only - Offer ends in
           <CountdownTimer /> </div>
 
       </div>

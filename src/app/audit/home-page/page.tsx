@@ -12,6 +12,7 @@ import CountdownTimer from '@/components/ui/CountdownTimer';
 import FloatingButton from '@/components/ui/FloatingButton';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { config } from '@/config/config';
 
 export default function HomePage() {
     const router = useRouter();
@@ -43,7 +44,7 @@ export default function HomePage() {
 
             <div className="announcment-bar">
                 <p>
-                    Limited time - $149 Only - Offer ends in
+                    Limited time - ${config.pricing.mainPrice} Only - Offer ends in
                     <CountdownTimer />
                 </p>
             </div>
