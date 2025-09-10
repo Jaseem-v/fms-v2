@@ -3,6 +3,7 @@
 import { PagewiseAnalysisResult } from '@/hooks/useHomepageAnalysis';
 import { useState } from 'react';
 import BlurredContent from './BlurredContent';
+import Link from 'next/link';
 
 interface ImageReference {
   id: string;
@@ -202,7 +203,7 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
                                       src={imagePath(checklistItem.imageReferenceObject.imageUrl)}
                                       alt="Example"
                                       className="rounded-lg  cursor-pointer hover:opacity-80 transition-opacity md:w-3/4 w-full"
-                                      onClick={() => setSelectedImage(checklistItem.imageReferenceObject)}
+                                    // onClick={() => setSelectedImage(checklistItem.imageReferenceObject)}
                                     />
                                   </div>
                                 </div>
@@ -229,12 +230,11 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
                                       <h4 className="font-medium text-gray-900 mb-1">
                                         {checklistItem.appReferenceObject.name}
                                       </h4>
-                                      <button
-                                        onClick={() => setSelectedAppReference(checklistItem.appReferenceObject)}
+                                      <Link href={checklistItem.appReferenceObject.shopifyAppUrl} target="_blank"
                                         className="text-sm text-blue-600 hover:text-blue-800 font-medium"
                                       >
                                         {checklistItem.appReferenceObject.shopifyAppUrl}
-                                      </button>
+                                      </Link>
                                     </div>
                                   </div>
                                 </div>
@@ -338,12 +338,14 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
                                         <h4 className="font-medium text-gray-900 mb-1">
                                           {checklistItem.appReferenceObject.name}
                                         </h4>
-                                        <button
-                                          onClick={() => setSelectedAppReference(checklistItem.appReferenceObject)}
+                                        <Link
+                                          href={checklistItem.appReferenceObject.shopifyAppUrl}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
                                           className="text-sm text-blue-600 hover:text-blue-800 font-medium"
                                         >
                                           {checklistItem.appReferenceObject.shopifyAppUrl}
-                                        </button>
+                                        </Link>
                                       </div>
                                     </div>
                                   </div>
@@ -360,7 +362,7 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
             })}
           </div>
         ) : (
-          <BlurredContent 
+          <BlurredContent
             activeTab={activeTab}
             pageType={Object.keys(report || {}).find(page => report?.[page]?.checklistAnalysis?.length > 0)}
             analysisResult={report}
