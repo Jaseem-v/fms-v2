@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { config } from '@/config/config';
+import { normalizeUrl } from '@/utils/settingsUtils';
 
 interface HeroAreaProps {
     url: string;
@@ -43,17 +44,7 @@ const sampleSites = [
 ];
 
 // Helper function to normalize URL by adding https:// if no protocol is present
-const normalizeUrl = (url: string): string => {
-    if (!url) return url;
 
-    // Check if URL already has a protocol (http://, https://, etc.)
-    if (url.match(/^https?:\/\//)) {
-        return url;
-    }
-
-    // Add https:// if no protocol is present
-    return `https://${url}`;
-};
 
 // Helper function to validate URL
 const validateUrl = (url: string): boolean => {

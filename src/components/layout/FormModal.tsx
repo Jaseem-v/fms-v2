@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import formService, { FormData } from '@/services/formService';
+import { normalizeUrl } from '@/utils/settingsUtils';
 
 interface FormModalProps {
   isOpen: boolean;
@@ -14,7 +15,7 @@ interface FormModalProps {
 export default function FormModal({ isOpen, onClose, websiteUrl, isSampleReport = false, pageType = 'homepage' }: FormModalProps) {
   const [formData, setFormData] = useState<FormData>({
     name: '',
-    websiteUrl: websiteUrl,
+    websiteUrl: normalizeUrl(websiteUrl),
     phoneNumber: '1234567890',
     email: '',
   });
@@ -52,7 +53,7 @@ export default function FormModal({ isOpen, onClose, websiteUrl, isSampleReport 
     setError(null);
 
     try {
-      const response = await formService.submitForm({ ...formData, websiteUrl });
+      const response = await formService.submitForm({ ...formData, websiteUrl: normalizeUrl(websiteUrl) });
 
       if (response.success) {
         setSuccess(true);

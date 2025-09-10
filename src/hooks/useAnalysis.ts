@@ -4,19 +4,9 @@ import shopifyValidationService from '../services/shopifyValidationService';
 import reportService from '../services/reportService';
 import settingsService from '../services/settingsService';
 import { PagewiseAnalysisResult } from './useHomepageAnalysis';
+import { normalizeUrl } from '@/utils/settingsUtils';
 
-// Helper function to normalize URL (add https:// if no protocol is present)
-const normalizeUrl = (url: string): string => {
-  if (!url || url.trim() === '') return url;
 
-  // If URL already has a protocol, return as is
-  if (url.startsWith('http://') || url.startsWith('https://')) {
-    return url;
-  }
-
-  // Add https:// if no protocol is present
-  return `https://${url}`;
-};
 
 // Helper function to validate URL format
 const validateUrl = (url: string): boolean => {

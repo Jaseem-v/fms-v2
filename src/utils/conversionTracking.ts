@@ -129,3 +129,6 @@ export const triggerGA4Purchase = (transactionData: {
     console.warn('GA4 dataLayer not available');
   }
 }; 
+
+
+

@@ -400,18 +400,6 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
                 />
               </div>
 
-              {/* Use Cases */}
-              <div>
-                <h4 className="text-sm font-medium text-gray-900 mb-1">Use Cases</h4>
-                <ul className="text-sm text-gray-700 space-y-1">
-                  {selectedImage.useCases.map((useCase: string, index: number) => (
-                    <li key={index} className="flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>
-                      <span>{useCase}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
             </div>
           </div>
         </div>
