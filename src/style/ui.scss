@@ -41,8 +41,8 @@
     }
 
     @media (max-width: 1200px) {
-        padding: 35px 45px;
-        gap: 50px;
+        padding: 35px 17px;
+        gap: 20px;
     }
 
     @media (max-width: 768px) {
@@ -82,6 +82,10 @@
         border-radius: 4px;
         background: #FFC2D2;
         flex: 1 0 0;
+
+        @media (max-width: 1200px) {
+            padding: 14px 9px;
+        }
 
         @media (max-width: 768px) {
             padding: 12px 10px;
@@ -1069,11 +1073,11 @@
 // Report URL Section Styles
 .report-url-section {
     margin: 20px 0;
-    
+
     @media (max-width: 768px) {
         margin: 15px 0;
     }
-    
+
     @media (max-width: 480px) {
         margin: 10px 0;
     }
@@ -1092,23 +1096,23 @@
     padding: 8px 12px;
     gap: 8px;
     transition: all 0.2s ease;
-    
+
     &:hover {
         border-color: rgba(0, 0, 0, 0.20);
         background: #F8F8F8;
     }
-    
+
     &:focus-within {
         border-color: #FFC2D2;
         background: #FFF;
         box-shadow: 0 0 0 2px rgba(255, 194, 210, 0.2);
     }
-    
+
     @media (max-width: 768px) {
         padding: 6px 10px;
         gap: 6px;
     }
-    
+
     @media (max-width: 480px) {
         padding: 5px 8px;
         gap: 5px;
@@ -1121,11 +1125,11 @@
     justify-content: center;
     color: #6B7280;
     flex-shrink: 0;
-    
+
     svg {
         width: 16px;
         height: 16px;
-        
+
         @media (max-width: 480px) {
             width: 14px;
             height: 14px;
@@ -1144,15 +1148,15 @@
     line-height: 1.4;
     outline: none;
     cursor: text;
-    
+
     &::selection {
         background: rgba(255, 194, 210, 0.3);
     }
-    
+
     @media (max-width: 768px) {
         font-size: 13px;
     }
-    
+
     @media (max-width: 480px) {
         font-size: 12px;
     }
@@ -1169,28 +1173,28 @@
     cursor: pointer;
     transition: all 0.2s ease;
     flex-shrink: 0;
-    
+
     &:hover {
         background: #7C3AED;
         transform: translateY(-1px);
     }
-    
+
     &:active {
         transform: translateY(0);
         background: #6D28D9;
     }
-    
+
     svg {
         width: 16px;
         height: 16px;
         color: white;
-        
+
         @media (max-width: 480px) {
             width: 14px;
             height: 14px;
         }
     }
-    
+
     @media (max-width: 480px) {
         padding: 5px;
     }
