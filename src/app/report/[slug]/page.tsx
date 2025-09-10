@@ -263,12 +263,12 @@ export default function ReportPage() {
     }
   }, [slug, isSampleReport]);
 
-  // Show FormModal after 5 seconds when report is loaded
+  // Show FormModal after 12 seconds when report is loaded
   useEffect(() => {
     if (report && !loading && !error) {
       const timer = setTimeout(() => {
         setShowFormModal(true);
-      }, 5000); // 5 seconds delay
+      }, 12000); // 12 seconds delay
 
       return () => clearTimeout(timer);
     }
