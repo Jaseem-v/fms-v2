@@ -41,6 +41,8 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
     loading: analysisLoading,
     error: analysisError,
     result: analysisResult,
+    currentStep,
+    steps,
     analyzePage,
     reset
   } = usePagewiseAnalysis();
@@ -262,6 +264,54 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
             showProgress={true}
             progress={progress}
           />
+
+          {/* Stepwise Progress Indicator */}
+          {flow === 'homepage-analysis' && analysisLoading && (
+            <div className="mt-8 max-w-md mx-auto">
+              <div className="space-y-3">
+                {steps.map((step, index) => {
+                  const stepNames: Record<string, string> = {
+                    'validate_shopify': 'Validating Shopify Store',
+                    'take_screenshot': 'Capturing Screenshot',
+                    'analyze_gemini': 'AI Analysis',
+                    'analyze_checklist': 'CRO Checklist Analysis'
+                  };
+                  
+                  const isActive = currentStep === step.name;
+                  const isCompleted = step.completed;
+                  const isPending = !isActive && !isCompleted;
+                  
+                  return (
+                    <div key={step.name} className="flex items-center space-x-3">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
+                        isCompleted 
+                          ? 'bg-green-500 text-white' 
+                          : isActive 
+                            ? 'bg-blue-500 text-white animate-pulse' 
+                            : 'bg-gray-200 text-gray-500'
+                      }`}>
+                        {isCompleted ? '✓' : index + 1}
+                      </div>
+                      <span className={`text-sm ${
+                        isCompleted 
+                          ? 'text-green-600 font-medium' 
+                          : isActive 
+                            ? 'text-blue-600 font-medium' 
+                            : 'text-gray-500'
+                      }`}>
+                        {stepNames[step.name]}
+                      </span>
+                      {isActive && (
+                        <div className="ml-auto">
+                          <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* {!imagesLoaded && (
             <div className="text-center mt-4">
