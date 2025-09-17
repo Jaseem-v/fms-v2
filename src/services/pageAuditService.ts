@@ -45,12 +45,19 @@ class PageAuditService {
    */
   async getPageAuditBySlug(slug: string): Promise<PageAuditResponse> {
     try {
+      // Create AbortController for timeout management
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minutes timeout
+      
       const response = await fetch(`${this.baseUrl}/page-audits/slug/${slug}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
+        signal: controller.signal
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -61,6 +68,12 @@ class PageAuditService {
       return result;
     } catch (error) {
       console.error('Error getting page audit by slug:', error);
+      
+      // Handle timeout specifically
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error('Request timed out after 2 minutes. Please try again.');
+      }
+      
       throw error;
     }
   }
@@ -70,12 +83,19 @@ class PageAuditService {
    */
   async getPageAuditById(id: string): Promise<PageAuditResponse> {
     try {
+      // Create AbortController for timeout management
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minutes timeout
+      
       const response = await fetch(`${this.baseUrl}/page-audits/id/${id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
+        signal: controller.signal
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -86,6 +106,12 @@ class PageAuditService {
       return result;
     } catch (error) {
       console.error('Error getting page audit by ID:', error);
+      
+      // Handle timeout specifically
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error('Request timed out after 2 minutes. Please try again.');
+      }
+      
       throw error;
     }
   }

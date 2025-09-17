@@ -151,7 +151,7 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
                             </div>
                           </div>}
 
-                          {checklistItem.problemName}
+                          {checklistItem.problem}
                           <span className="toggle-indicator">
                             {isItemExpanded(page, index) ? '▼' : '▶'}
                           </span>
@@ -159,13 +159,13 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
 
                         {isItemExpanded(page, index) && (
                           <>
-                            <div className="report__item-element report__item-element--reason">
+                           {!isSampleReport && <div className="report__item-element report__item-element--reason">
                               <div className="report__item-element-content">
                                 <p className="report__item-description">
                                   {checklistItem.reason && ` ${checklistItem.reason}`}
                                 </p>
                               </div>
-                            </div>
+                            </div>}
 
                             {checklistItem.solution && (
                               <div className="report__item-element report__item-element--solution">

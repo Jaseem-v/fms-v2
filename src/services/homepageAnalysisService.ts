@@ -41,11 +41,18 @@ class PagewiseAnalysisService {
       // Choose endpoint based on authentication requirement
       const endpoint = requireAuth ? '/pagewise-analysis/analyze' : '/pagewise-analysis/analyze-public';
       
+      // Create AbortController for timeout management
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minutes timeout
+      
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         method: 'POST',
         headers: this.getHeaders(),
         body: JSON.stringify({ url, pageType }),
+        signal: controller.signal
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -56,6 +63,12 @@ class PagewiseAnalysisService {
       return result.data;
     } catch (error) {
       console.error('Error analyzing page:', error);
+      
+      // Handle timeout specifically
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error('Analysis request timed out after 2 minutes. Please try again.');
+      }
+      
       throw error;
     }
   }
