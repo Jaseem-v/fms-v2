@@ -43,12 +43,13 @@ class ReportService {
   private baseUrl: string;
 
   constructor() {
-    this.baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
+    // Use the same pattern as authService to ensure consistency
+    this.baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000/api';
   }
 
   async createReport(data: CreateReportRequest): Promise<ReportResponse> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/reports/create`, {
+      const response = await fetch(`${this.baseUrl}/reports/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -112,7 +113,7 @@ class ReportService {
 
   async getReportById(id: string): Promise<ReportResponse> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/reports/id/${id}`, {
+      const response = await fetch(`${this.baseUrl}/reports/id/${id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -143,7 +144,7 @@ class ReportService {
 
   async updateReport(reportId: string, data: UpdateReportRequest): Promise<ReportResponse> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/reports/${reportId}`, {
+      const response = await fetch(`${this.baseUrl}/reports/${reportId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -230,7 +231,7 @@ class ReportService {
         ...(search && { search })
       });
 
-      const response = await fetch(`${this.baseUrl}/api/reports/all?${params}`, {
+      const response = await fetch(`${this.baseUrl}/reports/all?${params}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

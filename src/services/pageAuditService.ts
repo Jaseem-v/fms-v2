@@ -120,7 +120,15 @@ class PageAuditService {
       }
 
       const result = await response.json();
-      return result;
+      
+      // Transform the response to match the expected interface
+      return {
+        success: result.success,
+        pageAudits: result.pageAudits || [],
+        total: result.pagination?.total || 0,
+        page: result.pagination?.page || 1,
+        totalPages: result.pagination?.totalPages || 0
+      };
     } catch (error) {
       console.error('Error getting all page audits:', error);
       throw error;

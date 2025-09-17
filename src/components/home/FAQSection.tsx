@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-const FAQSection: React.FC<{ isSplitPage?: boolean, type?: 'home' | 'collection' | 'product' | 'cart' }> = ({ isSplitPage, type }) => {
+const FAQSection: React.FC<{ isSplitPage?: boolean, type?: 'home' | 'collection' | 'product' | 'cart' | 'app-detection' }> = ({ isSplitPage, type }) => {
   const [openIndex, setOpenIndex] = useState(0);
 
   const getFAQsByType = (pageType?: string) => {
@@ -160,6 +160,26 @@ const FAQSection: React.FC<{ isSplitPage?: boolean, type?: 'home' | 'collection'
           {
             question: "Can I get help implementing the recommendations?",
             answer: "Yes, we can help you implement the recommendations. However, please note that additional charges may apply for expert support and implementation assistance."
+          }
+        ];
+
+      case 'app-detection':
+        return [
+          {
+            question: "Do I need to give my Shopify login details?",
+            answer: "No. You only need to enter your store URL. We scan publicly available data, no passwords or logins required."
+          },
+          {
+            question: "Will this affect my store or apps in any way?",
+            answer: "Not at all. Our tool is 100% read-only. It doesn't install, change, or delete anything from your store."
+          },
+          {
+            question: "How accurate is the analysis?",
+            answer: "We identify all apps currently active on your store and compare them against performance benchmarks and best alternatives."
+          },
+          {
+            question: "How long does the audit take?",
+            answer: "Less than 30 seconds. You'll get results almost instantly after entering your store URL."
           }
         ];
 

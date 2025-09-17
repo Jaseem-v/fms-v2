@@ -20,13 +20,30 @@ interface PagewiseAnalysisResult {
 class PagewiseAnalysisService {
   private baseUrl = config.backendUrl;
 
-  async analyzePage(url: string, pageType: string = 'homepage'): Promise<PagewiseAnalysisResult> {
+  private getHeaders(): HeadersInit {
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+
+    // Get token from localStorage
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+    }
+
+    return headers;
+  }
+
+  async analyzePage(url: string, pageType: string = 'homepage', requireAuth: boolean = false): Promise<PagewiseAnalysisResult> {
     try {
-      const response = await fetch(`${this.baseUrl}/pagewise-analysis/analyze`, {
+      // Choose endpoint based on authentication requirement
+      const endpoint = requireAuth ? '/pagewise-analysis/analyze' : '/pagewise-analysis/analyze-public';
+      
+      const response = await fetch(`${this.baseUrl}${endpoint}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: this.getHeaders(),
         body: JSON.stringify({ url, pageType }),
       });
 

@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, memo, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import ReportLoading from '../../components/report/ReportLoading';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Navbar from '../../components/layout/Navbar';
 import { config } from '@/config/config';
 import { useToast } from '@/contexts/ToastContext';
-import shopifyValidationService from '@/services/shopifyValidationService';
+import { useAuth } from '@/contexts/AuthContext';
+import LoginForm from '@/components/admin/LoginForm';
 import { usePagewiseAnalysis } from '../../hooks/useHomepageAnalysis';
 import AnalysisReport from '../../components/report/AnalysisReport';
 import OverallSummary from '../../components/report/OverallSummary';
@@ -20,10 +21,11 @@ const PAGE_TITLES: Record<string, string> = {
   cart: 'Cart Page',
 };
 
-function AnalyzingPageContent() {
+const AnalyzingPageContent = memo(function AnalyzingPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { showToast } = useToast();
+  const { isAuthenticated, loading: authLoading } = useAuth();
   const websiteUrl = searchParams.get('url');
   const pageType = searchParams.get('pageType') || 'homepage';
 
@@ -31,8 +33,9 @@ function AnalyzingPageContent() {
   const [activeTab, setActiveTab] = useState(pageType);
   const [progress, setProgress] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  const [isValidating, setIsValidating] = useState(true);
   const [flow, setFlow] = useState<'payment' | 'homepage-analysis'>('payment');
+  const [hasAttemptedAnalysis, setHasAttemptedAnalysis] = useState(false);
+  const [flowLoading, setFlowLoading] = useState(true);
 
   const {
     loading: analysisLoading,
@@ -41,9 +44,6 @@ function AnalyzingPageContent() {
     analyzePage,
     reset
   } = usePagewiseAnalysis();
-
-  console.log("analysisResult", analysisResult);
-  console.log("pageType", pageType);
 
   // Check flow setting on component mount
   useEffect(() => {
@@ -56,6 +56,8 @@ function AnalyzingPageContent() {
         }
       } catch (error) {
         console.error('Error checking flow setting:', error);
+      } finally {
+        setFlowLoading(false);
       }
     };
 
@@ -64,8 +66,9 @@ function AnalyzingPageContent() {
 
   // Auto-analyze page if flow is homepage-analysis
   useEffect(() => {
-    if (flow === 'homepage-analysis' && websiteUrl && !analysisResult && !analysisLoading) {
+    if (flow === 'homepage-analysis' && websiteUrl && !analysisResult && !analysisLoading && !hasAttemptedAnalysis) {
       setShowLoading(true);
+      setHasAttemptedAnalysis(true);
       // Start progress from 0% for homepage-analysis flow
       setProgress(0);
       let currentProgress = 0;
@@ -78,12 +81,17 @@ function AnalyzingPageContent() {
         }
       }, 100);
       
-      // Pass the pageType to the analysis
-      analyzePage(websiteUrl, pageType);
+      // Determine if authentication is required based on user authentication status
+      // If user is not authenticated, use public route regardless of pageType
+      // If user is authenticated and coming from audit routes, use protected route
+      const requireAuth = isAuthenticated && pageType !== 'homepage';
+      
+      // Pass the pageType and auth requirement to the analysis
+      analyzePage(websiteUrl, pageType, requireAuth);
 
       return () => clearInterval(progressInterval);
     }
-  }, [flow, websiteUrl, analysisResult, analysisLoading, analyzePage, pageType]);
+  }, [flow, websiteUrl, analysisResult, analysisLoading, hasAttemptedAnalysis, analyzePage, pageType, isAuthenticated]);
 
   // Handle analysis completion
   useEffect(() => {
@@ -128,19 +136,29 @@ function AnalyzingPageContent() {
     }
   }, [flow, analysisLoading]);
 
-  // Separate useEffect for Shopify validation
+  // Separate useEffect for Shopify validation - only for payment flow
   useEffect(() => {
     if (!websiteUrl) {
       router.push('/');
       return;
     }
 
+    // Wait for flow to be determined before proceeding
+    if (flowLoading) {
+      return;
+    }
+
+    // Skip validation for homepage-analysis flow as it's handled by the analysis hook
+    if (flow === 'homepage-analysis') {
+      return;
+    }
+
     let isMounted = true;
 
-    // Start progress from 0% and move to 25% during validation (only for non-homepage-analysis flow)
+    // Start progress from 0% and move to 25% during validation (only for payment flow)
     let currentProgress = 0;
     const progressInterval = setInterval(() => {
-      if (!isMounted || flow === 'homepage-analysis') return;
+      if (!isMounted) return;
       currentProgress += 0.5;
       if (currentProgress >= 25) {
         clearInterval(progressInterval);
@@ -149,62 +167,22 @@ function AnalyzingPageContent() {
       }
     }, 100);
 
-    const validateShopifySite = async () => {
-      try {
-        const result = await shopifyValidationService.validateShopifySite(websiteUrl);
-
-        if (!isMounted) return;
-
-        if (!result.isShopify) {
-          showToast('This site is not a Shopify store. Please enter a valid Shopify store URL.', 'error');
-          router.push('/');
-          return;
-        }
-
-        setIsValidating(false);
-        // Set progress to 25% after successful validation (only for non-homepage-analysis flow)
-        if (flow !== 'homepage-analysis') {
-          setProgress(25);
-        }
-      } catch (error) {
-        console.error('Shopify validation error:', error);
-        // Fallback to client-side validation
-        try {
-          const clientResult = await shopifyValidationService.validateShopifyClientSide(websiteUrl);
-
-          if (!isMounted) return;
-
-          if (!clientResult.isShopify) {
-            showToast('This site is not a Shopify store. Please enter a valid Shopify store URL.', 'error');
-            router.push('/');
-            return;
-          }
-          setIsValidating(false);
-          // Set progress to 25% after successful client-side validation (only for non-homepage-analysis flow)
-          if (flow !== 'homepage-analysis') {
-            setProgress(25);
-          }
-        } catch (clientError) {
-          console.error('Client-side validation error:', clientError);
-          if (isMounted) {
-            showToast('Unable to validate site. Please ensure you enter a valid Shopify store URL.', 'error');
-          }
-          return;
-        }
-      }
-    };
-
-    validateShopifySite();
+    // Start analysis directly - validation is now handled by the backend
+    if (websiteUrl && !hasAttemptedAnalysis) {
+      setHasAttemptedAnalysis(true);
+      setProgress(25);
+      analyzePage(websiteUrl, pageType as 'homepage' | 'collection' | 'product' | 'cart');
+    }
 
     return () => {
       isMounted = false;
       clearInterval(progressInterval);
     };
-  }, [websiteUrl, router, showToast, flow]);
+  }, [websiteUrl, router, flow, flowLoading, hasAttemptedAnalysis, analyzePage, pageType]);
 
-  // Preload images when validation is complete
+  // Preload images when analysis starts
   useEffect(() => {
-    if (isValidating) return;
+    if (!hasAttemptedAnalysis) return;
 
     const preloadImages = async () => {
       const imageUrls = ['/blured/1.png', '/blured/2.png', '/blured/3.png', '/blured/4.png'];
@@ -227,11 +205,11 @@ function AnalyzingPageContent() {
     };
 
     preloadImages();
-  }, [isValidating]);
+  }, [hasAttemptedAnalysis]);
 
   // Handle initial loading state for non-homepage-analysis flow
   useEffect(() => {
-    if (!isValidating && flow !== 'homepage-analysis' && imagesLoaded) {
+    if (hasAttemptedAnalysis && flow !== 'homepage-analysis' && imagesLoaded) {
       // For payment flow, show progress progression then hide loading
       let currentProgress = 0;
       const progressInterval = setInterval(() => {
@@ -248,19 +226,19 @@ function AnalyzingPageContent() {
 
       return () => clearInterval(progressInterval);
     }
-  }, [isValidating, flow, imagesLoaded]);
+  }, [hasAttemptedAnalysis, flow, imagesLoaded]);
 
 
 
-  const handlePaymentClick = () => {
+  const handlePaymentClick = useCallback(() => {
     router.push(`/payment?url=${encodeURIComponent(websiteUrl || '')}`);
-  };
+  }, [router, websiteUrl]);
 
 
 
   const isHomepage = activeTab === 'homepage'
   
-  if (showLoading || isValidating || (flow === 'homepage-analysis' && analysisLoading)) {
+  if (showLoading || (flow === 'homepage-analysis' && analysisLoading)) {
     return (
       <div className="min-h-screen bg-green-50 relative">
         {/* <Navbar /> */}
@@ -277,9 +255,7 @@ function AnalyzingPageContent() {
 
           <ReportLoading
             message={
-              isValidating 
-                ? "Validating Shopify store..." 
-                : flow === 'homepage-analysis' && analysisLoading
+              flow === 'homepage-analysis' && analysisLoading
                 ? `Analyzing ${PAGE_TITLES[pageType]} with AI...`
                 : "Analyzing your store for conversion optimization opportunities..."
             }
@@ -287,7 +263,7 @@ function AnalyzingPageContent() {
             progress={progress}
           />
 
-          {/* {!imagesLoaded && !isValidating && (
+          {/* {!imagesLoaded && (
             <div className="text-center mt-4">
               <div className="inline-flex items-center text-sm text-gray-600">
                 <div className="w-4 h-4 border-2 border-gray-300 border-t-green-500 rounded-full animate-spin mr-2"></div>
@@ -321,7 +297,10 @@ function AnalyzingPageContent() {
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
           <p className="text-red-600 text-lg">{analysisError}</p>
           <button
-            onClick={() => analyzePage(websiteUrl || '', pageType)}
+            onClick={() => {
+              setHasAttemptedAnalysis(false);
+              analyzePage(websiteUrl || '', pageType);
+            }}
             className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
           >
             Try Again
@@ -392,6 +371,33 @@ function AnalyzingPageContent() {
     );
   };
 
+  // Show loading state while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-green-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login form if not authenticated AND not doing homepage analysis
+  if (!isAuthenticated && pageType !== 'homepage') {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="max-w-md w-full mx-4">
+          {/* <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Login Required</h1>
+            <p className="text-gray-600">Please sign in to access the analysis page</p>
+          </div> */}
+          <LoginForm  isUserLogin/>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-green-50">
       {/* <Navbar /> */}
@@ -404,7 +410,7 @@ function AnalyzingPageContent() {
       </div>
     </div>
   );
-}
+});
 
 export default function AnalyzingPage() {
   return (

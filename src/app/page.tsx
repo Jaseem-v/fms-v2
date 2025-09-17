@@ -70,8 +70,6 @@ export default function Home() {
     userInfo,
     elapsedTime,
     timerActive,
-    validatingShopify,
-    shopifyValidationError,
     downloadLoading,
     currentReportId,
     reportUrl,
@@ -318,7 +316,6 @@ export default function Home() {
             url={url}
             setUrl={handleUrlChange}
             loading={loading}
-            validatingShopify={validatingShopify}
             onSubmit={handleFormSubmit}
           />
         }
@@ -373,17 +370,6 @@ export default function Home() {
         {report &&
 
           <main className="space-y-8">
-            {shopifyValidationError && (
-              <div className="max-w-4xl mx-auto bg-orange-50 border border-orange-200 rounded-lg p-4" role="alert">
-                <div className="flex items-center gap-2 text-orange-800">
-                  <span className="text-orange-500">🛒</span>
-                  <div>
-                    <div className="font-semibold">Shopify Site Required</div>
-                    <div>{shopifyValidationError}</div>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {error && (
               <div className="max-w-4xl mx-auto bg-red-50 border border-red-200 rounded-lg p-4" role="alert">
@@ -401,7 +387,7 @@ export default function Home() {
               report={report}
             />}
 
-            {!shopifyValidationError && report && Object.keys(report).length > 0 && (
+            {report && Object.keys(report).length > 0 && (
               <OverallSummary
                 report={report}
                 analysisInProgress={analysisInProgress}
@@ -409,7 +395,7 @@ export default function Home() {
               />
             )}
 
-            {!shopifyValidationError && report && Object.keys(report).length > 0 && (
+            {report && Object.keys(report).length > 0 && (
               <AnalysisReport
                 report={report}
                 activeTab={activeTab}

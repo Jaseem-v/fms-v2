@@ -26,7 +26,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     <ProtectedRoute>
       <div className="min-h-screen bg-gray-50">
         <AdminSidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-        <div className="lg:pl-64">
+        <div className="lg:pl-72">
           <AdminNavbar onMenuClick={() => setSidebarOpen(true)} />
           <main className="py-6">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

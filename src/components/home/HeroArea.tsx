@@ -7,7 +7,6 @@ interface HeroAreaProps {
     url: string;
     setUrl: (url: string) => void;
     loading: boolean;
-    validatingShopify: boolean;
     onSubmit: (e: React.FormEvent) => void;
     // setShowModal: (show: boolean) => void;
     isSplitPages?: boolean;
@@ -64,7 +63,7 @@ const validateUrl = (url: string): boolean => {
     }
 };
 
-export default function HeroArea({ url, setUrl, loading, validatingShopify, onSubmit, isSplitPages, type, placeholder }: HeroAreaProps) {
+export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages, type, placeholder }: HeroAreaProps) {
 
     const [activePage, setActivePage] = useState<number | null>(null);
     const [urlError, setUrlError] = useState<string>('');

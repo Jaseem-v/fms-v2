@@ -25,12 +25,12 @@ export const usePagewiseAnalysis = () => {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<PagewiseAnalysisResult | null>(null);
 
-  const analyzePage = async (url: string, pageType: string = 'homepage') => {
+  const analyzePage = async (url: string, pageType: string = 'homepage', requireAuth: boolean = false) => {
     try {
       setLoading(true);
       setError(null);
       
-      const analysisResult = await pagewiseAnalysisService.analyzePage(url, pageType);
+      const analysisResult = await pagewiseAnalysisService.analyzePage(url, pageType, requireAuth);
       setResult(analysisResult);
       
       return analysisResult;

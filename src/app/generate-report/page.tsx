@@ -69,7 +69,6 @@ function GenerateReportContent() {
     showModal,
     setShowModal,
     analysisInProgress,
-    shopifyValidationError,
     userInfo,
     handleUserInfoChange,
     handleUserInfoSubmit,
@@ -414,17 +413,6 @@ function GenerateReportContent() {
         {/* Report Results */}
         {status === 'generating' && report && Object.keys(report).length > 0 && (
           <div className="space-y-8">
-            {shopifyValidationError && (
-              <div className="bg-orange-50 border border-orange-200 rounded-lg p-4" role="alert">
-                <div className="flex items-center gap-2 text-orange-800">
-                  <span className="text-orange-500">🛒</span>
-                  <div>
-                    <div className="font-semibold">Shopify Site Required</div>
-                    <div>{shopifyValidationError}</div>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {analysisError && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4" role="alert">
@@ -435,7 +423,7 @@ function GenerateReportContent() {
               </div>
             )}
 
-            {!shopifyValidationError && report && Object.keys(report).length > 0 && (
+            {report && Object.keys(report).length > 0 && (
               <OverallSummary
                 report={report}
                 analysisInProgress={analysisInProgress}
@@ -444,7 +432,7 @@ function GenerateReportContent() {
               />
             )}
 
-            {!shopifyValidationError && report && Object.keys(report).length > 0 && (
+            {report && Object.keys(report).length > 0 && (
               <AnalysisReport
                 report={report}
                 activeTab={activeTab}

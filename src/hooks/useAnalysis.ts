@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import analysisService from '../services/analysisService';
-import shopifyValidationService from '../services/shopifyValidationService';
 import reportService from '../services/reportService';
 import settingsService from '../services/settingsService';
 import { PagewiseAnalysisResult } from './useHomepageAnalysis';
@@ -67,9 +66,6 @@ export function useAnalysis() {
   const [reportUrl, setReportUrl] = useState<string | null>(null);
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
 
-  // Shopify validation state
-  const [validatingShopify, setValidatingShopify] = useState(false);
-  const [shopifyValidationError, setShopifyValidationError] = useState<string | null>(null);
 
   // Timer state
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -273,7 +269,6 @@ export function useAnalysis() {
   const resetState = useCallback(() => {
     setLoading(true);
     setError(null);
-    setShopifyValidationError(null); // Clear any previous validation errors
     setReport(null);
     setActiveTab('');
     setStatus(null);
@@ -296,27 +291,9 @@ export function useAnalysis() {
     resetState();
 
     try {
-      // First, validate if it's a Shopify site
-      setValidatingShopify(true);
-      console.log('[SHOPIFY VALIDATION] Starting validation for URL:', url);
-
-      const validationResult = await shopifyValidationService.validateShopifySite(url);
-
-      if (!validationResult.isShopify) {
-        setShopifyValidationError(validationResult.message || 'This does not appear to be a Shopify site');
-        setValidatingShopify(false);
-        setLoading(false);
-        setTimerActive(false);
-        return;
-      }
-
-      console.log('[SHOPIFY VALIDATION] ✅ Validated as Shopify site');
-      setValidatingShopify(false);
-
       // Validate and normalize URL
       if (!validateUrl(url)) {
         setError('Please enter a valid website URL (e.g., example.com or https://shopify.com)');
-        setValidatingShopify(false);
         setLoading(false);
         setTimerActive(false);
         return;
@@ -342,11 +319,10 @@ export function useAnalysis() {
     } catch (error) {
       console.error('Error in handleSubmit:', error);
       setError('An error occurred. Please try again.');
-      setValidatingShopify(false);
       setLoading(false);
       setTimerActive(false);
     }
-  }, [url, resetState, setValidatingShopify, setShopifyValidationError, setLoading, setTimerActive, setError]);
+  }, [url, resetState, setLoading, setTimerActive, setError]);
 
   const handleUserInfoSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -419,11 +395,7 @@ export function useAnalysis() {
 
   const handleUrlChange = useCallback((newUrl: string) => {
     setUrl(newUrl);
-    // Clear validation errors when user starts typing a new URL
-    if (shopifyValidationError) {
-      setShopifyValidationError(null);
-    }
-  }, [shopifyValidationError]);
+  }, []);
 
   const startAnalysisAfterPayment = useCallback(async (analysisUrl?: string) => {
     try {
@@ -751,14 +723,7 @@ export function useAnalysis() {
 
     } catch (err) {
       setTimerActive(false);
-      setValidatingShopify(false);
-
-      // Check if it's a validation error
-      if (err instanceof Error && err.message.includes('Shopify')) {
-        setShopifyValidationError(err.message);
-      } else {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      }
+      setError(err instanceof Error ? err.message : 'An error occurred');
       setLoading(false);
     }
   }, [url, report, analysisInProgress, resetState]);
@@ -783,8 +748,6 @@ export function useAnalysis() {
     userInfo,
     elapsedTime,
     timerActive,
-    validatingShopify,
-    shopifyValidationError,
     downloadLoading,
     currentReportId,
     reportUrl,

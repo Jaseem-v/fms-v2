@@ -10,15 +10,15 @@ import PricingSection from '@/components/home/PricingSection';
 import WhatYouGetSection from '@/components/home/WhatYouGetSection';
 import CountdownTimer from '@/components/ui/CountdownTimer';
 import FloatingButton from '@/components/ui/FloatingButton';
+import ProtectedAuditRoute from '@/components/layout/ProtectedAuditRoute';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { config } from '@/config/config';
 
-export default function HomePage() {
+function HomePageContent() {
     const router = useRouter();
     const [url, setUrl] = useState('');
     const [loading, setLoading] = useState(false);
-    const [validatingShopify, setValidatingShopify] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -58,7 +58,6 @@ export default function HomePage() {
                     url={url}
                     setUrl={handleUrlChange}
                     loading={loading}
-                    validatingShopify={validatingShopify}
                     onSubmit={handleSubmit}
                     isSplitPages={true}
                     type="homepage"
@@ -95,5 +94,13 @@ export default function HomePage() {
             <FloatingButton />
 
         </div>
+    );
+}
+
+export default function HomePage() {
+    return (
+        <ProtectedAuditRoute pageType="homepage">
+            <HomePageContent />
+        </ProtectedAuditRoute>
     );
 }

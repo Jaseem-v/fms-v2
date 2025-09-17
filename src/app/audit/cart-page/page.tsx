@@ -10,14 +10,14 @@ import PricingSection from '@/components/home/PricingSection';
 import WhatYouGetSection from '@/components/home/WhatYouGetSection';
 import CountdownTimer from '@/components/ui/CountdownTimer';
 import FloatingButton from '@/components/ui/FloatingButton';
-import React, { useState } from 'react';
+import ProtectedAuditRoute from '@/components/layout/ProtectedAuditRoute';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function CartPage() {
+function CartPageContent() {
     const router = useRouter();
     const [url, setUrl] = useState('');
     const [loading, setLoading] = useState(false);
-    const [validatingShopify, setValidatingShopify] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -38,9 +38,9 @@ export default function CartPage() {
         setUrl(newUrl);
     };
 
+
     return (
         <div className="min-h-screen bg-green-50 relative overflow-hidden">
-
             <div className="announcment-bar">
                 <p>
                     Get an audit for FREE
@@ -56,7 +56,6 @@ export default function CartPage() {
                     url={url}
                     setUrl={handleUrlChange}
                     loading={loading}
-                    validatingShopify={validatingShopify}
                     onSubmit={handleSubmit}
                     isSplitPages={true}
                     type="cart"
@@ -94,5 +93,13 @@ export default function CartPage() {
             <FloatingButton />
 
         </div>
+    );
+}
+
+export default function CartPage() {
+    return (
+        <ProtectedAuditRoute pageType="cart page">
+            <CartPageContent />
+        </ProtectedAuditRoute>
     );
 }

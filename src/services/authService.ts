@@ -12,8 +12,10 @@ export interface LoginResponse {
     _id: string;
     email: string;
     name: string;
-    role: string;
+    role: 'admin' | 'super_admin' | 'user';
     isActive: boolean;
+    reportCount?: number;
+    lastReportDate?: string;
     lastLogin?: string;
     createdAt: string;
     updatedAt: string;
@@ -25,8 +27,10 @@ export interface User {
   _id: string;
   email: string;
   name: string;
-  role: string;
+  role: 'admin' | 'super_admin' | 'user';
   isActive: boolean;
+  reportCount?: number;
+  lastReportDate?: string;
   lastLogin?: string;
   createdAt: string;
   updatedAt: string;
@@ -104,6 +108,10 @@ class AuthService {
       const data = await response.json();
 
       if (data.success && data.user) {
+        // Update localStorage with fresh user data
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('user', JSON.stringify(data.user));
+        }
         return { valid: true, user: data.user };
       }
 
@@ -199,6 +207,113 @@ class AuthService {
       }
     }
     return null;
+  }
+
+  async getUsers(page: number = 1, limit: number = 20, role?: string, search?: string): Promise<{
+    success: boolean;
+    users: User[];
+    total: number;
+    page: number;
+    totalPages: number;
+  }> {
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+        ...(role && { role }),
+        ...(search && { search })
+      });
+
+      const response = await fetch(`${BACKEND_URL}/auth/users?${params}`, {
+        method: 'GET',
+        headers: this.getHeaders(),
+      });
+
+      const data = await response.json();
+      return {
+        success: data.success,
+        users: data.users || [],
+        total: data.pagination?.total || 0,
+        page: data.pagination?.page || 1,
+        totalPages: data.pagination?.totalPages || 1
+      };
+    } catch (error) {
+      console.error('Get users error:', error);
+      return {
+        success: false,
+        users: [],
+        total: 0,
+        page: 1,
+        totalPages: 1
+      };
+    }
+  }
+
+  async createUser(email: string, password: string, name: string, role: 'admin' | 'super_admin' | 'user' = 'user'): Promise<{ success: boolean; user?: User; message: string }> {
+    try {
+      const response = await fetch(`${BACKEND_URL}/auth/users`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: JSON.stringify({ email, password, name, role }),
+      });
+
+      const data = await response.json();
+      return {
+        success: data.success,
+        user: data.user,
+        message: data.message
+      };
+    } catch (error) {
+      console.error('Create user error:', error);
+      return {
+        success: false,
+        message: 'Network error occurred'
+      };
+    }
+  }
+
+  async updateUser(userId: string, updates: Partial<User>): Promise<{ success: boolean; user?: User; message: string }> {
+    try {
+      const response = await fetch(`${BACKEND_URL}/auth/users/${userId}`, {
+        method: 'PUT',
+        headers: this.getHeaders(),
+        body: JSON.stringify(updates),
+      });
+
+      const data = await response.json();
+      return {
+        success: data.success,
+        user: data.user,
+        message: data.message
+      };
+    } catch (error) {
+      console.error('Update user error:', error);
+      return {
+        success: false,
+        message: 'Network error occurred'
+      };
+    }
+  }
+
+  async deleteUser(userId: string): Promise<{ success: boolean; message: string }> {
+    try {
+      const response = await fetch(`${BACKEND_URL}/auth/users/${userId}`, {
+        method: 'DELETE',
+        headers: this.getHeaders(),
+      });
+
+      const data = await response.json();
+      return {
+        success: data.success,
+        message: data.message
+      };
+    } catch (error) {
+      console.error('Delete user error:', error);
+      return {
+        success: false,
+        message: 'Network error occurred'
+      };
+    }
   }
 }
 
