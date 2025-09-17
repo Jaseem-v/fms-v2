@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense, memo, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import ReportLoading from '../../components/report/ReportLoading';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+// Removed DotLottieReact import
 import Navbar from '../../components/layout/Navbar';
 import { config } from '@/config/config';
 import { useToast } from '@/contexts/ToastContext';
@@ -13,6 +13,7 @@ import { usePagewiseAnalysis } from '../../hooks/useHomepageAnalysis';
 import AnalysisReport from '../../components/report/AnalysisReport';
 import OverallSummary from '../../components/report/OverallSummary';
 import BlurredContent from '../../components/report/BlurredContent';
+import AnalysisLoadingScreen from '../../components/analysis/AnalysisLoadingScreen';
 
 const PAGE_TITLES: Record<string, string> = {
   homepage: 'Homepage',
@@ -20,6 +21,19 @@ const PAGE_TITLES: Record<string, string> = {
   product: 'Product Page',
   cart: 'Cart Page',
 };
+
+const CRO_QUOTES = [
+  "Optimizing your store for maximum conversions...",
+  "Every second counts in e-commerce - we're making yours count",
+  "Turning browsers into buyers, one optimization at a time",
+  "Your store's potential is being unlocked...",
+  "Converting visitors into customers with precision",
+  "Building trust and removing friction from your customer journey",
+  "Every element matters when it comes to conversion",
+  "We're analyzing every pixel for conversion opportunities",
+  "Your customers' experience is being perfected",
+  "Transforming your store into a conversion machine"
+];
 
 const AnalyzingPageContent = memo(function AnalyzingPageContent() {
   const searchParams = useSearchParams();
@@ -36,6 +50,7 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
   const [flow, setFlow] = useState<'payment' | 'homepage-analysis'>('payment');
   const [hasAttemptedAnalysis, setHasAttemptedAnalysis] = useState(false);
   const [flowLoading, setFlowLoading] = useState(true);
+  const [currentQuote, setCurrentQuote] = useState(CRO_QUOTES[0]);
 
   const {
     loading: analysisLoading,
@@ -66,6 +81,21 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
     checkFlow();
   }, []);
 
+  // Cycle through CRO quotes during analysis
+  useEffect(() => {
+    if (analysisLoading) {
+      const quoteInterval = setInterval(() => {
+        setCurrentQuote(prevQuote => {
+          const currentIndex = CRO_QUOTES.indexOf(prevQuote);
+          const nextIndex = (currentIndex + 1) % CRO_QUOTES.length;
+          return CRO_QUOTES[nextIndex];
+        });
+      }, 3000); // Change quote every 3 seconds
+
+      return () => clearInterval(quoteInterval);
+    }
+  }, [analysisLoading]);
+
   // Auto-analyze page if flow is homepage-analysis
   useEffect(() => {
     if (flow === 'homepage-analysis' && websiteUrl && !analysisResult && !analysisLoading && !hasAttemptedAnalysis) {
@@ -73,15 +103,6 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
       setHasAttemptedAnalysis(true);
       // Start progress from 0% for homepage-analysis flow
       setProgress(0);
-      let currentProgress = 0;
-      const progressInterval = setInterval(() => {
-        currentProgress += 0.5;
-        if (currentProgress >= 25) {
-          clearInterval(progressInterval);
-        } else {
-          setProgress(currentProgress);
-        }
-      }, 100);
       
       // Determine if authentication is required based on user authentication status
       // If user is not authenticated, use public route regardless of pageType
@@ -90,21 +111,24 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
       
       // Pass the pageType and auth requirement to the analysis
       analyzePage(websiteUrl, pageType, requireAuth);
-
-      return () => clearInterval(progressInterval);
     }
   }, [flow, websiteUrl, analysisResult, analysisLoading, hasAttemptedAnalysis, analyzePage, pageType, isAuthenticated]);
 
   // Handle analysis completion
   useEffect(() => {
     if (flow === 'homepage-analysis' && analysisResult && !analysisLoading) {
+      console.log('[ANALYZING PAGE] Analysis completed, result:', analysisResult);
+      console.log('[ANALYZING PAGE] Analysis slug:', analysisResult.slug);
+      
       // Analysis completed successfully, show 100% progress then navigate to report page
       setProgress(100);
       setTimeout(() => {
         // Navigate to report page using the slug from analysis result
         if (analysisResult.slug) {
+          console.log('[ANALYZING PAGE] Redirecting to report page:', `/report/${analysisResult.slug}`);
           router.push(`/report/${analysisResult.slug}`);
         } else {
+          console.log('[ANALYZING PAGE] No slug available, showing loading false');
           // Fallback: show loading false if no slug available
           setShowLoading(false);
         }
@@ -123,20 +147,20 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
     }
   }, [flow, analysisError, analysisLoading]);
 
-  // Update progress during analysis
+  // Update progress based on completed steps (start from 10%, scale remaining 90% across 4 UI steps)
   useEffect(() => {
-    if (flow === 'homepage-analysis' && analysisLoading) {
-      // Start from current progress and slowly move to 80%
-      const progressInterval = setInterval(() => {
-        setProgress(prev => {
-          if (prev >= 80) return 80;
-          return prev + 0.5; // Increment by 0.5% every 100ms for smooth progression
-        });
-      }, 100);
-
-      return () => clearInterval(progressInterval);
+    if (analysisLoading && steps) {
+      // Only count the first 4 steps (excluding store_analysis) for UI progress
+      const uiSteps = steps.filter(step => step.name !== 'store_analysis');
+      const completedSteps = uiSteps.filter(step => step.completed).length;
+      const totalSteps = uiSteps.length;
+      // Start from 10%, scale the remaining 90% across the 4 UI steps
+      const stepProgress = 10 + (completedSteps / totalSteps) * 90;
+      
+      // Set progress directly to the step-based percentage
+      setProgress(stepProgress);
     }
-  }, [flow, analysisLoading]);
+  }, [analysisLoading, steps]);
 
   // Separate useEffect for Shopify validation - only for payment flow
   useEffect(() => {
@@ -157,28 +181,15 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
 
     let isMounted = true;
 
-    // Start progress from 0% and move to 25% during validation (only for payment flow)
-    let currentProgress = 0;
-    const progressInterval = setInterval(() => {
-      if (!isMounted) return;
-      currentProgress += 0.5;
-      if (currentProgress >= 25) {
-        clearInterval(progressInterval);
-      } else {
-        setProgress(currentProgress);
-      }
-    }, 100);
-
     // Start analysis directly - validation is now handled by the backend
     if (websiteUrl && !hasAttemptedAnalysis) {
       setHasAttemptedAnalysis(true);
-      setProgress(25);
+      setProgress(0); // Start from 10%, progress will be updated by step completion
       analyzePage(websiteUrl, pageType as 'homepage' | 'collection' | 'product' | 'cart');
     }
 
     return () => {
       isMounted = false;
-      clearInterval(progressInterval);
     };
   }, [websiteUrl, router, flow, flowLoading, hasAttemptedAnalysis, analyzePage, pageType]);
 
@@ -212,21 +223,10 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
   // Handle initial loading state for non-homepage-analysis flow
   useEffect(() => {
     if (hasAttemptedAnalysis && flow !== 'homepage-analysis' && imagesLoaded) {
-      // For payment flow, show progress progression then hide loading
-      let currentProgress = 0;
-      const progressInterval = setInterval(() => {
-        currentProgress += 0.5;
-        if (currentProgress >= 25) {
-          clearInterval(progressInterval);
-          setTimeout(() => {
-            setShowLoading(false);
-          }, 1000);
-        } else {
-          setProgress(currentProgress);
-        }
-      }, 100);
-
-      return () => clearInterval(progressInterval);
+      // For payment flow, hide loading after images are loaded
+      setTimeout(() => {
+        setShowLoading(false);
+      }, 1000);
     }
   }, [hasAttemptedAnalysis, flow, imagesLoaded]);
 
@@ -242,87 +242,15 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
   
   if (showLoading || (flow === 'homepage-analysis' && analysisLoading)) {
     return (
-      <div className="min-h-screen bg-green-50 relative">
-        {/* <Navbar /> */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=&quot;25&quot; height=&quot;25&quot; viewBox=&quot;0 0 25 25&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cpath d=&quot;M1 1h1v1H1V1zm0 23h1v1H1v-1zm23 0h1v1h-1v-1zm0-23h1v1h-1V1z&quot; stroke=&quot;%23e5e7eb&quot; stroke-width=&quot;0.5&quot;/%3E%3C/svg%3E')] opacity-30"></div>
-
-        <div className="relative z-10 px-4 py-12 min-h-screen flex flex-col justify-center">
-          <div className='mt-[-250px] analyze-loading'>
-            <DotLottieReact
-              src="https://lottie.host/a1b1eddc-5bf6-4259-bfe0-17b695d57e6f/X7bQ4xuwAv.lottie"
-              loop
-              autoplay={true}
-            />
-          </div>
-
-          <ReportLoading
-            message={
-              flow === 'homepage-analysis' && analysisLoading
-                ? `Analyzing ${PAGE_TITLES[pageType]} with AI...`
-                : "Analyzing your store for conversion optimization opportunities..."
-            }
-            showProgress={true}
-            progress={progress}
-          />
-
-          {/* Stepwise Progress Indicator */}
-          {flow === 'homepage-analysis' && analysisLoading && (
-            <div className="mt-8 max-w-md mx-auto">
-              <div className="space-y-3">
-                {steps.map((step, index) => {
-                  const stepNames: Record<string, string> = {
-                    'validate_shopify': 'Validating Shopify Store',
-                    'take_screenshot': 'Capturing Screenshot',
-                    'analyze_gemini': 'AI Analysis',
-                    'analyze_checklist': 'CRO Checklist Analysis'
-                  };
-                  
-                  const isActive = currentStep === step.name;
-                  const isCompleted = step.completed;
-                  const isPending = !isActive && !isCompleted;
-                  
-                  return (
-                    <div key={step.name} className="flex items-center space-x-3">
-                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
-                        isCompleted 
-                          ? 'bg-green-500 text-white' 
-                          : isActive 
-                            ? 'bg-blue-500 text-white animate-pulse' 
-                            : 'bg-gray-200 text-gray-500'
-                      }`}>
-                        {isCompleted ? '✓' : index + 1}
-                      </div>
-                      <span className={`text-sm ${
-                        isCompleted 
-                          ? 'text-green-600 font-medium' 
-                          : isActive 
-                            ? 'text-blue-600 font-medium' 
-                            : 'text-gray-500'
-                      }`}>
-                        {stepNames[step.name]}
-                      </span>
-                      {isActive && (
-                        <div className="ml-auto">
-                          <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* {!imagesLoaded && (
-            <div className="text-center mt-4">
-              <div className="inline-flex items-center text-sm text-gray-600">
-                <div className="w-4 h-4 border-2 border-gray-300 border-t-green-500 rounded-full animate-spin mr-2"></div>
-                Preloading images...
-              </div>
-            </div>
-          )} */}
-        </div>
-      </div>
+      <AnalysisLoadingScreen
+        pageType={pageType}
+        currentStep={currentStep}
+        steps={steps}
+        flow={flow}
+        analysisLoading={analysisLoading}
+        currentQuote={currentQuote}
+        progress={progress}
+      />
     );
   }
 
@@ -384,7 +312,7 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
                   className={`report__tab ${activeTab === key ? 'active' : ''}`}
                   onClick={() => setActiveTab(key)}
                 >
-                  {title.replace('Page', '')}
+                  {(title as string).replace('Page', '')}
                 </button>
               ))}
             </div>

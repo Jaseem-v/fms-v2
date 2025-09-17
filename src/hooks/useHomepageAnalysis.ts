@@ -31,18 +31,27 @@ export const usePagewiseAnalysis = () => {
     { name: 'take_screenshot', completed: false },
     { name: 'analyze_gemini', completed: false },
     { name: 'analyze_checklist', completed: false },
+    { name: 'store_analysis', completed: false },
   ]);
+  const [chunkProgress, setChunkProgress] = useState<{
+    currentChunk: number;
+    totalChunks: number;
+    chunkResults: any[];
+    isComplete: boolean;
+  } | null>(null);
 
   const analyzePage = async (url: string, pageType: string = 'homepage', requireAuth: boolean = false) => {
     try {
       setLoading(true);
       setError(null);
       setCurrentStep(null);
+      setChunkProgress(null);
       setSteps([
         { name: 'validate_shopify', completed: false },
         { name: 'take_screenshot', completed: false },
         { name: 'analyze_gemini', completed: false },
         { name: 'analyze_checklist', completed: false },
+        { name: 'store_analysis', completed: false },
       ]);
       
       console.log(`[HOMEPAGE ANALYSIS] Starting stepwise analysis for: ${url} (${pageType})`);
@@ -53,15 +62,37 @@ export const usePagewiseAnalysis = () => {
         pageType,
         (step, completed, data) => {
           console.log(`[HOMEPAGE ANALYSIS] Step ${step}: ${completed ? 'completed' : 'in progress'}`);
-          setCurrentStep(step);
-          setSteps(prev => prev.map(s => 
-            s.name === step ? { ...s, completed, error: undefined } : s
-          ));
+          
+          // Handle chunked progress updates for product pages
+          if (step.startsWith('analyze_checklist_chunk_') && data) {
+            setChunkProgress({
+              currentChunk: data.chunkNumber,
+              totalChunks: data.totalChunks,
+              chunkResults: data.chunkResults || [],
+              isComplete: data.isComplete || false
+            });
+            
+            // Update the main checklist step when all chunks are complete
+            if (data.isComplete) {
+              setSteps(prev => prev.map(s => 
+                s.name === 'analyze_checklist' ? { ...s, completed: true, error: undefined } : s
+              ));
+            }
+          } else {
+            setCurrentStep(step);
+            setSteps(prev => prev.map(s => 
+              s.name === step ? { ...s, completed, error: undefined } : s
+            ));
+          }
         }
       );
       
+      console.log(`[HOMEPAGE ANALYSIS] Analysis result data:`, analysisResult.data);
+      console.log(`[HOMEPAGE ANALYSIS] Analysis result slug:`, analysisResult.data.slug);
+      
       setResult(analysisResult.data);
       setCurrentStep(null);
+      setChunkProgress(null);
       
       console.log(`[HOMEPAGE ANALYSIS] ✅ Analysis completed successfully`);
       return analysisResult.data;
@@ -70,6 +101,7 @@ export const usePagewiseAnalysis = () => {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred during analysis';
       setError(errorMessage);
       setCurrentStep(null);
+      setChunkProgress(null);
       console.error('[HOMEPAGE ANALYSIS] Error:', err);
       throw err;
     } finally {
@@ -82,11 +114,13 @@ export const usePagewiseAnalysis = () => {
     setError(null);
     setResult(null);
     setCurrentStep(null);
+    setChunkProgress(null);
     setSteps([
       { name: 'validate_shopify', completed: false },
       { name: 'take_screenshot', completed: false },
       { name: 'analyze_gemini', completed: false },
       { name: 'analyze_checklist', completed: false },
+      { name: 'store_analysis', completed: false },
     ]);
   };
 
@@ -96,6 +130,7 @@ export const usePagewiseAnalysis = () => {
     result,
     currentStep,
     steps,
+    chunkProgress,
     analyzePage,
     reset
   };

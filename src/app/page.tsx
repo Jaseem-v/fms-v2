@@ -44,12 +44,33 @@ interface Report {
   [key: string]: PagewiseAnalysisResult;
 }
 
+const CRO_QUOTES = [
+  "Optimizing your store for maximum conversions...",
+  "Every second counts in e-commerce - we're making yours count",
+  "Turning browsers into buyers, one optimization at a time",
+  "Your store's potential is being unlocked...",
+  "Converting visitors into customers with precision",
+  "Building trust and removing friction from your customer journey",
+  "Every element matters when it comes to conversion",
+  "We're analyzing every pixel for conversion opportunities",
+  "Your customers' experience is being perfected",
+  "Transforming your store into a conversion machine"
+];
+
+const STEP_MESSAGES: Record<string, string> = {
+  'validate_shopify': 'Preparing your store analysis...',
+  'take_screenshot': 'Capturing your store\'s current state...',
+  'analyze_gemini': 'AI is examining every detail...',
+  'analyze_checklist': 'Generating personalized recommendations...'
+};
+
 export default function Home() {
   const router = useRouter();
   const [selectedScreenshot, setSelectedScreenshot] = useState<{ pageType: string, url: string } | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(true);
   const [showFormModal, setShowFormModal] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [currentQuote, setCurrentQuote] = useState(CRO_QUOTES[0]);
 
   const {
     url,
@@ -74,6 +95,8 @@ export default function Home() {
     currentReportId,
     reportUrl,
     autoSaveEnabled,
+    currentStep,
+    steps,
     handleSubmit,
     handleUserInfoSubmit,
     handleUserInfoChange,
@@ -81,6 +104,7 @@ export default function Home() {
     formatTime,
     statusMessages,
     startAnalysisAfterPayment,
+    startStepwiseAnalysis,
   } = useAnalysis();
 
   // Check authentication status on component mount
@@ -99,6 +123,21 @@ export default function Home() {
 
   //   checkAuth();
   // }, []);
+
+  // Cycle through CRO quotes during analysis
+  useEffect(() => {
+    if (loading) {
+      const quoteInterval = setInterval(() => {
+        setCurrentQuote(prevQuote => {
+          const currentIndex = CRO_QUOTES.indexOf(prevQuote);
+          const nextIndex = (currentIndex + 1) % CRO_QUOTES.length;
+          return CRO_QUOTES[nextIndex];
+        });
+      }, 3000); // Change quote every 3 seconds
+
+      return () => clearInterval(quoteInterval);
+    }
+  }, [loading]);
 
   // Calculate progress percentage based on status
   const calculateProgress = () => {
@@ -320,24 +359,104 @@ export default function Home() {
           />
         }
 
-        {loading &&
+        {loading && (
+          <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 relative overflow-hidden">
+            {/* Animated background pattern */}
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23f0f9ff&quot; fill-opacity=&quot;0.4&quot;%3E%3Ccircle cx=&quot;30&quot; cy=&quot;30&quot; r=&quot;2&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-60"></div>
+            
+            {/* Floating elements */}
+            <div className="absolute top-20 left-10 w-20 h-20 bg-green-200 rounded-full opacity-20 animate-pulse"></div>
+            <div className="absolute top-40 right-20 w-16 h-16 bg-blue-200 rounded-full opacity-30 animate-bounce"></div>
+            <div className="absolute bottom-40 left-20 w-12 h-12 bg-purple-200 rounded-full opacity-25 animate-pulse"></div>
+            <div className="absolute bottom-20 right-10 w-24 h-24 bg-yellow-200 rounded-full opacity-20 animate-bounce"></div>
 
-          <div className='mt-[-100px]'>
-            <DotLottieReact
-              src="https://lottie.host/a1b1eddc-5bf6-4259-bfe0-17b695d57e6f/X7bQ4xuwAv.lottie"
-              loop
-              autoplay={true}
-            />
+            <div className="relative z-10 px-4 py-12 min-h-screen flex flex-col justify-center items-center">
+              {/* Main loading container */}
+              <div className="max-w-2xl mx-auto text-center">
+                {/* Animated icon */}
+                <div className="mb-8">
+                  <div className="w-24 h-24 mx-auto mb-6 relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-blue-500 rounded-full animate-pulse"></div>
+                    <div className="absolute inset-2 bg-white rounded-full flex items-center justify-center">
+                      <svg className="w-12 h-12 text-green-600 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Dynamic quote */}
+                <div className="mb-8">
+                  <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4 leading-tight">
+                    {currentQuote}
+                  </h1>
+                  <p className="text-lg text-gray-600">
+                    Analyzing your store for conversion opportunities
+                  </p>
+                </div>
+
+                {/* Progress bar */}
+                <div className="mb-8">
+                  <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-green-400 to-blue-500 rounded-full transition-all duration-500 ease-out"
+                      style={{ width: `${Math.min(calculateProgress(), 100)}%` }}
+                    ></div>
+                  </div>
+                  <p className="text-sm text-gray-500 mt-2">
+                    {Math.round(calculateProgress())}% Complete
+                  </p>
+                </div>
+
+                {/* Stepwise Progress Indicator - Redesigned */}
+                {loading && (
+                  <div className="mt-8">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {steps.map((step, index) => {
+                        const isActive = currentStep === step.name;
+                        const isCompleted = step.completed;
+                        
+                        return (
+                          <div key={step.name} className="flex flex-col items-center space-y-2">
+                            <div className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
+                              isCompleted 
+                                ? 'bg-green-500 text-white scale-110' 
+                                : isActive 
+                                  ? 'bg-blue-500 text-white scale-110 animate-pulse shadow-lg' 
+                                  : 'bg-gray-200 text-gray-500'
+                            }`}>
+                              {isCompleted ? '✓' : index + 1}
+                            </div>
+                            <span className={`text-xs text-center font-medium transition-colors duration-300 ${
+                              isCompleted 
+                                ? 'text-green-600' 
+                                : isActive 
+                                  ? 'text-blue-600' 
+                                  : 'text-gray-400'
+                            }`}>
+                              {STEP_MESSAGES[step.name]}
+                            </span>
+                            {isActive && (
+                              <div className="w-2 h-2 bg-blue-500 rounded-full animate-ping"></div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Motivational message */}
+                <div className="mt-8 p-4 bg-white/50 backdrop-blur-sm rounded-lg border border-white/20">
+                  <p className="text-sm text-gray-600 italic">
+                    "The best time to optimize your store was yesterday. The second best time is now."
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
-        }
-
-        {loading && <ConversionQuotes />}
-
-        {loading && <ReportLoading
-          message={status ? statusMessages[status]?.description || status : 'Initializing analysis...'}
-          showProgress={true}
-          progress={calculateProgress()}
-        />}
+        )}
 
 
 

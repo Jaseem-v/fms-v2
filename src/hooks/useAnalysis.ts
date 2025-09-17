@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import analysisService from '../services/analysisService';
 import reportService from '../services/reportService';
 import settingsService from '../services/settingsService';
+import { stepwiseAnalysisService } from '../services/stepwiseAnalysisService';
 import { PagewiseAnalysisResult } from './useHomepageAnalysis';
 import { normalizeUrl } from '@/utils/settingsUtils';
 
@@ -48,6 +49,15 @@ export function useAnalysis() {
   const [report, setReport] = useState<Report | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('');
+  
+  // Stepwise analysis state
+  const [currentStep, setCurrentStep] = useState<string | null>(null);
+  const [steps, setSteps] = useState<Array<{name: string, completed: boolean, error?: string}>>([
+    { name: 'validate_shopify', completed: false },
+    { name: 'take_screenshot', completed: false },
+    { name: 'analyze_gemini', completed: false },
+    { name: 'analyze_checklist', completed: false },
+  ]);
   const [status, setStatus] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -728,6 +738,56 @@ export function useAnalysis() {
     }
   }, [url, report, analysisInProgress, resetState]);
 
+  // Stepwise analysis method for homepage
+  const startStepwiseAnalysis = useCallback(async (url: string, pageType: string = 'homepage') => {
+    try {
+      setLoading(true);
+      setError(null);
+      setCurrentStep(null);
+      setSteps([
+        { name: 'validate_shopify', completed: false },
+        { name: 'take_screenshot', completed: false },
+        { name: 'analyze_gemini', completed: false },
+        { name: 'analyze_checklist', completed: false },
+      ]);
+      
+      console.log(`[HOMEPAGE STEPWISE] Starting stepwise analysis for: ${url} (${pageType})`);
+      
+      // Use the new stepwise analysis service
+      const analysisResult = await stepwiseAnalysisService.sequentialAnalysis(
+        url, 
+        pageType,
+        (step, completed, data) => {
+          console.log(`[HOMEPAGE STEPWISE] Step ${step}: ${completed ? 'completed' : 'in progress'}`);
+          setCurrentStep(step);
+          setSteps(prev => prev.map(s => 
+            s.name === step ? { ...s, completed, error: undefined } : s
+          ));
+        }
+      );
+      
+      // Convert to the expected format
+      const reportData = {
+        [pageType]: analysisResult.data
+      };
+      
+      setReport(reportData);
+      setCurrentStep(null);
+      setLoading(false);
+      
+      console.log(`[HOMEPAGE STEPWISE] ✅ Analysis completed successfully`);
+      return analysisResult.data;
+      
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred during analysis';
+      setError(errorMessage);
+      setCurrentStep(null);
+      setLoading(false);
+      console.error('[HOMEPAGE STEPWISE] Error:', err);
+      throw err;
+    }
+  }, []);
+
   return {
     // State
     url,
@@ -752,6 +812,10 @@ export function useAnalysis() {
     currentReportId,
     reportUrl,
     autoSaveEnabled,
+    
+    // Stepwise analysis state
+    currentStep,
+    steps,
 
     // Functions
     handleSubmit,
@@ -761,5 +825,6 @@ export function useAnalysis() {
     formatTime,
     statusMessages,
     startAnalysisAfterPayment,
+    startStepwiseAnalysis,
   };
 } 
