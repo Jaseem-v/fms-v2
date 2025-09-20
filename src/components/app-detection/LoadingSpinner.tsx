@@ -22,7 +22,7 @@ export function LoadingSpinner({
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
-      className="flex flex-col items-center justify-center space-y-6 py-12"
+      className="flex flex-col items-center justify-center space-y-6 py-12 fixed top-0 left-0 w-full h-full bg-white z-50 "
     >
       {/* Animated Search Icon */}
       {/* <div className="relative">
@@ -63,7 +63,7 @@ export function LoadingSpinner({
       </div>
 
       {/* Progress Dots */}
-      <div className="flex space-x-2">
+      {/* <div className="flex space-x-2">
         {[0, 1, 2].map((index) => (
           <motion.div
             key={index}
@@ -80,7 +80,7 @@ export function LoadingSpinner({
             }}
           />
         ))}
-      </div>
+      </div> */}
 
       {/* AI Processing Message */}
       <motion.div

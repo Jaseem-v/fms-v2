@@ -5,7 +5,7 @@
 import axios from 'axios';
 import { DetectionResult, ShopifyStoreInfo, ApiResponse } from './types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -34,6 +34,50 @@ export class ApiService {
       }
       throw new Error('Network error occurred');
     }
+  }
+
+  /**
+   * Detect apps in a Shopify store using streaming
+   * @param url - The Shopify store URL
+   * @param onProgress - Callback for progress updates
+   * @returns Promise<DetectionResult> - Detection results
+   */
+  static async detectAppsStream(url: string, onProgress?: (progress: any) => void): Promise<DetectionResult> {
+    return new Promise((resolve, reject) => {
+      const eventSource = new EventSource(`${API_BASE_URL}/api/detect-apps-stream?url=${encodeURIComponent(url)}`);
+      
+      eventSource.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          
+          if (onProgress) {
+            onProgress(data);
+          }
+          
+          if (data.type === 'complete') {
+            eventSource.close();
+            resolve(data.result);
+          } else if (data.type === 'error') {
+            eventSource.close();
+            reject(new Error(data.message));
+          }
+        } catch (error) {
+          console.error('Error parsing SSE data:', error);
+        }
+      };
+      
+      eventSource.onerror = (error) => {
+        console.error('SSE error:', error);
+        eventSource.close();
+        reject(new Error('Connection lost during app detection'));
+      };
+      
+      // Set a timeout
+      setTimeout(() => {
+        eventSource.close();
+        reject(new Error('Request timed out'));
+      }, 120000); // 2 minutes
+    });
   }
 
   /**

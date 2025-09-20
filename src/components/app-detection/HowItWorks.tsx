@@ -13,23 +13,23 @@ export function HowItWorks() {
     {
       number: 1,
       title: "Enter Your Store URL",
-      description: "We scan all apps currently installed on your store."
+      description: "Paste any Shopify store link into the tool."
     },
     {
       number: 2,
       title: "Get a Smart Report",
-      description: "See which apps are slowing you down and which ones can be replaced."
+      description: "Our system analyzes the site and detects the apps it’s running."
     },
     {
       number: 3,
       title: "Optimize Your Store",
-      description: "Follow our recommendations to improve site speed and conversions instantly."
+      description: "See the full list of apps used for every use case"
     }
   ];
 
   return (
     <section className="py-16 pt-0">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-5xl mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -42,7 +42,7 @@ export function HowItWorks() {
           </h2>
         </motion.div>
 
-        <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-4">
+        <div className="flex flex-col lg:flex-row justify-center gap-16">
           {steps.map((step, index) => (
             <div key={step.number} className="flex items-start gap-8 lg:gap-4">
               <motion.div
@@ -50,32 +50,21 @@ export function HowItWorks() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.2 }}
                 viewport={{ once: true }}
-                className="flex flex-col items-center text-center max-w-sm"
+                className="flex flex-col max-w-sm"
               >
                 {/* Step Number Circle */}
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-6" style={{ backgroundColor: '#328900' }}>
-                  <span className="text-white font-bold text-xl">
-                    {step.number}
-                  </span>
-                </div>
+               <img src={`/app-detection-steps/${step.number}.svg`} alt=""  className='how-it-works__icon'/>
 
                 {/* Step Content */}
-                <h3 className="sub-item__title text-center">
+                <h3 className="sub-item__title mt-4">
                   {step.title}
                 </h3>
-                <p className="sub-item__description text-center">
+                <p className="sub-item__description">
                   {step.description}
                 </p>
               </motion.div>
 
-              {/* Arrow (except for last step) */}
-              {index < steps.length - 1 && (
-                <div className="hidden lg:block mx-4 mt-8">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="202" height="2" viewBox="0 0 202 2" fill="none">
-                    <path d="M1 1H201" stroke="black" stroke-linecap="round" stroke-dasharray="8 8" />
-                  </svg>
-                </div>
-              )}
+             
             </div>
           ))}
         </div>

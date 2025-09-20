@@ -49,7 +49,7 @@ export function UrlInput({ onDetect, isLoading, error }: UrlInputProps) {
     <div className='hero__content'>
       <div className="hero__details">
 
-        <div className="w-full flex justify-center gap-4 items-center mb-12">
+        {/* <div className="w-full flex justify-center gap-4 items-center mb-12">
           <div className='stats__item'>
             Too many apps
           </div>
@@ -67,18 +67,16 @@ export function UrlInput({ onDetect, isLoading, error }: UrlInputProps) {
               lower conversions.
             </div>
           </div>
-        </div>
+        </div> */}
 
-        <h1 className='app-suggest-hero__title hidden md:block'>
-
-          Get your free Shopify app audit today.
+        <h1 className='app-suggest-hero__title'>
+          Discover Apps in a Shopify Store
         </h1>
-        <h1 className='app-suggest-hero__title md:hidden'>
-          Get your free Shopify app audit today.
-        </h1>
+        {/* <h1 className='app-suggest-hero__title md:hidden'>
+        Discover Apps in a Shopify Store
+        </h1> */}
         <p className='app-suggest-hero__description mt-5'>
-          Enter your store URL and let us instantly audit your apps,
-          telling you which ones to remove, replace, or keep.
+          Find out the apps powering your competitors in a click!
         </p>
       </div>
 
@@ -121,7 +119,7 @@ export function UrlInput({ onDetect, isLoading, error }: UrlInputProps) {
 
       </div>
 
-   
+
 
       {/* <div className="hero__gradient-bg"></div> */}
 

@@ -10,6 +10,7 @@ interface Settings {
   report_mode: 'MANUAL' | 'AUTO';
   report_manual_time: number;
   flow: 'payment' | 'homepage-analysis';
+  app_detection_model: 'openai' | 'gemini';
 }
 
 interface AIProviderStatus {
@@ -26,7 +27,8 @@ export default function SettingsPage() {
     paymentEnabled: true,
     report_mode: 'AUTO',
     report_manual_time: 24,
-    flow: 'payment'
+    flow: 'payment',
+    app_detection_model: 'gemini'
   });
   const [isLoading, setIsLoading] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
@@ -44,7 +46,13 @@ export default function SettingsPage() {
     const loadSettings = async () => {
       try {
         const savedSettings = await settingsService.getSettings();
-        setSettings(savedSettings);
+        setSettings({
+          paymentEnabled: savedSettings.paymentEnabled || true,
+          report_mode: savedSettings.report_mode || 'AUTO',
+          report_manual_time: savedSettings.report_manual_time || 24,
+          flow: savedSettings.flow || 'payment',
+          app_detection_model: savedSettings.app_detection_model || 'gemini'
+        });
       } catch (error) {
         console.error('Error loading settings:', error);
       }
@@ -120,6 +128,11 @@ export default function SettingsPage() {
     } finally {
       setIsLoadingAI(false);
     }
+  };
+
+  const handleAppDetectionModelChange = async (model: 'openai' | 'gemini') => {
+    const newSettings = { ...settings, app_detection_model: model };
+    await saveSettings(newSettings);
   };
 
   const handleTestAIConnection = async () => {
@@ -396,6 +409,66 @@ export default function SettingsPage() {
                 {aiTestResult}
               </div>
             )}
+          </div>
+        </div>
+
+        {/* App Detection Model Settings */}
+        <div className="bg-white shadow rounded-lg">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <div className="flex items-center">
+              <CogIcon className="h-6 w-6 text-gray-400 mr-3" />
+              <h2 className="text-lg font-medium text-gray-900">App Detection Model</h2>
+            </div>
+          </div>
+          <div className="px-6 py-4 space-y-6">
+            {/* App Detection Model Selection */}
+            <div>
+              <label className="text-sm font-medium text-gray-900">App Detection AI Model</label>
+              <p className="text-sm text-gray-500 mt-1 mb-3">
+                Choose which AI model to use for detecting Shopify apps from store content.
+              </p>
+              <div className="flex space-x-4">
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="app_detection_model"
+                    value="gemini"
+                    checked={settings.app_detection_model === 'gemini'}
+                    onChange={(e) => handleAppDetectionModelChange(e.target.value as 'openai' | 'gemini')}
+                    disabled={isLoading}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 disabled:opacity-50"
+                  />
+                  <span className="ml-2 text-sm text-gray-900">Google Gemini</span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="app_detection_model"
+                    value="openai"
+                    checked={settings.app_detection_model === 'openai'}
+                    onChange={(e) => handleAppDetectionModelChange(e.target.value as 'openai' | 'gemini')}
+                    disabled={isLoading}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 disabled:opacity-50"
+                  />
+                  <span className="ml-2 text-sm text-gray-900">OpenAI (GPT-4)</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Model Status */}
+            <div>
+              <label className="text-sm font-medium text-gray-900">Model Availability</label>
+              <div className="mt-2 space-y-2">
+                <div className="flex items-center">
+                  <div className={`w-3 h-3 rounded-full mr-2 ${aiProviderStatus.providerStatus.gemini ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                  <span className="text-sm text-gray-600">Gemini: {aiProviderStatus.providerStatus.gemini ? 'Available' : 'Not Configured'}</span>
+                </div>
+                <div className="flex items-center">
+                  <div className={`w-3 h-3 rounded-full mr-2 ${aiProviderStatus.providerStatus.openai ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                  <span className="text-sm text-gray-600">OpenAI: {aiProviderStatus.providerStatus.openai ? 'Available' : 'Not Configured'}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
             

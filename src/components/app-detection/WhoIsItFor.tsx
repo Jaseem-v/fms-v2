@@ -34,7 +34,7 @@ export function WhoIsItFor() {
 
   return (
     <section className="py-16 ">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-2xl mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -47,7 +47,7 @@ export function WhoIsItFor() {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="flex flex-col  gap-8 ">
           {audiences.map((audience, index) => (
             <motion.div
               key={audience.title}
@@ -55,7 +55,7 @@ export function WhoIsItFor() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="flex items-start gap-4 p-6"
+              className={"flex items-center gap-4 " + (index % 2 === 0 ? "flex-row-reverse" : "flex-row")}
             >
               {/* Icon */}
               <div className=" bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 audiance__icon">
@@ -65,7 +65,7 @@ export function WhoIsItFor() {
               </div>
 
               {/* Content */}
-              <div>
+              <div className=' who-is-it-for__item'>
                 <h3 className="sub-item__title">
                   {audience.title}
                 </h3>

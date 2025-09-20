@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 import { UrlInput } from '@/components/app-detection/UrlInput';
 import { AppDashboard } from '@/components/app-detection/AppDashboard';
 import { LoadingSpinner } from '@/components/app-detection/LoadingSpinner';
+import { ProgressLoadingSpinner } from '@/components/app-detection/ProgressLoadingSpinner';
 import { HowItWorks } from '@/components/app-detection/HowItWorks';
 import { WhyOptimize } from '@/components/app-detection/WhyOptimize';
 import { WhyPickingRight } from '@/components/app-detection/WhyPickingRight';
@@ -23,6 +24,8 @@ export default function Home() {
   const [state, setState] = useState<AppState>('idle');
   const [result, setResult] = useState<DetectionResult | null>(null);
   const [error, setError] = useState<string>('');
+  const [progress, setProgress] = useState<any>(null);
+  const [useStreaming, setUseStreaming] = useState<boolean>(true);
   // const [backendStatus, setBackendStatus] = useState<'checking' | 'online' | 'offline'>('checking');
 
   // // Check backend health on component mount
@@ -43,11 +46,22 @@ export default function Home() {
     setState('loading');
     setError('');
     setResult(null);
+    setProgress(null);
 
     try {
       console.log('Starting app detection for:', url);
-      const detectionResult = await ApiService.detectApps(url);
-      setResult(detectionResult);
+      
+      if (useStreaming) {
+        const detectionResult = await ApiService.detectAppsStream(url, (progressData) => {
+          console.log('Progress update:', progressData);
+          setProgress(progressData);
+        });
+        setResult(detectionResult);
+      } else {
+        const detectionResult = await ApiService.detectApps(url);
+        setResult(detectionResult);
+      }
+      
       setState('results');
     } catch (err) {
       console.error('Detection error:', err);
@@ -65,10 +79,16 @@ export default function Home() {
   const renderContent = () => {
     switch (state) {
       case 'loading':
-        return (
+        return useStreaming ? (
+          <ProgressLoadingSpinner
+            message="Finding your apps..."
+            subMessage="This will only take a moment"
+            progress={progress}
+          />
+        ) : (
           <LoadingSpinner
-            message="Analyzing Shopify store..."
-            subMessage="Using AI to detect installed apps"
+            message="Finding your apps..."
+            subMessage="This will only take a moment"
           />
         );
 
@@ -114,24 +134,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-app-green">
-      {/* <ThemeToggle /> */}
-
-      {/* Backend Status Indicator */}
-      {/* {backendStatus === 'checking' && (
-        <div className="fixed top-4 right-4 z-50">
-          <div className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 px-3 py-2 rounded-lg text-sm">
-            Checking backend...
-          </div>
-        </div>
-      )}
-      
-      {backendStatus === 'offline' && (
-        <div className="fixed top-4 right-4 z-50">
-          <div className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 px-3 py-2 rounded-lg text-sm">
-            Backend offline - Please start the backend service
-          </div>
-        </div>
-      )} */}
+      {/* Streaming Toggle */}
+ 
 
       {/* Main Content */}
       {state === 'results' ? (

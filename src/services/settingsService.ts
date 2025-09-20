@@ -6,6 +6,7 @@ interface ServerSettings {
   report_mode: 'MANUAL' | 'AUTO';
   report_manual_time: number;
   ai_provider: 'openai' | 'gemini';
+  app_detection_model: 'openai' | 'gemini';
   flow: 'payment' | 'homepage-analysis';
 }
 
@@ -34,6 +35,7 @@ const DEFAULT_SERVER_SETTINGS: ServerSettings = {
   report_mode: 'AUTO',
   report_manual_time: 24,
   ai_provider: 'openai',
+  app_detection_model: 'gemini',
   flow: 'payment'
 };
 
@@ -173,6 +175,9 @@ class SettingsService {
     }
     if ('ai_provider' in settings) {
       serverSettings.ai_provider = settings.ai_provider;
+    }
+    if ('app_detection_model' in settings) {
+      serverSettings.app_detection_model = settings.app_detection_model;
     }
     if ('flow' in settings) {
       serverSettings.flow = settings.flow;

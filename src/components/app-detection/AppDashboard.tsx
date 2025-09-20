@@ -6,17 +6,19 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ChevronDown, ExternalLink, Search } from 'lucide-react';
-import { DetectedApp } from '@/lib/types';
+import { ChevronDown, ExternalLink, Search, Star, Users, AlertCircle } from 'lucide-react';
+import { DetectedAppWithDetails } from '@/lib/types';
 
 interface AppDashboardProps {
   storeUrl: string;
-  detectedApps: DetectedApp[];
+  detectedApps: DetectedAppWithDetails[];
   onNewSearch: () => void;
 }
 
 export function AppDashboard({ storeUrl, detectedApps, onNewSearch }: AppDashboardProps) {
   const totalApps = detectedApps.length;
+  const appsWithDetails = detectedApps.filter(app => app.app !== null).length;
+  const appsWithoutDetails = detectedApps.filter(app => app.app === null).length;
 
   console.log("detectedApps", detectedApps);
 
@@ -63,6 +65,28 @@ export function AppDashboard({ storeUrl, detectedApps, onNewSearch }: AppDashboa
                   </div>
                 </div>
               </div>
+              {/* <div className="bg-white shadow-sm rounded-lg border border-gray-200 p-6">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-green-600 mb-1">
+                    {appsWithDetails.toString().padStart(2, '0')}
+                  </div>
+                  <div className="text-sm text-gray-600 font-medium">
+                    With Full Details
+                  </div>
+                </div>
+              </div> */}
+              {/* {appsWithoutDetails > 0 && (
+                <div className="bg-white shadow-sm rounded-lg border border-gray-200 p-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-orange-600 mb-1">
+                      {appsWithoutDetails.toString().padStart(2, '0')}
+                    </div>
+                    <div className="text-sm text-gray-600 font-medium">
+                      Unknown Apps
+                    </div>
+                  </div>
+                </div>
+              )} */}
             </div>
           </div>
         </div>
@@ -86,67 +110,150 @@ export function AppDashboard({ storeUrl, detectedApps, onNewSearch }: AppDashboa
 
           {/* Apps Grid */}
           {detectedApps.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {detectedApps.map((app, index) => (
-                <motion.div
-                  key={`${app.name}-${index}`}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.1 * index }}
-                >
-                  <div className="bg-white hover:shadow-md transition-shadow duration-200 border border-gray-200 rounded-lg py-3 h-full">
-                    <div className="p-6">
-                      {/* App Icon */}
-                      <div className="flex items-center gap-2 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {detectedApps.map((detectedApp, index) => {
+                const app = detectedApp.app;
+                const appName = app ? app.appName : detectedApp.detectedAppName;
+                
+                return (
+                  <motion.div
+                    key={`${appName}-${index}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.1 * index }}
+                  >
+                    <div className={`bg-white hover:shadow-md transition-shadow duration-200 border rounded-lg h-full ${
+                      app ? 'border-gray-200' : 'border-orange-200 bg-orange-50'
+                    }`}>
+                      <div className="p-6">
+                        {/* App Icon and Name */}
+                        <div className="flex items-start gap-3 mb-4">
+                          <div className="flex-shrink-0">
+                            {app && app.imageUrl ? (
+                              <img 
+                                src={app.imageUrl} 
+                                alt={app.appName}
+                                className="w-12 h-12 rounded-lg object-cover"
+                                onError={(e) => {
+                                  // Fallback to initial if image fails to load
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = 'none';
+                                  const fallback = target.nextElementSibling as HTMLElement;
+                                  if (fallback) fallback.style.display = 'flex';
+                                }}
+                              />
+                            ) : null}
+                            <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                              app ? 'bg-gradient-to-br from-gray-800 to-black' : 'bg-orange-200'
+                            }`} style={{ display: app && app.imageUrl ? 'none' : 'flex' }}>
+                              <span className={`font-bold text-lg ${
+                                app ? 'text-white' : 'text-orange-800'
+                              }`}>
+                                {appName.charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                          </div>
 
-                        <div className="w-12 h-12 bg-gradient-to-br from-gray-800 to-black rounded-lg flex items-center justify-center ">
-                          <span className="text-white font-bold text-lg">
-                            {app.name.charAt(0).toUpperCase()}
-                          </span>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-gray-900 line-clamp-2 mb-1">
+                              {app ? app.appName : detectedApp.detectedAppName}
+                            </h3>
+                            
+                            {app && app.categories && app.categories.length > 0 && (
+                              <p className="text-sm text-gray-600 line-clamp-1">
+                                {app.categories[0].categoryName}
+                              </p>
+                            )}
+                            
+                            {/* {!app && (
+                              <div className="flex items-center gap-1 text-orange-600 text-sm">
+                                <AlertCircle className="h-4 w-4" />
+                                <span>Not in database</span>
+                              </div>
+                            )} */}
+                          </div>
                         </div>
 
-                        <div className="flex flex-col gap-2 mb-0">
-                          {/* App Name */}
-                          <h3 className="font-semibold text-gray-900 line-clamp-2">
-                            {app.name}
-                          </h3>
+                        {/* App Details */}
+                        {app && (
+                          <div className="space-y-3">
+                            {/* Rating and Reviews */}
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-1">
+                                <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                                <span className="text-sm font-medium text-gray-900">
+                                  {app.rating.toFixed(1)}
+                                </span>
+                                <span className="text-xs text-gray-500">
+                                  ({app.reviewCount.toLocaleString()})
+                                </span>
+                              </div>
+                              {app.reviewChange && (
+                                <span className={`text-xs px-2 py-1 rounded-full ${
+                                  app.reviewChange.startsWith('+') 
+                                    ? 'bg-green-100 text-green-800' 
+                                    : 'bg-red-100 text-red-800'
+                                }`}>
+                                  {app.reviewChange}
+                                </span>
+                              )}
+                            </div>
 
-                          {app.category && (
-                            <p className="text-sm text-gray-600 line-clamp-2">
-                              {app.category}
-                            </p>
-                          )}
+                            {/* Categories */}
+                            {app.categories && app.categories.length > 0 && (
+                              <div className="flex flex-wrap gap-1">
+                                {app.categories.slice(0, 2).map((category, catIndex) => (
+                                  <span 
+                                    key={catIndex}
+                                    className="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded-full"
+                                  >
+                                    {category.categoryName}
+                                  </span>
+                                ))}
+                                {app.categories.length > 2 && (
+                                  <span className="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded-full">
+                                    +{app.categories.length - 2} more
+                                  </span>
+                                )}
+                              </div>
+                            )}
+
+                            {/* App Store Link */}
+                            {app.shopifyUrl && (
+                              <a 
+                                href={app.shopifyUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm font-medium"
+                              >
+                                <ExternalLink className="h-4 w-4" />
+                                View on Shopify App Store
+                              </a>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Confidence Score */}
+                        <div className="mt-4 pt-3 border-t border-gray-100">
+                          <div className="flex items-center justify-between text-xs text-gray-500">
+                            <span>Detection Confidence</span>
+                            <span className="font-medium">{detectedApp.confidence}%</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                            <div 
+                              className={`h-1.5 rounded-full ${
+                                detectedApp.confidence >= 80 ? 'bg-green-500' :
+                                detectedApp.confidence >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+                              }`}
+                              style={{ width: `${detectedApp.confidence}%` }}
+                            ></div>
+                          </div>
                         </div>
                       </div>
-
-
-                      {
-                        app.appStoreLink && (
-                          <a href={app.appStoreLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-2">
-                            <ExternalLink className="h-4 w-4" />
-                            {
-                              app.appStoreLink.split('/').pop()
-                            }
-                          </a>
-                        )
-                      }
-
-                      {/* App Description */}
-
-
-                      {/* Built for Shopify Badge */}
-                      {/* <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 bg-blue-600 rounded-sm flex items-center justify-center">
-                          <span className="text-white text-xs font-bold">S</span>
-                        </div>
-                        <span className="text-xs text-gray-600 font-medium">
-                          Built for Shopify
-                        </span>
-                      </div> */}
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
             </div>
           ) : (
             <div className="text-center py-12">

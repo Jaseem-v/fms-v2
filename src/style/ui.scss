@@ -1200,6 +1200,17 @@
     }
 }
 
+.how-it-works {
+    &__icon {
+        border-radius: 10px;
+        background: #FFF;
+
+        /* card new */
+        box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.15), 0 7.821px 39.106px 0 rgba(0, 0, 0, 0.04), 0 1.955px 4.888px 0 rgba(0, 0, 0, 0.05);
+    }
+}
+
+
 
 
 .sub-item {
@@ -1269,7 +1280,8 @@
         gap: 10px;
         border-radius: 20px;
         border: 1px solid var(--color-red-5525, rgba(216, 87, 63, 0.25));
-        background: #FFF;
+        border-radius: 20px;
+        background: #F5F5F5;
     }
 
     &__problems {
@@ -1377,5 +1389,13 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+}
+
+.who-is-it-for {
+    &__item {
+        border-radius: 10px;
+        background: #EDFFCE;
+        padding: 20px;
     }
 }

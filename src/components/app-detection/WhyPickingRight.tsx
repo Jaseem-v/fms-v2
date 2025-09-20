@@ -10,9 +10,9 @@ import { Download } from 'lucide-react';
 
 export function WhyPickingRight() {
   const problems = [
-    "Install multiple apps that do the same job",
-    "Choose apps that don't fit their store's real needs",
-    "End up with a slower, bloated site that kills conversions"
+    "Discover which apps successful brands trust to power their growth.",
+    "Avoid wasting resources on apps that don’t fit your store’s needs.",
+    "Create a lean, conversion-boosting app stack without the guesswork."
   ];
 
   return (
@@ -25,8 +25,8 @@ export function WhyPickingRight() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="app-detection-section-title">
-            Why picking the right apps matters?
+          <h2 className="app-detection-section-title max-w-lg mx-auto ">
+          Why look for Apps used in other Shopify stores?
           </h2>
         </motion.div>
 
@@ -41,7 +41,8 @@ export function WhyPickingRight() {
           <div className="w-full flex justify-center">
 
             <p className="why-picking__title">
-              <span className="">The Shopify App Store has over 16,000 apps! </span> And that number keeps growing. With so many options, most store owners:
+              <span className="">The Shopify App Store has over 16,000 apps! </span> Choosing the right ones can make or break your store. 
+              Our tool helps you:
             </p>
           </div>
           {/* Problem Columns */}

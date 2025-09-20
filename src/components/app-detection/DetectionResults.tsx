@@ -21,7 +21,7 @@ export function DetectionResults({ result, onNewSearch }: DetectionResultsProps)
   console.log('DetectionResults - result:', result);
   console.log('DetectionResults - detectedApps:', detectedApps);
   if (detectedApps && detectedApps.length > 0) {
-    console.log('DetectionResults - first app evidence:', detectedApps[0]?.evidence);
+    console.log('DetectionResults - first app:', detectedApps[0]);
   }
 
   const getConfidenceColor = (confidence: number) => {
@@ -111,7 +111,7 @@ export function DetectionResults({ result, onNewSearch }: DetectionResultsProps)
           <div className="grid gap-4 md:grid-cols-2">
             {detectedApps.map((app, index) => (
               <motion.div
-                key={`${app.name}-${index}`}
+                key={`${app.detectedAppName}-${index}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.1 * index }}
@@ -120,15 +120,15 @@ export function DetectionResults({ result, onNewSearch }: DetectionResultsProps)
                   <div className="p-6">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{app.name}</h3>
-                        {app.category && (
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{app.detectedAppName}</h3>
+                        {app.app?.categories && app.app.categories.length > 0 && (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 mb-2">
-                            {app.category}
+                            {app.app.categories[0].categoryName}
                           </span>
                         )}
-                        {app.description && (
+                        {app.app?.appName && (
                           <p className="text-sm text-gray-600 dark:text-gray-400">
-                            {app.description}
+                            {app.app.appName}
                           </p>
                         )}
                       </div>
@@ -138,9 +138,9 @@ export function DetectionResults({ result, onNewSearch }: DetectionResultsProps)
                         >
                           {app.confidence}% {getConfidenceLabel(app.confidence)}
                         </span>
-                        {app.appStoreLink && (
+                        {app.app?.appUrl && (
                           <a
-                            href={app.appStoreLink}
+                            href={app.app.appUrl}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
@@ -152,49 +152,7 @@ export function DetectionResults({ result, onNewSearch }: DetectionResultsProps)
                     </div>
                   </div>
                   
-                  {(() => {
-                    // Safely handle evidence property - it might be undefined, null, string, or array
-                    const evidence = app.evidence;
-                    if (!evidence) return null;
-                    
-                    // Convert to array if it's a string
-                    let evidenceArray: string[] = [];
-                    if (Array.isArray(evidence)) {
-                      evidenceArray = evidence;
-                    } else if (typeof evidence === 'string') {
-                      evidenceArray = [evidence];
-                    } else {
-                      console.warn('Unexpected evidence type:', typeof evidence, evidence);
-                      return null;
-                    }
-                    
-                    if (evidenceArray.length === 0) return null;
-                    
-                    return (
-                      <div className="px-6 pb-6">
-                        <div className="space-y-2">
-                          <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Evidence Found:
-                          </p>
-                          <div className="space-y-1">
-                            {evidenceArray.slice(0, 3).map((evidenceItem, evidenceIndex) => (
-                              <div
-                                key={evidenceIndex}
-                                className="text-xs bg-gray-100 dark:bg-gray-800 p-2 rounded font-mono break-all"
-                              >
-                                {evidenceItem}
-                              </div>
-                            ))}
-                            {evidenceArray.length > 3 && (
-                              <p className="text-xs text-gray-500 dark:text-gray-400">
-                                +{evidenceArray.length - 3} more evidence items
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })()}
+                  {/* Evidence section removed as it's not available in DetectedAppWithDetails */}
                 </div>
               </motion.div>
             ))}
