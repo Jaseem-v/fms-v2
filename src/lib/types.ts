@@ -63,7 +63,56 @@ export interface ShopifyStoreInfo {
 }
 
 export interface ApiResponse<T> {
-  data?: T;
-  error?: string;
+  success: boolean;
+  result?: T;
   message?: string;
+  error?: string;
+}
+
+export interface ApiListResponse<T> {
+  success: boolean;
+  results?: T[];
+  message?: string;
+  error?: string;
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+export interface DetectionStartResponse {
+  sessionId: string;
+  step: string;
+  message: string;
+  storeInfo: ShopifyStoreInfo;
+  nextStep: string;
+}
+
+export interface DetectionExtractAnalyzeResponse {
+  sessionId: string;
+  step: string;
+  message: string;
+  detectedApps: DetectedAppWithDetails[];
+  appsFound: number;
+  nextStep: string;
+}
+
+export interface DetectionSearchResponse {
+  sessionId: string;
+  step: string;
+  message: string;
+  detectedApps: DetectedAppWithDetails[];
+  appsWithDetails: number;
+  nextStep: string;
+}
+
+export interface DetectionFinalizeResponse {
+  sessionId: string;
+  step: string;
+  message: string;
+  detectionResult: DetectionResult;
+  appsWithDetails: number;
+  isComplete: boolean;
 }

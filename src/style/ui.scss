@@ -1207,6 +1207,18 @@
 
         /* card new */
         box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.15), 0 7.821px 39.106px 0 rgba(0, 0, 0, 0.04), 0 1.955px 4.888px 0 rgba(0, 0, 0, 0.05);
+
+
+        @media (max-width: 768px) {
+            padding: 10px;
+            max-width: 256px;
+        }
+    }
+
+    &__item {
+        @media (max-width: 768px) {
+            max-width: 256px;
+        }
     }
 }
 
@@ -1217,7 +1229,7 @@
     &__title {
         color: #101314;
         font-family: "Instrument Sans";
-        font-size: 20px;
+        font-size: clamp(16px, 2.5vw, 20px);
         font-style: normal;
         font-weight: 600;
         line-height: 123%;
@@ -1229,7 +1241,7 @@
         color: #101314;
         // text-align: center;
         font-family: "Instrument Sans";
-        font-size: 20px;
+        font-size: clamp(16px, 2.5vw, 20px);
         font-style: normal;
         font-weight: 400;
         line-height: 123%;
@@ -1247,7 +1259,7 @@
     color: #101314;
     text-align: center;
     font-family: "Instrument Sans";
-    font-size: 40px;
+    font-size: clamp(28px, 5vw, 40px);
     font-style: normal;
     font-weight: 500;
     line-height: 107%;
@@ -1259,7 +1271,7 @@
     &__title {
         color: #101314;
         font-family: "Instrument Sans";
-        font-size: 24px;
+        font-size: clamp(18px, 3vw, 24px);
         font-style: normal;
         font-weight: 400;
         line-height: 140%;
@@ -1299,7 +1311,7 @@
     color: #101314;
     text-align: center;
     font-family: "Instrument Sans";
-    font-size: 20px;
+    font-size: clamp(16px, 2.5vw, 20px);
     font-style: normal;
     font-weight: 400;
     line-height: 140%;
@@ -1310,7 +1322,7 @@
     color: #101314;
     text-align: center;
     font-family: "Instrument Sans";
-    font-size: 17.272px;
+    font-size: clamp(14px, 2.2vw, 17.272px);
     font-style: normal;
     font-weight: 400;
     line-height: 123%;
@@ -1335,7 +1347,7 @@
         color: #101314;
         text-align: center;
         font-family: "Instrument Sans";
-        font-size: 72px;
+        font-size: clamp(46px, 8vw, 72px);
         font-style: normal;
         font-weight: 400;
         line-height: 106%;
@@ -1347,7 +1359,7 @@
         color: #3F3F3F;
         text-align: center;
         font-family: "Instrument Sans";
-        font-size: 20px;
+        font-size: clamp(16px, 2.5vw, 20px);
         font-style: normal;
         font-weight: 400;
         line-height: 123%;
@@ -1398,4 +1410,18 @@
         background: #EDFFCE;
         padding: 20px;
     }
+}
+
+.main-title {
+    color: #101314;
+    font-family: "Instrument Sans";
+    font-size: clamp(20px, 4vw, 30px);
+    font-style: normal;
+    font-weight: 500;
+    line-height: 107%;
+    /* 32.1px */
+}
+
+.result-header {
+    background: #C8F4D7;
 }

@@ -6,8 +6,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { UrlInput } from '@/components/app-detection/UrlInput';
-import { AppDashboard } from '@/components/app-detection/AppDashboard';
 import { LoadingSpinner } from '@/components/app-detection/LoadingSpinner';
 import { ProgressLoadingSpinner } from '@/components/app-detection/ProgressLoadingSpinner';
 import { HowItWorks } from '@/components/app-detection/HowItWorks';
@@ -15,17 +15,16 @@ import { WhyOptimize } from '@/components/app-detection/WhyOptimize';
 import { WhyPickingRight } from '@/components/app-detection/WhyPickingRight';
 import { WhoIsItFor } from '@/components/app-detection/WhoIsItFor';
 import { ApiService } from '@/lib/api';
-import { DetectionResult } from '@/lib/types';
 import FAQSection from '@/components/home/FAQSection';
 
-type AppState = 'idle' | 'loading' | 'results' | 'error';
+type AppState = 'idle' | 'loading' | 'error';
 
 export default function Home() {
+  const router = useRouter();
   const [state, setState] = useState<AppState>('idle');
-  const [result, setResult] = useState<DetectionResult | null>(null);
   const [error, setError] = useState<string>('');
   const [progress, setProgress] = useState<any>(null);
-  const [useStreaming, setUseStreaming] = useState<boolean>(true);
+  const [useStepByStep, setUseStepByStep] = useState<boolean>(true);
   // const [backendStatus, setBackendStatus] = useState<'checking' | 'online' | 'offline'>('checking');
 
   // // Check backend health on component mount
@@ -45,24 +44,13 @@ export default function Home() {
   const handleDetect = async (url: string) => {
     setState('loading');
     setError('');
-    setResult(null);
     setProgress(null);
 
     try {
       console.log('Starting app detection for:', url);
       
-      if (useStreaming) {
-        const detectionResult = await ApiService.detectAppsStream(url, (progressData) => {
-          console.log('Progress update:', progressData);
-          setProgress(progressData);
-        });
-        setResult(detectionResult);
-      } else {
-        const detectionResult = await ApiService.detectApps(url);
-        setResult(detectionResult);
-      }
-      
-      setState('results');
+      // Redirect to results page with URL parameter
+      router.push(`/shopify-app-detection/results?url=${encodeURIComponent(url)}`);
     } catch (err) {
       console.error('Detection error:', err);
       setError(err instanceof Error ? err.message : 'An unexpected error occurred');
@@ -72,34 +60,18 @@ export default function Home() {
 
   const handleNewSearch = () => {
     setState('idle');
-    setResult(null);
     setError('');
   };
 
   const renderContent = () => {
     switch (state) {
       case 'loading':
-        return useStreaming ? (
-          <ProgressLoadingSpinner
-            message="Finding your apps..."
-            subMessage="This will only take a moment"
-            progress={progress}
-          />
-        ) : (
+        return (
           <LoadingSpinner
-            message="Finding your apps..."
-            subMessage="This will only take a moment"
+            message="Redirecting to results..."
+            subMessage="Please wait"
           />
         );
-
-      case 'results':
-        return result ? (
-          <AppDashboard
-            storeUrl={result.storeUrl}
-            detectedApps={result.detectedApps}
-            onNewSearch={handleNewSearch}
-          />
-        ) : null;
 
       case 'error':
         return (
@@ -135,13 +107,10 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-app-green">
       {/* Streaming Toggle */}
- 
+
 
       {/* Main Content */}
-      {state === 'results' ? (
-        renderContent()
-      ) : (
-        <div className="min-h-screen">
+      <div className="min-h-screen">
 
           {/* Hero Section with URL Input */}
           <div className="gradient-bg relative">
@@ -151,43 +120,43 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="flex items-center justify-center absolute top-20 left-0">
+            <div className="items-center justify-center absolute top-20 left-0 hidden lg:flex">
               <div className='w-80 h-1 border-t border-dashed border-gray-900  '>
               </div>
               <img src="/app-icons/1.svg" alt="" />
             </div>
-            <div className="flex items-center justify-center absolute top-60 left-0">
+            <div className=" items-center justify-center absolute top-60 left-0 hidden lg:flex">
               <div className='w-70 h-1 border-t border-dashed border-gray-900  '>
               </div>
               <img src="/app-icons/2.svg" alt="" />
             </div>
-            <div className="flex items-center justify-center absolute top-100 left-0">
+            <div className=" items-center justify-center absolute top-100 left-0 hidden lg:flex">
               <div className='w-70 h-1 border-t border-dashed border-gray-900  '>
               </div>
               <img src="/app-icons/3.svg" alt="" />
             </div>
-            <div className="flex items-center justify-center absolute top-140 left-0">
+            <div className=" items-center justify-center absolute top-140 left-0 hidden lg:flex">
               <div className='w-90 h-1 border-t border-dashed border-gray-900  '>
               </div>
               <img src="/app-icons/4.svg" alt="" />
             </div>
 
-            <div className="flex items-center justify-center absolute top-20 right-0">
+            <div className=" items-center justify-center absolute top-20 right-0 hidden lg:flex">
               <img src="/app-icons/3.svg" alt="" />
               <div className='w-80 h-1 border-t border-dashed border-gray-900  '>
               </div>
             </div>
-            <div className="flex items-center justify-center absolute top-60 right-0">
+            <div className=" items-center justify-center absolute top-60 right-0 hidden lg:flex">
               <img src="/app-icons/4.svg" alt="" />
               <div className='w-70 h-1 border-t border-dashed border-gray-900  '>
               </div>
             </div>
-            <div className="flex items-center justify-center absolute top-100 right-0">
+            <div className=" items-center justify-center absolute top-100 right-0 hidden lg:flex">
               <img src="/app-icons/1.svg" alt="" />
               <div className='w-70 h-1 border-t border-dashed border-gray-900  '>
               </div>
             </div>
-            <div className="flex items-center justify-center absolute top-140 right-0">
+            <div className=" items-center justify-center absolute top-140 right-0 hidden lg:flex">
               <img src="/app-icons/2.svg" alt="" />
               <div className='w-90 h-1 border-t border-dashed border-gray-900  '>
               </div>
@@ -198,7 +167,7 @@ export default function Home() {
           <HowItWorks />
 
           {/* Why Optimize Apps Section */}
-          <WhyOptimize />
+          {/* <WhyOptimize /> */}
 
           {/* Why Picking Right Apps Matters Section */}
           <WhyPickingRight />
@@ -210,7 +179,6 @@ export default function Home() {
             <FAQSection type="app-detection" />
           </div>
         </div>
-      )}
     </div>
   );
 }

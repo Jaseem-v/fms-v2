@@ -30,8 +30,7 @@ interface ProgressLoadingSpinnerProps {
 
 const initialSteps: ProgressStep[] = [
   { id: 'validating', label: 'Analyzing Store', status: 'pending' },
-  { id: 'extracting', label: 'Scanning for Apps', status: 'pending' },
-  { id: 'analyzing', label: 'Detecting Apps', status: 'pending' },
+  { id: 'extracting', label: 'Scanning & Detecting Apps', status: 'pending' },
   { id: 'searching', label: 'Getting Details', status: 'pending' },
   { id: 'finalizing', label: 'Finalizing Results', status: 'pending' }
 ];
@@ -118,7 +117,7 @@ export function ProgressLoadingSpinner({
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
-      className="flex flex-col items-center justify-center space-y-8 py-12 fixed top-0 left-0 w-full h-full bg-white z-50"
+      className="flex flex-col items-center justify-center space-y-8 px-12 fixed top-0 left-0 w-full h-full bg-white z-50"
     >
       {/* Main Icon */}
       {/* <div className="relative">

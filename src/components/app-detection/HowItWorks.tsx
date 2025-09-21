@@ -42,15 +42,15 @@ export function HowItWorks() {
           </h2>
         </motion.div>
 
-        <div className="flex flex-col lg:flex-row justify-center gap-16">
+        <div className="flex flex-col lg:flex-row justify-center gap-16 items-center">
           {steps.map((step, index) => (
-            <div key={step.number} className="flex items-start gap-8 lg:gap-4">
+          
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.2 }}
                 viewport={{ once: true }}
-                className="flex flex-col max-w-sm"
+                className="flex flex-col max-w-sm how-it-works__item"
               >
                 {/* Step Number Circle */}
                <img src={`/app-detection-steps/${step.number}.svg`} alt=""  className='how-it-works__icon'/>
@@ -64,8 +64,7 @@ export function HowItWorks() {
                 </p>
               </motion.div>
 
-             
-            </div>
+         
           ))}
         </div>
       </div>

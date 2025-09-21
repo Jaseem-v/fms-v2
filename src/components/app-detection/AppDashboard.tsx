@@ -32,7 +32,7 @@ export function AppDashboard({ storeUrl, detectedApps, onNewSearch }: AppDashboa
 
 
           {/* Input Field and Stats Row */}
-          <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center">
+          <div className="flex gap-6 items-start lg:items-center">
             {/* Store URL Input */}
 
             <div>

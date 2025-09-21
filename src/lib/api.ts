@@ -3,7 +3,7 @@
  */
 
 import axios from 'axios';
-import { DetectionResult, ShopifyStoreInfo, ApiResponse } from './types';
+import { DetectionResult, ShopifyStoreInfo, ApiResponse, DetectionStartResponse, DetectionExtractAnalyzeResponse, DetectionSearchResponse, DetectionFinalizeResponse } from './types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
@@ -37,47 +37,125 @@ export class ApiService {
   }
 
   /**
-   * Detect apps in a Shopify store using streaming
+   * Detect apps in a Shopify store using step-by-step process
    * @param url - The Shopify store URL
    * @param onProgress - Callback for progress updates
    * @returns Promise<DetectionResult> - Detection results
    */
-  static async detectAppsStream(url: string, onProgress?: (progress: any) => void): Promise<DetectionResult> {
-    return new Promise((resolve, reject) => {
-      const eventSource = new EventSource(`${API_BASE_URL}/api/detect-apps-stream?url=${encodeURIComponent(url)}`);
+  static async detectAppsStepByStep(url: string, onProgress?: (progress: any) => void): Promise<DetectionResult> {
+    try {
+      // Step 1: Start detection and validate store
+      console.log('Step 1: Starting detection and validating store...');
+      if (onProgress) {
+        onProgress({ type: 'progress', step: 'validating', message: 'Analyzing your store...' });
+      }
       
-      eventSource.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          
-          if (onProgress) {
-            onProgress(data);
-          }
-          
-          if (data.type === 'complete') {
-            eventSource.close();
-            resolve(data.result);
-          } else if (data.type === 'error') {
-            eventSource.close();
-            reject(new Error(data.message));
-          }
-        } catch (error) {
-          console.error('Error parsing SSE data:', error);
+      const startResponse = await api.post<ApiResponse<DetectionStartResponse>>('/api/detection/start', { url });
+      if (!startResponse.data.success) {
+        throw new Error(startResponse.data.message || 'Failed to start detection');
+      }
+      
+      const { sessionId, storeInfo } = startResponse.data.result!;
+      console.log('Step 1 completed:', startResponse.data.result);
+
+      // Step 2: Extract and analyze content
+      console.log('Step 2: Extracting and analyzing content...');
+      if (onProgress) {
+        onProgress({ type: 'progress', step: 'extracting', message: 'Scanning for apps...' });
+      }
+      
+      const extractAnalyzeResponse = await api.post<ApiResponse<DetectionExtractAnalyzeResponse>>('/api/detection/extract-analyze', { 
+        sessionId, 
+        storeUrl: storeInfo.url,
+        theme: storeInfo.theme
+      });
+      if (!extractAnalyzeResponse.data.success) {
+        throw new Error(extractAnalyzeResponse.data.message || 'Failed to extract and analyze content');
+      }
+      
+      const { detectedApps, appsFound } = extractAnalyzeResponse.data.result!;
+      console.log('Step 2 completed:', extractAnalyzeResponse.data.result);
+      
+      if (onProgress) {
+        onProgress({ 
+          type: 'progress', 
+          step: 'extracting', 
+          message: `Found ${appsFound} app${appsFound !== 1 ? 's' : ''}`,
+          appsFound 
+        });
+      }
+
+      // Step 3: Search for app details
+      console.log('Step 3: Searching for app details...');
+      if (onProgress) {
+        onProgress({ type: 'progress', step: 'searching', message: 'Getting app details...' });
+      }
+      
+      const searchResponse = await api.post<ApiResponse<DetectionSearchResponse>>('/api/detection/search', {
+        sessionId,
+        detectedApps
+      });
+      if (!searchResponse.data.success) {
+        throw new Error(searchResponse.data.message || 'Failed to search app details');
+      }
+      
+      const { detectedApps: enrichedApps, appsWithDetails: appsWithDetailsCount } = searchResponse.data.result!;
+      console.log('Step 3 completed:', searchResponse.data.result);
+
+      // Step 4: Finalize detection
+      console.log('Step 4: Finalizing detection...');
+      if (onProgress) {
+        onProgress({ 
+          type: 'progress', 
+          step: 'finalizing', 
+          message: `Found ${appsWithDetailsCount} app${appsWithDetailsCount !== 1 ? 's' : ''}!`,
+          appsFound: appsWithDetailsCount 
+        });
+      }
+      
+      const finalizeResponse = await api.post<ApiResponse<DetectionFinalizeResponse>>('/api/detection/finalize', {
+        sessionId,
+        storeUrl: storeInfo.url,
+        detectedApps: enrichedApps,
+        theme: storeInfo.theme
+      });
+      if (!finalizeResponse.data.success) {
+        throw new Error(finalizeResponse.data.message || 'Failed to finalize detection');
+      }
+      
+      const { detectionResult } = finalizeResponse.data.result!;
+      console.log('Step 4 completed:', finalizeResponse.data.result);
+      
+      if (onProgress) {
+        onProgress({ type: 'complete', result: detectionResult });
+      }
+      
+      return detectionResult;
+      
+    } catch (error: any) {
+      console.error('Step-by-step detection error:', error);
+      
+      if (error.response) {
+        const status = error.response.status;
+        const message = error.response?.data?.message || 'Failed to detect apps';
+        
+        if (status === 503) {
+          throw new Error('AI service is unavailable. Please check the API key configuration.');
         }
-      };
+        
+        if (status >= 500) {
+          throw new Error(`Server error (${status}): ${message}`);
+        }
+        
+        if (status >= 400) {
+          throw new Error(`Client error (${status}): ${message}`);
+        }
+        
+        throw new Error(message);
+      }
       
-      eventSource.onerror = (error) => {
-        console.error('SSE error:', error);
-        eventSource.close();
-        reject(new Error('Connection lost during app detection'));
-      };
-      
-      // Set a timeout
-      setTimeout(() => {
-        eventSource.close();
-        reject(new Error('Request timed out'));
-      }, 120000); // 2 minutes
-    });
+      throw new Error(`Network error: ${error.message}`);
+    }
   }
 
   /**

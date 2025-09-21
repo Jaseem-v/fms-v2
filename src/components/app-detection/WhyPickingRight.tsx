@@ -77,9 +77,9 @@ export function WhyPickingRight() {
             Our tool helps you cut through the noise
           </p>
           <button
-            className="bg-black hover:bg-gray-800 text-white px-8 py-4 text-lg font-semibold rounded-lg transition-colors inline-flex items-center"
+            className="download-button"
           >
-            <Download className="h-5 w-5 mr-2" />
+            {/* <Download className="h-5 w-5 mr-2" /> */}
             Download Chrome Extension
           </button>
         </motion.div>
