@@ -5,7 +5,7 @@
 import axios from 'axios';
 import { DetectionResult, ShopifyStoreInfo, ApiResponse, DetectionStartResponse, DetectionExtractAnalyzeResponse, DetectionSearchResponse, DetectionFinalizeResponse } from './types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL_WITHOUT_API || 'http://localhost:4000';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
