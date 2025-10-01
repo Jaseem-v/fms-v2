@@ -7,6 +7,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Head from 'next/head';
 import { UrlInput } from '@/components/app-detection/UrlInput';
 import { LoadingSpinner } from '@/components/app-detection/LoadingSpinner';
 import { ProgressLoadingSpinner } from '@/components/app-detection/ProgressLoadingSpinner';
@@ -105,7 +106,19 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-app-green">
+    <>
+      <Head>
+        <meta property="og:title" content="Shopify App Detector - Find Apps Installed on Any Store" />
+        <meta property="og:description" content="Discover which Shopify apps are installed on any store. Get insights into competitor strategies and optimize your own app stack." />
+        <meta property="og:image" content="https://fixmystore.com/og-image/app-detect.jpeg" />
+        <meta property="og:url" content="https://fixmystore.com/shopify-app-detection" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Shopify App Detector - Find Apps Installed on Any Store" />
+        <meta name="twitter:description" content="Discover which Shopify apps are installed on any store. Get insights into competitor strategies and optimize your own app stack." />
+        <meta name="twitter:image" content="https://fixmystore.com/og-image/app-detect.jpeg" />
+      </Head>
+      <div className="min-h-screen bg-app-green">
       {/* Streaming Toggle */}
 
 
@@ -179,6 +192,7 @@ export default function Home() {
             <FAQSection type="app-detection" />
           </div>
         </div>
-    </div>
+      </div>
+    </>
   );
 }

@@ -184,7 +184,7 @@ class StepwiseAnalysisService {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to analyze with Gemini');
+        throw new Error(data.message || 'Failed to analyze');
       }
 
       console.log(`[STEPWISE ANALYSIS] Step 3: ✅ Gemini analysis completed`);
@@ -220,7 +220,7 @@ class StepwiseAnalysisService {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to analyze with checklist');
+        throw new Error(data.message || 'Failed to analyze');
       }
 
       console.log(`[STEPWISE ANALYSIS] Step 4: ✅ Checklist analysis completed with ${data.data.itemCount} items`);
