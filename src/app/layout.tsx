@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     images: [
       {
-        url: "https://fixmystore.com/og-image.png",
+        url: "https://fixmystore.com/og-image/homepage.jpeg",
         width: 1200,
         height: 630,
         alt: "Fix My Store - Shopify CRO Audits",

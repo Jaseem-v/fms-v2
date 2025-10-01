@@ -7,7 +7,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Head from 'next/head';
 import { UrlInput } from '@/components/app-detection/UrlInput';
 import { LoadingSpinner } from '@/components/app-detection/LoadingSpinner';
 import { ProgressLoadingSpinner } from '@/components/app-detection/ProgressLoadingSpinner';
@@ -106,93 +105,78 @@ export default function Home() {
   };
 
   return (
-    <>
-      <Head>
-        <meta property="og:title" content="Shopify App Detector - Find Apps Installed on Any Store" />
-        <meta property="og:description" content="Discover which Shopify apps are installed on any store. Get insights into competitor strategies and optimize your own app stack." />
-        <meta property="og:image" content="https://fixmystore.com/og-image/app-detect.jpeg" />
-        <meta property="og:url" content="https://fixmystore.com/shopify-app-detection" />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Shopify App Detector - Find Apps Installed on Any Store" />
-        <meta name="twitter:description" content="Discover which Shopify apps are installed on any store. Get insights into competitor strategies and optimize your own app stack." />
-        <meta name="twitter:image" content="https://fixmystore.com/og-image/app-detect.jpeg" />
-      </Head>
-      <div className="min-h-screen bg-app-green">
+    <div className="min-h-screen bg-app-green">
       {/* Streaming Toggle */}
-
 
       {/* Main Content */}
       <div className="min-h-screen">
-
-          {/* Hero Section with URL Input */}
-          <div className="gradient-bg relative">
-            <div className="container mx-auto px-4 py-20 ">
-              <div className="flex items-center justify-center ">
-                {renderContent()}
-              </div>
-            </div>
-
-            <div className="items-center justify-center absolute top-20 left-0 hidden lg:flex">
-              <div className='w-80 h-1 border-t border-dashed border-gray-900  '>
-              </div>
-              <img src="/app-icons/1.svg" alt="" />
-            </div>
-            <div className=" items-center justify-center absolute top-60 left-0 hidden lg:flex">
-              <div className='w-70 h-1 border-t border-dashed border-gray-900  '>
-              </div>
-              <img src="/app-icons/2.svg" alt="" />
-            </div>
-            <div className=" items-center justify-center absolute top-100 left-0 hidden lg:flex">
-              <div className='w-70 h-1 border-t border-dashed border-gray-900  '>
-              </div>
-              <img src="/app-icons/3.svg" alt="" />
-            </div>
-            <div className=" items-center justify-center absolute top-140 left-0 hidden lg:flex">
-              <div className='w-90 h-1 border-t border-dashed border-gray-900  '>
-              </div>
-              <img src="/app-icons/4.svg" alt="" />
-            </div>
-
-            <div className=" items-center justify-center absolute top-20 right-0 hidden lg:flex">
-              <img src="/app-icons/3.svg" alt="" />
-              <div className='w-80 h-1 border-t border-dashed border-gray-900  '>
-              </div>
-            </div>
-            <div className=" items-center justify-center absolute top-60 right-0 hidden lg:flex">
-              <img src="/app-icons/4.svg" alt="" />
-              <div className='w-70 h-1 border-t border-dashed border-gray-900  '>
-              </div>
-            </div>
-            <div className=" items-center justify-center absolute top-100 right-0 hidden lg:flex">
-              <img src="/app-icons/1.svg" alt="" />
-              <div className='w-70 h-1 border-t border-dashed border-gray-900  '>
-              </div>
-            </div>
-            <div className=" items-center justify-center absolute top-140 right-0 hidden lg:flex">
-              <img src="/app-icons/2.svg" alt="" />
-              <div className='w-90 h-1 border-t border-dashed border-gray-900  '>
-              </div>
+        {/* Hero Section with URL Input */}
+        <div className="gradient-bg relative">
+          <div className="container mx-auto px-4 py-20 ">
+            <div className="flex items-center justify-center ">
+              {renderContent()}
             </div>
           </div>
 
-          {/* How It Works Section */}
-          <HowItWorks />
+          <div className="items-center justify-center absolute top-20 left-0 hidden lg:flex">
+            <div className='w-80 h-1 border-t border-dashed border-gray-900  '>
+            </div>
+            <img src="/app-icons/1.svg" alt="" />
+          </div>
+          <div className=" items-center justify-center absolute top-60 left-0 hidden lg:flex">
+            <div className='w-70 h-1 border-t border-dashed border-gray-900  '>
+            </div>
+            <img src="/app-icons/2.svg" alt="" />
+          </div>
+          <div className=" items-center justify-center absolute top-100 left-0 hidden lg:flex">
+            <div className='w-70 h-1 border-t border-dashed border-gray-900  '>
+            </div>
+            <img src="/app-icons/3.svg" alt="" />
+          </div>
+          <div className=" items-center justify-center absolute top-140 left-0 hidden lg:flex">
+            <div className='w-90 h-1 border-t border-dashed border-gray-900  '>
+            </div>
+            <img src="/app-icons/4.svg" alt="" />
+          </div>
 
-          {/* Why Optimize Apps Section */}
-          {/* <WhyOptimize /> */}
-
-          {/* Why Picking Right Apps Matters Section */}
-          <WhyPickingRight />
-
-          {/* Who Is It For Section */}
-          <WhoIsItFor />
-
-          <div className="pb-20">
-            <FAQSection type="app-detection" />
+          <div className=" items-center justify-center absolute top-20 right-0 hidden lg:flex">
+            <img src="/app-icons/3.svg" alt="" />
+            <div className='w-80 h-1 border-t border-dashed border-gray-900  '>
+            </div>
+          </div>
+          <div className=" items-center justify-center absolute top-60 right-0 hidden lg:flex">
+            <img src="/app-icons/4.svg" alt="" />
+            <div className='w-70 h-1 border-t border-dashed border-gray-900  '>
+            </div>
+          </div>
+          <div className=" items-center justify-center absolute top-100 right-0 hidden lg:flex">
+            <img src="/app-icons/1.svg" alt="" />
+            <div className='w-70 h-1 border-t border-dashed border-gray-900  '>
+            </div>
+          </div>
+          <div className=" items-center justify-center absolute top-140 right-0 hidden lg:flex">
+            <img src="/app-icons/2.svg" alt="" />
+            <div className='w-90 h-1 border-t border-dashed border-gray-900  '>
+            </div>
           </div>
         </div>
+
+        {/* How It Works Section */}
+        <HowItWorks />
+
+        {/* Why Optimize Apps Section */}
+        {/* <WhyOptimize /> */}
+
+        {/* Why Picking Right Apps Matters Section */}
+        <WhyPickingRight />
+
+        {/* Who Is It For Section */}
+        <WhoIsItFor />
+
+        <div className="pb-20">
+          <FAQSection type="app-detection" />
+        </div>
       </div>
-    </>
+    </div>
   );
 }

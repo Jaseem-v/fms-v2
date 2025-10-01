@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Head from 'next/head';
 import UrlForm from '../components/home/UrlForm';
 import StatusDisplay from '../components/report/StatusDisplay';
 import ScreenshotDisplay from '../components/report/ScreenshotDisplay';
@@ -280,19 +279,7 @@ export default function Home() {
   }, [selectedScreenshot]);
 
   return (
-    <>
-      <Head>
-        <meta property="og:title" content="Shopify CRO Audit - Fix My Store" />
-        <meta property="og:description" content="Get a comprehensive CRO audit for your Shopify store. We analyze your homepage, product pages, collection pages, and cart to boost conversions." />
-        <meta property="og:image" content="https://fixmystore.com/og-image/homepage.jpeg" />
-        <meta property="og:url" content="https://fixmystore.com" />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Shopify CRO Audit - Fix My Store" />
-        <meta name="twitter:description" content="Get a comprehensive CRO audit for your Shopify store. We analyze your homepage, product pages, collection pages, and cart to boost conversions." />
-        <meta name="twitter:image" content="https://fixmystore.com/og-image/homepage.jpeg" />
-      </Head>
-      <div className="min-h-screen bg-green-50 relative overflow-hidden">
+    <div className="min-h-screen bg-green-50 relative overflow-hidden">
 
 
       {/* Schema Markup */}
@@ -563,7 +550,6 @@ export default function Home() {
 
       <FloatingButton />
 
-      </div>
-    </>
+    </div>
   );
 } 

@@ -1,6 +1,5 @@
 'use client';
 
-import Head from 'next/head';
 import AboutSections from '@/components/home/AboutSections';
 import BeforeAfter from '@/components/home/BeforeAfter';
 import Calandly from '@/components/home/Calandly';
@@ -41,19 +40,7 @@ function CollectionPageContent() {
 
 
     return (
-        <>
-            <Head>
-                <meta property="og:title" content="Shopify Collection Page CRO Audit - Fix My Store" />
-                <meta property="og:description" content="Get a comprehensive CRO audit for your Shopify collection pages. Optimize product listings, filters, and category navigation to boost conversions." />
-                <meta property="og:image" content="https://fixmystore.com/og-image/collection.jpeg" />
-                <meta property="og:url" content="https://fixmystore.com/audit/collection-page" />
-                <meta property="og:type" content="website" />
-                <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="Shopify Collection Page CRO Audit - Fix My Store" />
-                <meta name="twitter:description" content="Get a comprehensive CRO audit for your Shopify collection pages. Optimize product listings, filters, and category navigation to boost conversions." />
-                <meta name="twitter:image" content="https://fixmystore.com/og-image/collection.jpeg" />
-            </Head>
-            <div className="min-h-screen bg-green-50 relative overflow-hidden">
+        <div className="min-h-screen bg-green-50 relative overflow-hidden">
             <div className="announcment-bar">
                 <p>
                     Get an audit for FREE
@@ -104,8 +91,7 @@ function CollectionPageContent() {
 
             <FloatingButton />
 
-            </div>
-        </>
+        </div>
     );
 }
 
