@@ -18,18 +18,31 @@ export const metadata: Metadata = {
   description: "Most generic audits just list problems. We show exactly how to fix them, with real examples from working stores. Fix My Store gives Shopify brands actionable CRO reports that fix your conversion problems",
   keywords: "CRO, conversion rate optimization, ecommerce, online store, conversion analysis, Shopify CRO audit, fix my store",
   authors: [{ name: "CRO Analysis Team" }],
+  metadataBase: new URL('https://fixmystore.com'),
   icons: {
-    icon: "https://fixmystore.com/favicon.ico",
+    icon: "/favicon.ico",
   },
   openGraph: {
+    title: "Fix My Store | Shopify CRO Audits That [ACTUALLY] Drive Sales",
+    description: "Most generic audits just list problems. We show exactly how to fix them, with real examples from working stores. Fix My Store gives Shopify brands actionable CRO reports that fix your conversion problems",
     images: [
       {
-        url: "https://fixmystore.com/og-image/homepage.jpeg",
+        url: "/og-image/homepage.jpeg",
         width: 1200,
         height: 630,
         alt: "Fix My Store - Shopify CRO Audits",
       },
     ],
+    url: "/",
+    type: "website",
+    siteName: "Fix My Store",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Fix My Store | Shopify CRO Audits That [ACTUALLY] Drive Sales",
+    description: "Most generic audits just list problems. We show exactly how to fix them, with real examples from working stores. Fix My Store gives Shopify brands actionable CRO reports that fix your conversion problems",
+    images: ["/og-image/homepage.jpeg"],
+    site: "@fixmystore",
   },
 };
 
