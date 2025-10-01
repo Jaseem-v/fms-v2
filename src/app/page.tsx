@@ -284,13 +284,13 @@ export default function Home() {
       <Head>
         <meta property="og:title" content="Shopify CRO Audit - Fix My Store" />
         <meta property="og:description" content="Get a comprehensive CRO audit for your Shopify store. We analyze your homepage, product pages, collection pages, and cart to boost conversions." />
-        <meta property="og:image" content="/og-image/homepage.jpeg" />
+        <meta property="og:image" content="https://fixmystore.com/og-image/homepage.jpeg" />
         <meta property="og:url" content="https://fixmystore.com" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Shopify CRO Audit - Fix My Store" />
         <meta name="twitter:description" content="Get a comprehensive CRO audit for your Shopify store. We analyze your homepage, product pages, collection pages, and cart to boost conversions." />
-        <meta name="twitter:image" content="/og-image/homepage.jpeg" />
+        <meta name="twitter:image" content="https://fixmystore.com/og-image/homepage.jpeg" />
       </Head>
       <div className="min-h-screen bg-green-50 relative overflow-hidden">
 

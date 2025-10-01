@@ -126,13 +126,13 @@ function ResultsPageContent() {
       <Head>
         <meta property="og:title" content="Shopify App Detection Results" />
         <meta property="og:description" content="View detected Shopify apps and get insights into the store's app strategy." />
-        <meta property="og:image" content="/og-image/app-detect.jpeg" />
+        <meta property="og:image" content="https://fixmystore.com/og-image/app-detect.jpeg" />
         <meta property="og:url" content="https://fixmystore.com/shopify-app-detection/results" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Shopify App Detection Results" />
         <meta name="twitter:description" content="View detected Shopify apps and get insights into the store's app strategy." />
-        <meta name="twitter:image" content="/og-image/app-detect.jpeg" />
+        <meta name="twitter:image" content="https://fixmystore.com/og-image/app-detect.jpeg" />
       </Head>
       <div className="min-h-screen bg-app-green">
         <div className="container mx-auto px-4 py-8">
