@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import LoginForm from '@/components/admin/LoginForm';
+import LoginForm from '@/components/layout/LoginForm';
 
 interface ProtectedAuditRouteProps {
   children: React.ReactNode;

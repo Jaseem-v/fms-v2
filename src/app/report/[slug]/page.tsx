@@ -12,6 +12,7 @@ import FloatingButton from '@/components/ui/FloatingButton';
 import FormModal from '@/components/layout/FormModal';
 import { useAnalysis } from '@/hooks/useAnalysis';
 import { initialReport } from '@/utils/initialReport';
+import AnalyticsService from '@/services/analyticsService';
 
 const PAGE_TITLES: Record<string, string> = {
   homepage: 'Homepage',
@@ -299,6 +300,14 @@ export default function ReportPage() {
           setActiveTab(pageTypes[0]);
         }
         setIsInProgress(false);
+        
+        // Track report view for sample report
+        AnalyticsService.trackReportView(
+          slug,
+          'https://hiutdenim.co.uk',
+          AnalyticsService.extractWebsiteName('https://hiutdenim.co.uk'),
+          AnalyticsService.detectStoreCategory('https://hiutdenim.co.uk')
+        );
       } else {
         console.log('Loading real pageAudit data');
         // Load real data using pageAuditService
@@ -325,6 +334,14 @@ export default function ReportPage() {
           setUrl(pageAudit.url);
           setActiveTab(pageAudit.pageType);
           setIsInProgress(false);
+          
+          // Track report view for real report
+          AnalyticsService.trackReportView(
+            slug,
+            pageAudit.url,
+            AnalyticsService.extractWebsiteName(pageAudit.url),
+            AnalyticsService.detectStoreCategory(pageAudit.url)
+          );
         } else {
           setError(result.message || 'Page audit not found');
         }

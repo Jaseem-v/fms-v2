@@ -8,7 +8,7 @@ import Navbar from '../../components/layout/Navbar';
 import { config } from '@/config/config';
 import { useToast } from '@/contexts/ToastContext';
 import { useAuth } from '@/contexts/AuthContext';
-import LoginForm from '@/components/admin/LoginForm';
+import LoginForm from '@/components/layout/LoginForm';
 import { usePagewiseAnalysis } from '../../hooks/useHomepageAnalysis';
 import AnalysisReport from '../../components/report/AnalysisReport';
 import OverallSummary from '../../components/report/OverallSummary';

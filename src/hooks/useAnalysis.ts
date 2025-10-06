@@ -5,6 +5,7 @@ import settingsService from '../services/settingsService';
 import { stepwiseAnalysisService } from '../services/stepwiseAnalysisService';
 import { PagewiseAnalysisResult } from './useHomepageAnalysis';
 import { normalizeUrl } from '@/utils/settingsUtils';
+import AnalyticsService from '../services/analyticsService';
 
 
 
@@ -619,6 +620,16 @@ export function useAnalysis() {
             setLoading(false);
             setTimerActive(false);
             console.log('[SEQUENTIAL] All analyses completed!');
+            
+            // Track audit completion
+            if (url) {
+              AnalyticsService.trackAuditCompleted(
+                currentReportId || 'unknown',
+                url,
+                AnalyticsService.extractWebsiteName(url),
+                AnalyticsService.detectStoreCategory(url)
+              );
+            }
           } else if (status.complete && status.error) {
             // Handle error completion
             setAnalysisInProgress({

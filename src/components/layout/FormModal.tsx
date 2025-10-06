@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import formService, { FormData } from '@/services/formService';
 import { normalizeUrl } from '@/utils/settingsUtils';
+import AnalyticsService from '@/services/analyticsService';
 
 interface FormModalProps {
   isOpen: boolean;
@@ -56,6 +57,13 @@ export default function FormModal({ isOpen, onClose, websiteUrl, isSampleReport 
       const response = await formService.submitForm({ ...formData, websiteUrl: normalizeUrl(websiteUrl) });
 
       if (response.success) {
+        // Track popup filled
+        AnalyticsService.trackPopupFilled(
+          normalizeUrl(websiteUrl),
+          AnalyticsService.extractWebsiteName(normalizeUrl(websiteUrl)),
+          AnalyticsService.detectStoreCategory(normalizeUrl(websiteUrl))
+        );
+        
         setSuccess(true);
         setTimeout(() => {
           // Refresh the page after successful submission
@@ -83,7 +91,15 @@ export default function FormModal({ isOpen, onClose, websiteUrl, isSampleReport 
                 Get Now!
               </h2>
               <button
-                onClick={onClose}
+                onClick={() => {
+                  // Track popup closed
+                  AnalyticsService.trackPopupClosed(
+                    normalizeUrl(websiteUrl),
+                    AnalyticsService.extractWebsiteName(normalizeUrl(websiteUrl)),
+                    AnalyticsService.detectStoreCategory(normalizeUrl(websiteUrl))
+                  );
+                  onClose();
+                }}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

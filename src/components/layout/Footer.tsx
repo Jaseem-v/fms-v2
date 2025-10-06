@@ -8,9 +8,6 @@ export default function Footer() {
 
   // const allowedPaths = ['/', '/pricing', '/privacy', '/terms'];
 
-  if (pathname.startsWith("/admin")) {
-    return null;
-  }
 
   return (
     <footer className=" text-white footer">

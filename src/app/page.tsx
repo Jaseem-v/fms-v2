@@ -27,6 +27,7 @@ import FloatingButton from '@/components/ui/FloatingButton';
 import CountdownTimer from '@/components/ui/CountdownTimer';
 // import { CountdownTimer } from './payment/page';
 import { PagewiseAnalysisResult } from '@/hooks/useHomepageAnalysis';
+import AnalyticsService from '@/services/analyticsService';
 
 
 interface UserInfo {

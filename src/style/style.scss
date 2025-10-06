@@ -1172,8 +1172,8 @@
     }
 }
 
-// Only apply to the main landing page, not admin pages
-body:not([data-admin="true"]) main {
+// Main landing page styles
+body main {
     position: fixed;
     top: 0;
     left: 0;

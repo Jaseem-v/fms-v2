@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { config } from '@/config/config';
 import { normalizeUrl } from '@/utils/settingsUtils';
+import AnalyticsService from '@/services/analyticsService';
 
 interface HeroAreaProps {
     url: string;
@@ -169,6 +170,10 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
 
         // Normalize the URL before submitting
         const normalizedUrl = normalizeUrl(url);
+
+        // Track URL entry and FixMyStore click
+        AnalyticsService.trackUrlEntry(normalizedUrl, AnalyticsService.extractWebsiteName(normalizedUrl), AnalyticsService.detectStoreCategory(normalizedUrl));
+        AnalyticsService.trackFixMyStoreClick(normalizedUrl, AnalyticsService.extractWebsiteName(normalizedUrl), AnalyticsService.detectStoreCategory(normalizedUrl));
 
         // Update the URL state with the normalized version
         setUrl(normalizedUrl);

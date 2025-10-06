@@ -14,6 +14,7 @@ import ProtectedAuditRoute from '@/components/layout/ProtectedAuditRoute';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { config } from '@/config/config';
+import AnalyticsService from '@/services/analyticsService';
 
 function HomePageContent() {
     const router = useRouter();
@@ -26,6 +27,14 @@ function HomePageContent() {
 
         setLoading(true);
         try {
+            // Track page selection
+            AnalyticsService.trackPageSelected(
+                'homepage',
+                url,
+                AnalyticsService.extractWebsiteName(url),
+                AnalyticsService.detectStoreCategory(url)
+            );
+            
             // Redirect to analyzing page with URL and page type
             const analysisUrl = `/analyzing?url=${encodeURIComponent(url)}&pageType=homepage`;
             router.push(analysisUrl);

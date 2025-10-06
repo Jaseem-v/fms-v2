@@ -13,6 +13,7 @@ import FloatingButton from '@/components/ui/FloatingButton';
 import ProtectedAuditRoute from '@/components/layout/ProtectedAuditRoute';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import AnalyticsService from '@/services/analyticsService';
 
 function CartPageContent() {
     const router = useRouter();
@@ -25,6 +26,14 @@ function CartPageContent() {
 
         setLoading(true);
         try {
+            // Track page selection
+            AnalyticsService.trackPageSelected(
+                'cart',
+                url,
+                AnalyticsService.extractWebsiteName(url),
+                AnalyticsService.detectStoreCategory(url)
+            );
+            
             // Redirect to analyzing page with URL and page type
             const analysisUrl = `/analyzing?url=${encodeURIComponent(url)}&pageType=cart`;
             router.push(analysisUrl);
