@@ -354,6 +354,10 @@ export default function ReportPage() {
     }
   };
 
+  const totalProblems = report && Object.values(report).reduce((total, pageAnalysis: any) => {
+    return total + (pageAnalysis?.checklistAnalysis?.length || 0);
+  }, 0) || 0;
+
   // Poll for updates if report is in progress (only for non-sample reports using reportService)
   // useEffect(() => {
   //   if (!isInProgress || !reportData || isSampleReport) return;
@@ -556,6 +560,7 @@ export default function ReportPage() {
 
       {/* FormModal popup after 5 seconds */}
       <FormModal
+        totalProblems={totalProblems as number}
         isOpen={showFormModal}
         onClose={() => setShowFormModal(false)}
         websiteUrl={reportData?.websiteUrl || ''}

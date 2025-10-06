@@ -542,6 +542,7 @@ export default function Home() {
       />
 
       <FormModal
+        totalProblems={0}
         isOpen={showFormModal}
         onClose={() => setShowFormModal(false)}
         websiteUrl={url}
