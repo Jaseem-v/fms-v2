@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { stepwiseAnalysisService } from '../services/stepwiseAnalysisService';
+import AnalyticsService from '../services/analyticsService';
 
 interface AnalysisStep {
   name: string;
@@ -17,7 +18,6 @@ interface UseStepwiseAnalysisReturn {
   error: string | null;
 
   // Actions
-  startAnalysis: (url: string, pageType?: string) => Promise<void>;
   startSequentialAnalysis: (url: string, pageType?: string) => Promise<void>;
   reset: () => void;
 
@@ -73,36 +73,6 @@ export const useStepwiseAnalysis = (): UseStepwiseAnalysisReturn => {
     ));
   }, []);
 
-  /**
-   * Start complete analysis (all steps in one API call)
-   */
-  const startAnalysis = useCallback(async (url: string, pageType: string = 'homepage') => {
-    try {
-      setIsAnalyzing(true);
-      setCurrentStep('complete_analysis');
-      setError(null);
-      setResult(null);
-
-      console.log(`[STEPWISE ANALYSIS HOOK] Starting complete analysis for: ${url} (${pageType})`);
-
-      const result = await stepwiseAnalysisService.completeAnalysis(url, pageType);
-
-      // Update all steps as completed
-      setSteps(prev => prev.map(step => ({ ...step, completed: true })));
-      setResult(result.data);
-      setCurrentStep(null);
-
-      console.log(`[STEPWISE ANALYSIS HOOK] ✅ Complete analysis finished`);
-
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-      setError(errorMessage);
-      setCurrentStep(null);
-      console.error('[STEPWISE ANALYSIS HOOK] Error in complete analysis:', err);
-    } finally {
-      setIsAnalyzing(false);
-    }
-  }, []);
 
   /**
    * Start sequential analysis (step by step)
@@ -114,7 +84,7 @@ export const useStepwiseAnalysis = (): UseStepwiseAnalysisReturn => {
       setResult(null);
       reset(); // Reset steps
 
-      console.log(`[STEPWISE ANALYSIS HOOK] Starting sequential analysis for: ${url} (${pageType})`);
+      // Starting sequential analysis
 
       const result = await stepwiseAnalysisService.sequentialAnalysis(
         url, 
@@ -128,7 +98,10 @@ export const useStepwiseAnalysis = (): UseStepwiseAnalysisReturn => {
       setResult(result.data);
       setCurrentStep(null);
 
-      console.log(`[STEPWISE ANALYSIS HOOK] ✅ Sequential analysis finished`);
+      // Note: Audit completion is tracked by the stepwise analysis service, not here
+      // to avoid duplicate tracking
+
+      // Sequential analysis finished
 
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
@@ -149,7 +122,7 @@ export const useStepwiseAnalysis = (): UseStepwiseAnalysisReturn => {
       setCurrentStep('validate_shopify');
       setError(null);
 
-      console.log(`[STEPWISE ANALYSIS HOOK] Step 1: Validating Shopify store: ${url}`);
+      // Step 1: Validating Shopify store
 
       const result = await stepwiseAnalysisService.validateShopify(url);
       
@@ -160,7 +133,7 @@ export const useStepwiseAnalysis = (): UseStepwiseAnalysisReturn => {
         throw new Error(result.data.error || 'Invalid Shopify store');
       }
 
-      console.log(`[STEPWISE ANALYSIS HOOK] Step 1: ✅ Validation completed`);
+      // Step 1: Validation completed
 
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
@@ -182,14 +155,14 @@ export const useStepwiseAnalysis = (): UseStepwiseAnalysisReturn => {
       setCurrentStep('take_screenshot');
       setError(null);
 
-      console.log(`[STEPWISE ANALYSIS HOOK] Step 2: Taking screenshot: ${url} (${pageType})`);
+      // Step 2: Taking screenshot
 
       const result = await stepwiseAnalysisService.takeScreenshot(url, pageType);
       
       updateStep('take_screenshot', true, undefined, result.data);
       setCurrentStep(null);
 
-      console.log(`[STEPWISE ANALYSIS HOOK] Step 2: ✅ Screenshot taken: ${result.data.screenshotPath}`);
+      // Step 2: Screenshot taken
 
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
@@ -211,14 +184,14 @@ export const useStepwiseAnalysis = (): UseStepwiseAnalysisReturn => {
       setCurrentStep('analyze_gemini');
       setError(null);
 
-      console.log(`[STEPWISE ANALYSIS HOOK] Step 3: Analyzing with Gemini: ${screenshotPath}`);
+      // Step 3: Analyzing with Gemini
 
       const result = await stepwiseAnalysisService.analyzeWithGemini(screenshotPath);
       
       updateStep('analyze_gemini', true, undefined, result.data);
       setCurrentStep(null);
 
-      console.log(`[STEPWISE ANALYSIS HOOK] Step 3: ✅ Gemini analysis completed`);
+      // Step 3: Gemini analysis completed
 
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
@@ -240,14 +213,14 @@ export const useStepwiseAnalysis = (): UseStepwiseAnalysisReturn => {
       setCurrentStep('analyze_checklist');
       setError(null);
 
-      console.log(`[STEPWISE ANALYSIS HOOK] Step 4: Analyzing with checklist for page type: ${pageType}`);
+      // Step 4: Analyzing with checklist
 
       const result = await stepwiseAnalysisService.analyzeWithChecklist(imageAnalysis, pageType);
       
       updateStep('analyze_checklist', true, undefined, result.data);
       setCurrentStep(null);
 
-      console.log(`[STEPWISE ANALYSIS HOOK] Step 4: ✅ Checklist analysis completed with ${result.data.itemCount} items`);
+      // Step 4: Checklist analysis completed
 
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
@@ -269,7 +242,6 @@ export const useStepwiseAnalysis = (): UseStepwiseAnalysisReturn => {
     error,
 
     // Actions
-    startAnalysis,
     startSequentialAnalysis,
     reset,
 

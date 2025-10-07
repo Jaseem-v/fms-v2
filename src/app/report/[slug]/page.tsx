@@ -55,6 +55,12 @@ export default function ReportPage() {
   // FormModal state
   const [showFormModal, setShowFormModal] = useState(false);
 
+  // Tracking guard to prevent duplicate report view tracking
+  const [hasTrackedView, setHasTrackedView] = useState(false);
+
+  // Click tracking state
+  const [clickCount, setClickCount] = useState(0);
+
   // Sticky input field states
   const [newUrl, setNewUrl] = useState<string>('');
   const [urlError, setUrlError] = useState<string>('');
@@ -83,6 +89,21 @@ export default function ReportPage() {
         mainFloatingButton.style.display = 'block';
       }
     };
+  }, []);
+
+  // Click tracking handler
+  const handlePageClick = () => {
+    setClickCount(prev => prev + 1);
+  };
+
+  // Add click event listener to track clicks
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      document.addEventListener('click', handlePageClick);
+      return () => {
+        document.removeEventListener('click', handlePageClick);
+      };
+    }
   }, []);
 
   // Sticky input field scroll handler
@@ -211,8 +232,23 @@ export default function ReportPage() {
         throw new Error('No URL provided for report generation');
       }
 
-      const analysisService = (await import('../../../services/analysisService')).default;
-      const pdfBlob = await analysisService.downloadReport(report, reportData.websiteUrl, userInfo);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000/api'}/download-report`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          report,
+          url: reportData.websiteUrl,
+          userInfo,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF');
+      }
+
+      const pdfBlob = await response.blob();
 
       // Create a download link
       const downloadUrl = window.URL.createObjectURL(pdfBlob);
@@ -280,11 +316,10 @@ export default function ReportPage() {
       setLoading(true);
       setError(null);
 
-      console.log('Loading report for slug:', slug);
-      console.log('isSampleReport:', isSampleReport);
+      // Loading report for slug
 
       if (isSampleReport) {
-        console.log('Loading sample report data');
+        // Loading sample report data
         // Use initialReport for sample reports
         setReport(initialReport);
         setReportData({
@@ -300,16 +335,17 @@ export default function ReportPage() {
           setActiveTab(pageTypes[0]);
         }
         setIsInProgress(false);
-        
-        // Track report view for sample report
-        AnalyticsService.trackReportView(
+
+        AnalyticsService.trackSampleReportView(
           slug,
           'https://hiutdenim.co.uk',
           AnalyticsService.extractWebsiteName('https://hiutdenim.co.uk'),
-          AnalyticsService.detectStoreCategory('https://hiutdenim.co.uk')
+          clickCount
         );
+        setHasTrackedView(true);
+
       } else {
-        console.log('Loading real pageAudit data');
+        // Loading real pageAudit data
         // Load real data using pageAuditService
         const result = await pageAuditService.getPageAuditBySlug(slug);
 
@@ -334,14 +370,17 @@ export default function ReportPage() {
           setUrl(pageAudit.url);
           setActiveTab(pageAudit.pageType);
           setIsInProgress(false);
-          
-          // Track report view for real report
-          AnalyticsService.trackReportView(
-            slug,
-            pageAudit.url,
-            AnalyticsService.extractWebsiteName(pageAudit.url),
-            AnalyticsService.detectStoreCategory(pageAudit.url)
-          );
+
+          // Track report view for real report (only once)
+          if (!hasTrackedView) {
+            AnalyticsService.trackReportView(
+              slug,
+              pageAudit.url,
+              AnalyticsService.extractWebsiteName(pageAudit.url),
+              clickCount
+            );
+            setHasTrackedView(true);
+          }
         } else {
           setError(result.message || 'Page audit not found');
         }
@@ -384,7 +423,7 @@ export default function ReportPage() {
   //   return () => clearInterval(pollInterval);
   // }, [isInProgress, reportData, slug, isSampleReport]);
 
-  console.log("reportData", report, reportData);
+  // Report data loaded
 
 
   if (loading) {

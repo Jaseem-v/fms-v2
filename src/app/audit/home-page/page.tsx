@@ -32,7 +32,6 @@ function HomePageContent() {
                 'homepage',
                 url,
                 AnalyticsService.extractWebsiteName(url),
-                AnalyticsService.detectStoreCategory(url)
             );
             
             // Redirect to analyzing page with URL and page type

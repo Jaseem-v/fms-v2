@@ -172,8 +172,8 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
         const normalizedUrl = normalizeUrl(url);
 
         // Track URL entry and FixMyStore click
-        AnalyticsService.trackUrlEntry(normalizedUrl, AnalyticsService.extractWebsiteName(normalizedUrl), AnalyticsService.detectStoreCategory(normalizedUrl));
-        AnalyticsService.trackFixMyStoreClick(normalizedUrl, AnalyticsService.extractWebsiteName(normalizedUrl), AnalyticsService.detectStoreCategory(normalizedUrl));
+        AnalyticsService.trackUrlEntry(normalizedUrl, AnalyticsService.extractWebsiteName(normalizedUrl));
+        AnalyticsService.trackFixMyStoreClick(normalizedUrl, AnalyticsService.extractWebsiteName(normalizedUrl));
 
         // Update the URL state with the normalized version
         setUrl(normalizedUrl);

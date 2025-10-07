@@ -45,7 +45,7 @@ export class ApiService {
   static async detectAppsStepByStep(url: string, onProgress?: (progress: any) => void): Promise<DetectionResult> {
     try {
       // Step 1: Start detection and validate store
-      console.log('Step 1: Starting detection and validating store...');
+      // Step 1: Starting detection and validating store
       if (onProgress) {
         onProgress({ type: 'progress', step: 'validating', message: 'Analyzing your store...' });
       }
@@ -56,10 +56,10 @@ export class ApiService {
       }
       
       const { sessionId, storeInfo } = startResponse.data.result!;
-      console.log('Step 1 completed:', startResponse.data.result);
+      // Step 1 completed
 
       // Step 2: Extract and analyze content
-      console.log('Step 2: Extracting and analyzing content...');
+      // Step 2: Extracting and analyzing content
       if (onProgress) {
         onProgress({ type: 'progress', step: 'extracting', message: 'Scanning for apps...' });
       }
@@ -74,7 +74,7 @@ export class ApiService {
       }
       
       const { detectedApps, appsFound } = extractAnalyzeResponse.data.result!;
-      console.log('Step 2 completed:', extractAnalyzeResponse.data.result);
+      // Step 2 completed
       
       if (onProgress) {
         onProgress({ 
@@ -86,7 +86,7 @@ export class ApiService {
       }
 
       // Step 3: Search for app details
-      console.log('Step 3: Searching for app details...');
+      // Step 3: Searching for app details
       if (onProgress) {
         onProgress({ type: 'progress', step: 'searching', message: 'Getting app details...' });
       }
@@ -100,10 +100,10 @@ export class ApiService {
       }
       
       const { detectedApps: enrichedApps, appsWithDetails: appsWithDetailsCount } = searchResponse.data.result!;
-      console.log('Step 3 completed:', searchResponse.data.result);
+      // Step 3 completed
 
       // Step 4: Finalize detection
-      console.log('Step 4: Finalizing detection...');
+      // Step 4: Finalizing detection
       if (onProgress) {
         onProgress({ 
           type: 'progress', 
@@ -124,7 +124,7 @@ export class ApiService {
       }
       
       const { detectionResult } = finalizeResponse.data.result!;
-      console.log('Step 4 completed:', finalizeResponse.data.result);
+      // Step 4 completed
       
       if (onProgress) {
         onProgress({ type: 'complete', result: detectionResult });
@@ -165,9 +165,9 @@ export class ApiService {
    */
   static async detectApps(url: string): Promise<DetectionResult> {
     try {
-      console.log(`Making API request to detect apps for: ${url}`);
+      // Making API request to detect apps
       const response = await api.post<DetectionResult>('/api/detect-apps', { url });
-      console.log('API response received:', response.status);
+      // API response received
       return response.data;
     } catch (error: any) {
       console.error('API Error Details:', {

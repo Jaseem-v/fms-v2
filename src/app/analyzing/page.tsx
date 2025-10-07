@@ -14,6 +14,7 @@ import AnalysisReport from '../../components/report/AnalysisReport';
 import OverallSummary from '../../components/report/OverallSummary';
 import BlurredContent from '../../components/report/BlurredContent';
 import AnalysisLoadingScreen from '../../components/analysis/AnalysisLoadingScreen';
+import AnalyticsService from '../../services/analyticsService';
 
 const PAGE_TITLES: Record<string, string> = {
   homepage: 'Homepage',
@@ -96,6 +97,17 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
     }
   }, [analysisLoading]);
 
+  // Track page selection when component mounts
+  useEffect(() => {
+    if (websiteUrl && pageType) {
+      AnalyticsService.trackPageSelected(
+        pageType,
+        websiteUrl,
+        AnalyticsService.extractWebsiteName(websiteUrl)
+      );
+    }
+  }, [websiteUrl, pageType]);
+
   // Auto-analyze page if flow is homepage-analysis
   useEffect(() => {
     if (flow === 'homepage-analysis' && websiteUrl && !analysisResult && !analysisLoading && !hasAttemptedAnalysis) {
@@ -117,18 +129,17 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
   // Handle analysis completion
   useEffect(() => {
     if (flow === 'homepage-analysis' && analysisResult && !analysisLoading) {
-      console.log('[ANALYZING PAGE] Analysis completed, result:', analysisResult);
-      console.log('[ANALYZING PAGE] Analysis slug:', analysisResult.slug);
+      // Analysis completed
       
       // Analysis completed successfully, show 100% progress then navigate to report page
       setProgress(100);
       setTimeout(() => {
         // Navigate to report page using the slug from analysis result
         if (analysisResult.slug) {
-          console.log('[ANALYZING PAGE] Redirecting to report page:', `/report/${analysisResult.slug}`);
+          // Redirecting to report page
           router.push(`/report/${analysisResult.slug}`);
         } else {
-          console.log('[ANALYZING PAGE] No slug available, showing loading false');
+          // No slug available
           // Fallback: show loading false if no slug available
           setShowLoading(false);
         }

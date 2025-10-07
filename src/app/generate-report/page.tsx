@@ -166,7 +166,7 @@ function GenerateReportContent() {
       return;
     }
 
-    console.log('[GENERATE REPORT] Starting payment verification:', { orderId, websiteUrl });
+    // Starting payment verification
     verifyPaymentAndStartAnalysis();
   }, [orderId, websiteUrl]);
 
@@ -174,7 +174,7 @@ function GenerateReportContent() {
     try {
       setStatus('verifying');
       setMessage('Verifying your payment...');
-      console.log('[GENERATE REPORT] Verifying payment for order:', orderId);
+      // Verifying payment for order
 
       // Verify payment using order ID
       if (!orderId) {

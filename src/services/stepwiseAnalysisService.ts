@@ -6,6 +6,8 @@
  * and progress tracking in the frontend.
  */
 
+import AnalyticsService from './analyticsService';
+
 interface StepwiseAnalysisResponse {
   success: boolean;
   message: string;
@@ -100,7 +102,7 @@ class StepwiseAnalysisService {
    */
   async validateShopify(url: string): Promise<ValidateShopifyResponse> {
     try {
-      console.log(`[STEPWISE ANALYSIS] Step 1: Validating Shopify store: ${url}`);
+      // Step 1: Validating Shopify store
 
       const response = await fetch(`${this.baseUrl}/stepwise-analysis/validate-shopify`, {
         method: 'POST',
@@ -116,7 +118,7 @@ class StepwiseAnalysisService {
         throw new Error(data.message || 'Failed to validate Shopify store');
       }
 
-      console.log(`[STEPWISE ANALYSIS] Step 1: ✅ Validation completed`);
+      // Step 1: Validation completed
       return data;
 
     } catch (error) {
@@ -136,7 +138,7 @@ class StepwiseAnalysisService {
    */
   async takeScreenshot(url: string, pageType: string = 'homepage'): Promise<TakeScreenshotResponse> {
     try {
-      console.log(`[STEPWISE ANALYSIS] Step 2: Taking screenshot: ${url} (${pageType})`);
+      // Step 2: Taking screenshot
 
       const response = await fetch(`${this.baseUrl}/stepwise-analysis/take-screenshot`, {
         method: 'POST',
@@ -152,7 +154,7 @@ class StepwiseAnalysisService {
         throw new Error(data.message || 'Failed to take screenshot');
       }
 
-      console.log(`[STEPWISE ANALYSIS] Step 2: ✅ Screenshot taken: ${data.data.screenshotPath}`);
+      // Step 2: Screenshot taken
       return data;
 
     } catch (error) {
@@ -171,7 +173,7 @@ class StepwiseAnalysisService {
    */
   async analyzeWithGemini(screenshotPath: string): Promise<AnalyzeGeminiResponse> {
     try {
-      console.log(`[STEPWISE ANALYSIS] Step 3: Analyzing with Gemini: ${screenshotPath}`);
+      // Step 3: Analyzing with Gemini
 
       const response = await fetch(`${this.baseUrl}/stepwise-analysis/analyze-gemini`, {
         method: 'POST',
@@ -187,7 +189,7 @@ class StepwiseAnalysisService {
         throw new Error(data.message || 'Failed to analyze');
       }
 
-      console.log(`[STEPWISE ANALYSIS] Step 3: ✅ Gemini analysis completed`);
+      // Step 3: Gemini analysis completed
       return data;
 
     } catch (error) {
@@ -207,7 +209,7 @@ class StepwiseAnalysisService {
    */
   async analyzeWithChecklist(imageAnalysis: string, pageType: string = 'homepage'): Promise<AnalyzeChecklistResponse> {
     try {
-      console.log(`[STEPWISE ANALYSIS] Step 4: Analyzing with checklist for page type: ${pageType}`);
+      // Step 4: Analyzing with checklist
 
       const response = await fetch(`${this.baseUrl}/stepwise-analysis/analyze-checklist`, {
         method: 'POST',
@@ -223,7 +225,7 @@ class StepwiseAnalysisService {
         throw new Error(data.message || 'Failed to analyze');
       }
 
-      console.log(`[STEPWISE ANALYSIS] Step 4: ✅ Checklist analysis completed with ${data.data.itemCount} items`);
+      // Step 4: Checklist analysis completed
       return data;
 
     } catch (error) {
@@ -232,42 +234,6 @@ class StepwiseAnalysisService {
     }
   }
 
-  /**
-   * Complete Analysis (All Steps Combined)
-   * 
-   * Performs all 4 steps in sequence and returns the complete analysis result.
-   * This is equivalent to the original analyzePage endpoint but uses the stepwise approach.
-   * 
-   * @param url - The URL to analyze
-   * @param pageType - The type of page being analyzed
-   * @returns Promise<CompleteAnalysisResponse>
-   */
-  async completeAnalysis(url: string, pageType: string = 'homepage'): Promise<CompleteAnalysisResponse> {
-    try {
-      console.log(`[STEPWISE ANALYSIS] Complete analysis for: ${url} (${pageType})`);
-
-      const response = await fetch(`${this.baseUrl}/stepwise-analysis/complete-analysis`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url, pageType }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to complete analysis');
-      }
-
-      console.log(`[STEPWISE ANALYSIS] ✅ Complete analysis finished successfully`);
-      return data;
-
-    } catch (error) {
-      console.error('[STEPWISE ANALYSIS] Error in complete analysis:', error);
-      throw error;
-    }
-  }
 
   /**
    * Sequential Stepwise Analysis
@@ -286,7 +252,7 @@ class StepwiseAnalysisService {
     onProgress?: (step: string, completed: boolean, data?: any) => void
   ): Promise<CompleteAnalysisResponse> {
     try {
-      console.log(`[STEPWISE ANALYSIS] Starting sequential analysis for: ${url} (${pageType})`);
+      // Starting sequential analysis
 
       // Step 1: Validate Shopify
       onProgress?.('validate_shopify', false);
@@ -356,7 +322,20 @@ class StepwiseAnalysisService {
         }
       };
 
-      console.log(`[STEPWISE ANALYSIS] ✅ Sequential analysis completed successfully with slug: ${storeResult.data.slug}`);
+      // Track audit completion
+      try {
+        AnalyticsService.trackAuditCompleted(
+          storeResult.data.slug || 'unknown',
+          url,
+          AnalyticsService.extractWebsiteName(url),
+        );
+        // Audit completion tracked
+      } catch (trackingError) {
+        console.error('[STEPWISE ANALYSIS] Error tracking audit completion:', trackingError);
+        // Don't throw error to avoid breaking the analysis flow
+      }
+
+      // Sequential analysis completed successfully
       return completeResult;
 
     } catch (error) {
@@ -389,7 +368,7 @@ class StepwiseAnalysisService {
 
       // Process each chunk (1-4) sequentially
       for (let chunkNumber = 1; chunkNumber <= 4; chunkNumber++) {
-        console.log(`[STEPWISE ANALYSIS] Processing chunk ${chunkNumber}/4`);
+        // Processing chunk
         
         try {
           const chunkResult = await this.analyzeChecklistChunk(imageAnalysis, pageType, chunkNumber);
@@ -407,9 +386,9 @@ class StepwiseAnalysisService {
               isComplete: chunkNumber === 4
             });
             
-            console.log(`[STEPWISE ANALYSIS] ✅ Chunk ${chunkNumber} completed with ${chunkResult.data.itemCount} items`);
+            // Chunk completed
           } else {
-            console.warn(`[STEPWISE ANALYSIS] ⚠️ Chunk ${chunkNumber} failed:`, chunkResult.message);
+            // Chunk failed
           }
         } catch (chunkError) {
           console.error(`[STEPWISE ANALYSIS] Error in chunk ${chunkNumber}:`, chunkError);
@@ -417,7 +396,7 @@ class StepwiseAnalysisService {
         }
       }
 
-      console.log(`[STEPWISE ANALYSIS] ✅ Chunked analysis completed with ${totalItemCount} total items`);
+      // Chunked analysis completed
 
       return {
         success: true,
@@ -455,7 +434,7 @@ class StepwiseAnalysisService {
     checklistAnalysis: any[];
   }): Promise<{success: boolean, data: {slug: string}}> {
     try {
-      console.log(`[STEPWISE ANALYSIS] Storing analysis and generating slug for: ${analysisData.url}`);
+      // Storing analysis and generating slug
 
       const response = await fetch(`${this.baseUrl}/stepwise-analysis/store-analysis`, {
         method: 'POST',
@@ -471,7 +450,7 @@ class StepwiseAnalysisService {
       }
 
       const result = await response.json();
-      console.log(`[STEPWISE ANALYSIS] ✅ Analysis stored with slug: ${result.data.slug}`);
+      // Analysis stored with slug
       return result;
 
     } catch (error) {

@@ -20,12 +20,11 @@ export class AnalyticsService {
    * @returns Promise<any> - API response
    */
   static async trackEvent(eventData: {
-    eventType: 'url_entered' | 'fixmystore_clicked' | 'audit_completed' | 'page_selected' | 'popup_filled' | 'popup_closed' | 'report_viewed';
+    eventType: 'url_entered' | 'fixmystore_clicked' | 'audit_completed' | 'page_selected' | 'popup_filled' | 'popup_closed' | 'report_viewed' | 'sample_report_viewed';
     sessionId: string;
     userId?: string;
     websiteUrl?: string;
     websiteName?: string;
-    storeCategory?: string;
     pageType?: string;
     reportId?: string;
     metadata?: any;
@@ -66,16 +65,14 @@ export class AnalyticsService {
    * Track URL entry event
    * @param websiteUrl - The website URL entered
    * @param websiteName - The website name (optional)
-   * @param storeCategory - The store category (optional)
    */
-  static async trackUrlEntry(websiteUrl: string, websiteName?: string, storeCategory?: string): Promise<void> {
+  static async trackUrlEntry(websiteUrl: string, websiteName?: string): Promise<void> {
     try {
       await this.trackEvent({
         eventType: 'url_entered',
         sessionId: this.getSessionId(),
         websiteUrl,
-        websiteName,
-        storeCategory
+        websiteName
       });
     } catch (error) {
       console.error('Failed to track URL entry:', error);
@@ -86,16 +83,14 @@ export class AnalyticsService {
    * Track FixMyStore button click
    * @param websiteUrl - The website URL
    * @param websiteName - The website name (optional)
-   * @param storeCategory - The store category (optional)
    */
-  static async trackFixMyStoreClick(websiteUrl: string, websiteName?: string, storeCategory?: string): Promise<void> {
+  static async trackFixMyStoreClick(websiteUrl: string, websiteName?: string): Promise<void> {
     try {
       await this.trackEvent({
         eventType: 'fixmystore_clicked',
         sessionId: this.getSessionId(),
         websiteUrl,
-        websiteName,
-        storeCategory
+        websiteName
       });
     } catch (error) {
       console.error('Failed to track FixMyStore click:', error);
@@ -107,17 +102,15 @@ export class AnalyticsService {
    * @param reportId - The report ID
    * @param websiteUrl - The website URL
    * @param websiteName - The website name (optional)
-   * @param storeCategory - The store category (optional)
    */
-  static async trackAuditCompleted(reportId: string, websiteUrl: string, websiteName?: string, storeCategory?: string): Promise<void> {
+  static async trackAuditCompleted(reportId: string, websiteUrl: string, websiteName?: string): Promise<void> {
     try {
       await this.trackEvent({
         eventType: 'audit_completed',
         sessionId: this.getSessionId(),
         reportId,
         websiteUrl,
-        websiteName,
-        storeCategory
+        websiteName
       });
     } catch (error) {
       console.error('Failed to track audit completion:', error);
@@ -129,17 +122,15 @@ export class AnalyticsService {
    * @param pageType - The type of page selected
    * @param websiteUrl - The website URL
    * @param websiteName - The website name (optional)
-   * @param storeCategory - The store category (optional)
    */
-  static async trackPageSelected(pageType: string, websiteUrl: string, websiteName?: string, storeCategory?: string): Promise<void> {
+  static async trackPageSelected(pageType: string, websiteUrl: string, websiteName?: string): Promise<void> {
     try {
       await this.trackEvent({
         eventType: 'page_selected',
         sessionId: this.getSessionId(),
         pageType,
         websiteUrl,
-        websiteName,
-        storeCategory
+        websiteName
       });
     } catch (error) {
       console.error('Failed to track page selection:', error);
@@ -150,16 +141,14 @@ export class AnalyticsService {
    * Track popup form filled
    * @param websiteUrl - The website URL
    * @param websiteName - The website name (optional)
-   * @param storeCategory - The store category (optional)
    */
-  static async trackPopupFilled(websiteUrl: string, websiteName?: string, storeCategory?: string): Promise<void> {
+  static async trackPopupFilled(websiteUrl: string, websiteName?: string): Promise<void> {
     try {
       await this.trackEvent({
         eventType: 'popup_filled',
         sessionId: this.getSessionId(),
         websiteUrl,
-        websiteName,
-        storeCategory
+        websiteName
       });
     } catch (error) {
       console.error('Failed to track popup fill:', error);
@@ -170,16 +159,14 @@ export class AnalyticsService {
    * Track popup closed
    * @param websiteUrl - The website URL
    * @param websiteName - The website name (optional)
-   * @param storeCategory - The store category (optional)
    */
-  static async trackPopupClosed(websiteUrl: string, websiteName?: string, storeCategory?: string): Promise<void> {
+  static async trackPopupClosed(websiteUrl: string, websiteName?: string): Promise<void> {
     try {
       await this.trackEvent({
         eventType: 'popup_closed',
         sessionId: this.getSessionId(),
         websiteUrl,
-        websiteName,
-        storeCategory
+        websiteName
       });
     } catch (error) {
       console.error('Failed to track popup close:', error);
@@ -191,10 +178,9 @@ export class AnalyticsService {
    * @param reportId - The report ID
    * @param websiteUrl - The website URL
    * @param websiteName - The website name (optional)
-   * @param storeCategory - The store category (optional)
    * @param clickCount - Number of clicks on the report page (optional)
    */
-  static async trackReportView(reportId: string, websiteUrl: string, websiteName?: string, storeCategory?: string, clickCount?: number): Promise<void> {
+  static async trackReportView(reportId: string, websiteUrl: string, websiteName?: string, clickCount?: number): Promise<void> {
     try {
       await this.trackEvent({
         eventType: 'report_viewed',
@@ -202,7 +188,6 @@ export class AnalyticsService {
         reportId,
         websiteUrl,
         websiteName,
-        storeCategory,
         metadata: {
           clickCount,
           timestamp: new Date().toISOString()
@@ -210,6 +195,31 @@ export class AnalyticsService {
       });
     } catch (error) {
       console.error('Failed to track report view:', error);
+    }
+  }
+
+  /**
+   * Track sample report view
+   * @param reportId - The report ID
+   * @param websiteUrl - The website URL
+   * @param websiteName - The website name (optional)
+   * @param clickCount - Number of clicks on the report page (optional)
+   */
+  static async trackSampleReportView(reportId: string, websiteUrl: string, websiteName?: string, clickCount?: number): Promise<void> {
+    try {
+      await this.trackEvent({
+        eventType: 'sample_report_viewed',
+        sessionId: this.getSessionId(),
+        reportId,
+        websiteUrl,
+        websiteName,
+        metadata: {
+          clickCount,
+          timestamp: new Date().toISOString()
+        }
+      });
+    } catch (error) {
+      console.error('Failed to track sample report view:', error);
     }
   }
 
@@ -227,38 +237,6 @@ export class AnalyticsService {
     }
   }
 
-  /**
-   * Detect store category from URL or content (basic implementation)
-   * @param url - The website URL
-   * @returns string - Store category
-   */
-  static detectStoreCategory(url: string): string {
-    try {
-      const urlObj = new URL(url);
-      const hostname = urlObj.hostname.toLowerCase();
-      
-      // Basic category detection based on common patterns
-      if (hostname.includes('fashion') || hostname.includes('clothing') || hostname.includes('apparel')) {
-        return 'Fashion & Apparel';
-      } else if (hostname.includes('electronics') || hostname.includes('tech')) {
-        return 'Electronics';
-      } else if (hostname.includes('beauty') || hostname.includes('cosmetics')) {
-        return 'Beauty & Cosmetics';
-      } else if (hostname.includes('home') || hostname.includes('furniture')) {
-        return 'Home & Garden';
-      } else if (hostname.includes('sports') || hostname.includes('fitness')) {
-        return 'Sports & Fitness';
-      } else if (hostname.includes('food') || hostname.includes('grocery')) {
-        return 'Food & Beverage';
-      } else if (hostname.includes('jewelry') || hostname.includes('accessories')) {
-        return 'Jewelry & Accessories';
-      } else {
-        return 'Other';
-      }
-    } catch {
-      return 'Other';
-    }
-  }
 }
 
 export default AnalyticsService;

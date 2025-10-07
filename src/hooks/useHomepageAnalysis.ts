@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import pagewiseAnalysisService from '../services/homepageAnalysisService';
 import { stepwiseAnalysisService } from '../services/stepwiseAnalysisService';
 import { initialHomeReport } from '@/utils/rawData';
+import AnalyticsService from '@/services/analyticsService';
 
 export interface PagewiseAnalysisResult {
   screenshotPath: string;
@@ -54,14 +54,14 @@ export const usePagewiseAnalysis = () => {
         { name: 'store_analysis', completed: false },
       ]);
       
-      console.log(`[HOMEPAGE ANALYSIS] Starting stepwise analysis for: ${url} (${pageType})`);
+      // Starting stepwise analysis
       
       // Use the new stepwise analysis service
       const analysisResult = await stepwiseAnalysisService.sequentialAnalysis(
         url, 
         pageType,
         (step, completed, data) => {
-          console.log(`[HOMEPAGE ANALYSIS] Step ${step}: ${completed ? 'completed' : 'in progress'}`);
+          // Step progress update
           
           // Handle chunked progress updates for product pages
           if (step.startsWith('analyze_checklist_chunk_') && data) {
@@ -87,14 +87,16 @@ export const usePagewiseAnalysis = () => {
         }
       );
       
-      console.log(`[HOMEPAGE ANALYSIS] Analysis result data:`, analysisResult.data);
-      console.log(`[HOMEPAGE ANALYSIS] Analysis result slug:`, analysisResult.data.slug);
+      // Analysis result data received
       
       setResult(analysisResult.data);
       setCurrentStep(null);
       setChunkProgress(null);
       
-      console.log(`[HOMEPAGE ANALYSIS] ✅ Analysis completed successfully`);
+      // Note: Audit completion is tracked by the main analysis flow, not here
+      // to avoid duplicate tracking when used as part of stepwise analysis
+      
+      // Analysis completed successfully
       return analysisResult.data;
       
     } catch (err) {

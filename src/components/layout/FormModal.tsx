@@ -102,7 +102,6 @@ export default function FormModal({ isOpen, onClose, websiteUrl, isSampleReport 
         AnalyticsService.trackPopupFilled(
           normalizeUrl(websiteUrl),
           AnalyticsService.extractWebsiteName(normalizeUrl(websiteUrl)),
-          AnalyticsService.detectStoreCategory(normalizeUrl(websiteUrl))
         );
 
         setSuccess(true);
@@ -208,7 +207,6 @@ export default function FormModal({ isOpen, onClose, websiteUrl, isSampleReport 
                 AnalyticsService.trackPopupClosed(
                   normalizeUrl(websiteUrl),
                   AnalyticsService.extractWebsiteName(normalizeUrl(websiteUrl)),
-                  AnalyticsService.detectStoreCategory(normalizeUrl(websiteUrl))
                 );
                 onClose();
               }}

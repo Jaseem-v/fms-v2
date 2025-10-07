@@ -220,8 +220,7 @@ export default function Home() {
     return Math.min(progress, 95);
   };
 
-  // Debug log for report
-  console.log('Report data:', report);
+  // Report data loaded
 
   // Wrapper function to handle form submission with authentication check
   const handleFormSubmit = async (e: React.FormEvent) => {
