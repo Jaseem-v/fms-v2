@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { PagewiseAnalysisResult } from "@/hooks/useHomepageAnalysis";
+import { PagewiseAnalysisResult } from "@/hooks/usePagewiseAnalysis";
 import { useToast } from "@/contexts/ToastContext";
 import { config } from "@/config/config";
 

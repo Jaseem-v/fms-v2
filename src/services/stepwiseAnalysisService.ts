@@ -207,7 +207,7 @@ class StepwiseAnalysisService {
    * @param pageType - The type of page being analyzed
    * @returns Promise<AnalyzeChecklistResponse>
    */
-  async analyzeWithChecklist(imageAnalysis: string, pageType: string = 'homepage'): Promise<AnalyzeChecklistResponse> {
+  async analyzeWithChecklist(imageAnalysis: string, pageType: string = 'homepage', category?: string): Promise<AnalyzeChecklistResponse> {
     try {
       // Step 4: Analyzing with checklist
 
@@ -216,7 +216,7 @@ class StepwiseAnalysisService {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ imageAnalysis, pageType }),
+        body: JSON.stringify({ imageAnalysis, pageType, category }),
       });
 
       const data = await response.json();
@@ -234,6 +234,147 @@ class StepwiseAnalysisService {
     }
   }
 
+  /**
+   * Sequential Stepwise Analysis up to Gemini
+   * 
+   * Performs steps 1-3 (validate, screenshot, gemini) and stops.
+   * Used when we need to pause for industry selection.
+   * 
+   * @param url - The URL to analyze
+   * @param pageType - The type of page being analyzed
+   * @param onProgress - Optional callback for progress updates
+   * @returns Promise<CompleteAnalysisResponse>
+   */
+  async sequentialAnalysisUpToGemini(
+    url: string, 
+    pageType: string = 'homepage',
+    onProgress?: (step: string, completed: boolean, data?: any) => void
+  ): Promise<CompleteAnalysisResponse> {
+    try {
+      // Starting sequential analysis up to Gemini
+
+      // Step 1: Validate Shopify
+      onProgress?.('validate_shopify', false);
+      const validateResult = await this.validateShopify(url);
+      onProgress?.('validate_shopify', true, validateResult.data);
+
+      if (!validateResult.data.isShopify) {
+        throw new Error(validateResult.data.error || 'Invalid Shopify store');
+      }
+
+      // Step 2: Take Screenshot
+      onProgress?.('take_screenshot', false);
+      const screenshotResult = await this.takeScreenshot(url, pageType);
+      onProgress?.('take_screenshot', true, screenshotResult.data);
+
+      // Step 3: Analyze with Gemini
+      onProgress?.('analyze_gemini', false);
+      const geminiResult = await this.analyzeWithGemini(screenshotResult.data.screenshotPath);
+      onProgress?.('analyze_gemini', true, geminiResult.data);
+      
+      // console.log('[STEPWISE ANALYSIS] Gemini analysis completed, stopping here for industry selection');
+
+      // Return partial result (up to Gemini)
+      return {
+        success: true,
+        message: 'Analysis completed up to Gemini step',
+        data: {
+          screenshotPath: screenshotResult.data.screenshotPath,
+          imageAnalysis: geminiResult.data.imageAnalysis,
+          checklistAnalysis: [], // Empty for now
+          slug: '', // Will be generated later
+          steps: {
+            validate_shopify: { completed: true },
+            take_screenshot: { completed: true, screenshotPath: screenshotResult.data.screenshotPath },
+            analyze_gemini: { completed: true },
+            analyze_checklist: { completed: false, itemCount: 0 }
+          }
+        }
+      };
+
+    } catch (error) {
+      console.error('[STEPWISE ANALYSIS] Error in analysis up to Gemini:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Continue Analysis from Checklist Step
+   * 
+   * Continues analysis from the checklist step with the selected category.
+   * Used after industry selection to complete the remaining analysis steps.
+   * 
+   * @param imageAnalysis - The image analysis from Gemini
+   * @param pageType - The type of page being analyzed
+   * @param category - The selected industry category
+   * @param onProgress - Optional callback for progress updates
+   * @param url - The original URL being analyzed
+   * @param screenshotPath - The path to the screenshot
+   * @returns Promise<CompleteAnalysisResponse>
+   */
+  async continueAnalysisFromChecklist(
+    imageAnalysis: string,
+    pageType: string = 'homepage',
+    category: string,
+    onProgress?: (step: string, completed: boolean, data?: any) => void,
+    url?: string,
+    screenshotPath?: string
+  ): Promise<CompleteAnalysisResponse> {
+    try {
+      // Step 4: Analyze with Checklist
+      onProgress?.('analyze_checklist', false);
+      
+      let checklistAnalysis: any[] = [];
+      let totalItemCount = 0;
+
+      if (pageType === 'product') {
+        // Use chunked analysis for product pages
+        const chunkedResult = await this.analyzeWithChecklistChunked(imageAnalysis, pageType, onProgress, category);
+        checklistAnalysis = chunkedResult.data.checklistAnalysis;
+        totalItemCount = chunkedResult.data.itemCount;
+      } else {
+        // Use regular analysis for other page types
+        const checklistResult = await this.analyzeWithChecklist(imageAnalysis, pageType, category);
+        checklistAnalysis = checklistResult.data.checklistAnalysis;
+        totalItemCount = checklistResult.data.itemCount;
+      }
+      
+      onProgress?.('analyze_checklist', true, { checklistAnalysis, itemCount: totalItemCount });
+
+      // Step 5: Store Analysis and Generate Slug
+      onProgress?.('store_analysis', false);
+      const storeResult = await this.storeAnalysisAndGenerateSlug({
+        url: url || '', // Use provided URL or empty string
+        pageType,
+        screenshotPath: screenshotPath || '', // Use provided screenshot path or empty string
+        imageAnalysis,
+        checklistAnalysis
+      });
+      onProgress?.('store_analysis', true, { slug: storeResult.data.slug });
+
+      // Return complete analysis result
+      return {
+        success: true,
+        message: 'Analysis completed successfully',
+        data: {
+          screenshotPath: screenshotPath || '', // Use provided screenshot path or empty string
+          imageAnalysis,
+          checklistAnalysis,
+          slug: storeResult.data.slug,
+          steps: {
+            validate_shopify: { completed: true },
+            take_screenshot: { completed: true, screenshotPath: screenshotPath || '' },
+            analyze_gemini: { completed: true },
+            analyze_checklist: { completed: true, itemCount: totalItemCount }
+          }
+        }
+      };
+
+    } catch (error) {
+      console.error('[STEPWISE ANALYSIS] Error in continued analysis:', error);
+      throw error;
+    }
+  }
 
   /**
    * Sequential Stepwise Analysis
@@ -249,7 +390,8 @@ class StepwiseAnalysisService {
   async sequentialAnalysis(
     url: string, 
     pageType: string = 'homepage',
-    onProgress?: (step: string, completed: boolean, data?: any) => void
+    onProgress?: (step: string, completed: boolean, data?: any) => void,
+    category?: string
   ): Promise<CompleteAnalysisResponse> {
     try {
       // Starting sequential analysis
@@ -281,12 +423,12 @@ class StepwiseAnalysisService {
 
       if (pageType === 'product') {
         // Use chunked analysis for product pages
-        const chunkedResult = await this.analyzeWithChecklistChunked(geminiResult.data.imageAnalysis, pageType, onProgress);
+        const chunkedResult = await this.analyzeWithChecklistChunked(geminiResult.data.imageAnalysis, pageType, onProgress, category);
         checklistAnalysis = chunkedResult.data.checklistAnalysis;
         totalItemCount = chunkedResult.data.itemCount;
       } else {
         // Use regular analysis for other page types
-        const checklistResult = await this.analyzeWithChecklist(geminiResult.data.imageAnalysis, pageType);
+        const checklistResult = await this.analyzeWithChecklist(geminiResult.data.imageAnalysis, pageType, category);
         checklistAnalysis = checklistResult.data.checklistAnalysis;
         totalItemCount = checklistResult.data.itemCount;
       }
@@ -358,7 +500,8 @@ class StepwiseAnalysisService {
   async analyzeWithChecklistChunked(
     imageAnalysis: string, 
     pageType: string = 'product',
-    onProgress?: (step: string, completed: boolean, data?: any) => void
+    onProgress?: (step: string, completed: boolean, data?: any) => void,
+    category?: string
   ): Promise<ChecklistAnalysisResponse> {
     try {
       console.log(`[STEPWISE ANALYSIS] Starting chunked checklist analysis for ${pageType} page`);
@@ -371,7 +514,7 @@ class StepwiseAnalysisService {
         // Processing chunk
         
         try {
-          const chunkResult = await this.analyzeChecklistChunk(imageAnalysis, pageType, chunkNumber);
+          const chunkResult = await this.analyzeChecklistChunk(imageAnalysis, pageType, chunkNumber, category);
           
           if (chunkResult.success && chunkResult.data.checklistAnalysis) {
             allChunkResults.push(...chunkResult.data.checklistAnalysis);
@@ -470,7 +613,8 @@ class StepwiseAnalysisService {
   private async analyzeChecklistChunk(
     imageAnalysis: string, 
     pageType: string, 
-    chunkNumber: number
+    chunkNumber: number,
+    category?: string
   ): Promise<ChecklistAnalysisResponse> {
     try {
       const response = await fetch(`${this.baseUrl}/stepwise-analysis/analyze-checklist-chunked`, {
@@ -481,7 +625,8 @@ class StepwiseAnalysisService {
         body: JSON.stringify({
           imageAnalysis,
           pageType,
-          chunkNumber
+          chunkNumber,
+          category
         }),
       });
 

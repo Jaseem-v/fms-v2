@@ -1,4 +1,4 @@
-import { PagewiseAnalysisResult } from "@/hooks/useHomepageAnalysis";
+import { PagewiseAnalysisResult } from "@/hooks/usePagewiseAnalysis";
 
 export const initialHomeReport: PagewiseAnalysisResult = {
     "screenshotPath": "/Users/jaseem/Documents/FULL STACK WORKS/fixmystore/backend/screenshots/homepage-1755860776084.png",

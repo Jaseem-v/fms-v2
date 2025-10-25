@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import UrlForm from '../../components/home/UrlForm';
 import authService from '../../services/authService';
-import { usePagewiseAnalysis } from '../../hooks/useHomepageAnalysis';
+import { usePagewiseAnalysis } from '../../hooks/usePagewiseAnalysis';
 import { config } from '@/config/config';
 
 export default function AnalyzeHomepage() {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import reportService from '../../../services/reportService';
 import pageAuditService from '../../../services/pageAuditService';
 import AnalysisReport from '../../../components/report/AnalysisReport';
@@ -10,6 +10,7 @@ import ReportLoading from '../../../components/report/ReportLoading';
 import DownloadModal from '@/components/report/DownloadModal';
 import FloatingButton from '@/components/ui/FloatingButton';
 import FormModal from '@/components/layout/FormModal';
+import GreenFloatingButton from '@/components/ui/GreenFloatingButton';
 import { useAnalysis } from '@/hooks/useAnalysis';
 import { initialReport } from '@/utils/initialReport';
 import AnalyticsService from '@/services/analyticsService';
@@ -23,6 +24,7 @@ const PAGE_TITLES: Record<string, string> = {
 
 export default function ReportPage() {
   const params = useParams();
+  const router = useRouter();
   const slug = params.slug as string;
 
   // Check URL parameters for isSampleReport flag
@@ -54,6 +56,10 @@ export default function ReportPage() {
 
   // FormModal state
   const [showFormModal, setShowFormModal] = useState(false);
+
+  // Checklist tracking state
+  const [openedChecklists, setOpenedChecklists] = useState(0);
+  const [showGreenButton, setShowGreenButton] = useState(false);
 
   // Tracking guard to prevent duplicate report view tracking
   const [hasTrackedView, setHasTrackedView] = useState(false);
@@ -91,9 +97,56 @@ export default function ReportPage() {
     };
   }, []);
 
+  // Handle browser back navigation - redirect to index page
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      // Prevent default back behavior and redirect to index
+      event.preventDefault();
+      router.push('/');
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Handle Ctrl+Backspace or Alt+Left Arrow (common back shortcuts)
+      if ((event.ctrlKey && event.key === 'Backspace') || 
+          (event.altKey && event.key === 'ArrowLeft')) {
+        event.preventDefault();
+        router.push('/');
+      }
+    };
+
+    // Add event listeners
+    window.addEventListener('popstate', handlePopState);
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Push a new state to the history to intercept back navigation
+    window.history.pushState({ reportPage: true }, '', window.location.href);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [router]);
+
   // Click tracking handler
   const handlePageClick = () => {
     setClickCount(prev => prev + 1);
+  };
+
+  // Checklist tracking handler
+  const handleChecklistOpened = () => {
+    setOpenedChecklists(prev => {
+      const newCount = prev + 1;
+      if (newCount >= 3 && !showFormModal) {
+        setShowFormModal(true);
+      }
+      return newCount;
+    });
+  };
+
+  // Handle FormModal close - show green button when modal is closed
+  const handleFormModalClose = () => {
+    setShowFormModal(false);
+    setShowGreenButton(true);
   };
 
   // Add click event listener to track clicks
@@ -300,16 +353,7 @@ export default function ReportPage() {
     }
   }, [slug, isSampleReport]);
 
-  // Show FormModal after 12 seconds when report is loaded
-  useEffect(() => {
-    if (report && !loading && !error) {
-      const timer = setTimeout(() => {
-        setShowFormModal(true);
-      }, 12000); // 12 seconds delay
-
-      return () => clearTimeout(timer);
-    }
-  }, [report, loading, error]);
+  // Note: FormModal popup logic removed - now using green button after 3+ checklists opened
 
   const loadReport = async () => {
     try {
@@ -578,6 +622,7 @@ export default function ReportPage() {
                 setActiveTab={setActiveTab}
                 setShowModal={setShowModal}
                 isSampleReport={isSampleReport}
+                onChecklistOpened={handleChecklistOpened}
               />
             </>
           )}
@@ -597,15 +642,23 @@ export default function ReportPage() {
       {/* Report page specific FloatingButton that navigates to /payment */}
       <FloatingButton path={isSampleReport ? "/payment" : "/"} />
 
-      {/* FormModal popup after 5 seconds */}
+      {/* FormModal for additional free audit - shows automatically after 3+ checklists opened */}
       <FormModal
-        totalProblems={totalProblems as number}
         isOpen={showFormModal}
-        onClose={() => setShowFormModal(false)}
+        onClose={handleFormModalClose}
         websiteUrl={reportData?.websiteUrl || ''}
+        totalProblems={totalProblems as number}
         isSampleReport={isSampleReport}
         pageType={activeTab}
       />
+
+      {/* Green floating button for additional free audit - shows after FormModal is closed */}
+      {showGreenButton && (
+        <GreenFloatingButton
+          websiteUrl={reportData?.websiteUrl || ''}
+          totalProblems={totalProblems as number}
+        />
+      )}
     </div>
   );
 }

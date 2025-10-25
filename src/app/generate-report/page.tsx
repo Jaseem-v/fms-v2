@@ -9,6 +9,8 @@ import ReportLoading from '../../components/report/ReportLoading';
 import OverallSummary from '../../components/report/OverallSummary';
 import AnalysisReport from '../../components/report/AnalysisReport';
 import DownloadModal from '../../components/report/DownloadModal';
+import GreenFloatingButton from '../../components/ui/GreenFloatingButton';
+import FormModal from '../../components/layout/FormModal';
 
 function GenerateReportContent() {
   const searchParams = useSearchParams();
@@ -22,6 +24,11 @@ function GenerateReportContent() {
   const [activeTab, setActiveTab] = useState('homepage');
   const [queuePosition, setQueuePosition] = useState<number>(0);
   const [manualReportTime, setManualReportTime] = useState<number>(12);
+  
+  // Checklist tracking state
+  const [openedChecklists, setOpenedChecklists] = useState(0);
+  const [showGreenButton, setShowGreenButton] = useState(false);
+  const [showFormModal, setShowFormModal] = useState(false);
 
   // Helper function to get queue position from localStorage
   const getQueuePositionFromStorage = (orderId: string): number | null => {
@@ -77,6 +84,23 @@ function GenerateReportContent() {
     reportUrl,
     autoSaveEnabled,
   } = useAnalysis();
+
+  // Checklist tracking handler
+  const handleChecklistOpened = () => {
+    setOpenedChecklists(prev => {
+      const newCount = prev + 1;
+      if (newCount >= 3 && !showFormModal) {
+        setShowFormModal(true);
+      }
+      return newCount;
+    });
+  };
+
+  // Handle FormModal close - show green button when modal is closed
+  const handleFormModalClose = () => {
+    setShowFormModal(false);
+    setShowGreenButton(true);
+  };
 
   // Progress calculation function similar to main page
   const calculateProgress = () => {
@@ -438,6 +462,7 @@ function GenerateReportContent() {
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
                 setShowModal={setShowModal}
+                onChecklistOpened={handleChecklistOpened}
               />
             )}
           </div>
@@ -466,6 +491,24 @@ function GenerateReportContent() {
           downloadLoading={downloadLoading}
           reportUrl={reportUrl}
         />
+
+        {/* FormModal for additional free audit - shows automatically after 3+ checklists opened */}
+        <FormModal
+          isOpen={showFormModal}
+          onClose={handleFormModalClose}
+          websiteUrl={websiteUrl || ''}
+          totalProblems={0}
+          isSampleReport={false}
+          pageType={activeTab}
+        />
+
+        {/* Green floating button for additional free audit - shows after FormModal is closed */}
+        {showGreenButton && (
+          <GreenFloatingButton
+            websiteUrl={websiteUrl || ''}
+            totalProblems={0}
+          />
+        )}
       </div>
     </div>
   );

@@ -2,26 +2,15 @@
 
 import { useState, useEffect, Suspense, memo, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import ReportLoading from '../../components/report/ReportLoading';
-// Removed DotLottieReact import
-import Navbar from '../../components/layout/Navbar';
-import { config } from '@/config/config';
+import AnalysisLoadingScreen from '../../components/analysis/AnalysisLoadingScreen';
+import IndustrySelection from '../../components/analysis/IndustrySelection';
+import AnalyticsService from '../../services/analyticsService';
+import { Industry } from '../../services/industryService';
 import { useToast } from '@/contexts/ToastContext';
 import { useAuth } from '@/contexts/AuthContext';
 import LoginForm from '@/components/layout/LoginForm';
-import { usePagewiseAnalysis } from '../../hooks/useHomepageAnalysis';
-import AnalysisReport from '../../components/report/AnalysisReport';
-import OverallSummary from '../../components/report/OverallSummary';
-import BlurredContent from '../../components/report/BlurredContent';
-import AnalysisLoadingScreen from '../../components/analysis/AnalysisLoadingScreen';
-import AnalyticsService from '../../services/analyticsService';
-
-const PAGE_TITLES: Record<string, string> = {
-  homepage: 'Homepage',
-  collection: 'Collection Page',
-  product: 'Product Page',
-  cart: 'Cart Page',
-};
+import { usePagewiseAnalysis } from '../../hooks/usePagewiseAnalysis';
+import { config } from '@/config/config';
 
 const CRO_QUOTES = [
   "Optimizing your store for maximum conversions...",
@@ -45,13 +34,15 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
   const pageType = searchParams.get('pageType') || 'homepage';
 
   const [showLoading, setShowLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState(pageType);
   const [progress, setProgress] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [flow, setFlow] = useState<'payment' | 'homepage-analysis'>('payment');
   const [hasAttemptedAnalysis, setHasAttemptedAnalysis] = useState(false);
   const [flowLoading, setFlowLoading] = useState(true);
   const [currentQuote, setCurrentQuote] = useState(CRO_QUOTES[0]);
+  const [selectedIndustry, setSelectedIndustry] = useState<Industry | null>(null);
+  const [showIndustrySelection, setShowIndustrySelection] = useState(false);
+  const [geminiAnalysisComplete, setGeminiAnalysisComplete] = useState(false);
 
   const {
     loading: analysisLoading,
@@ -86,7 +77,7 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
   useEffect(() => {
     if (analysisLoading) {
       const quoteInterval = setInterval(() => {
-        setCurrentQuote(prevQuote => {
+        setCurrentQuote((prevQuote: string) => {
           const currentIndex = CRO_QUOTES.indexOf(prevQuote);
           const nextIndex = (currentIndex + 1) % CRO_QUOTES.length;
           return CRO_QUOTES[nextIndex];
@@ -121,14 +112,58 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
       // If user is authenticated and coming from audit routes, use protected route
       const requireAuth = isAuthenticated && pageType !== 'homepage';
       
-      // Pass the pageType and auth requirement to the analysis
+      // Pass the pageType and auth requirement to the analysis (no category to stop after Gemini)
       analyzePage(websiteUrl, pageType, requireAuth);
     }
   }, [flow, websiteUrl, analysisResult, analysisLoading, hasAttemptedAnalysis, analyzePage, pageType, isAuthenticated]);
 
+  // Handle Gemini analysis completion - show industry selection
+  useEffect(() => {
+    // Debug logging for industry selection
+    // console.log('Checking for industry selection:', {
+    //   flow,
+    //   currentStep,
+    //   steps: steps.map(s => ({ name: s.name, completed: s.completed })),
+    //   geminiCompleted: steps.find(s => s.name === 'analyze_gemini')?.completed,
+    //   checklistCompleted: steps.find(s => s.name === 'analyze_checklist')?.completed,
+    //   showIndustrySelection,
+    //   analysisResult: !!analysisResult,
+    //   analysisLoading
+    // });
+    
+    if (flow === 'homepage-analysis' && 
+        steps.find(s => s.name === 'analyze_gemini')?.completed && 
+        !steps.find(s => s.name === 'analyze_checklist')?.completed &&
+        !showIndustrySelection && 
+        !analysisLoading &&
+        analysisResult) {
+      // console.log('Gemini analysis completed, showing industry selection');
+      setGeminiAnalysisComplete(true);
+      setShowIndustrySelection(true);
+      setShowLoading(false);
+    }
+  }, [flow, currentStep, steps, showIndustrySelection, analysisResult, analysisLoading]);
+
+  // Handle industry selection and continue with checklist analysis
+  const handleIndustrySelect = useCallback(async (industry: Industry | null) => {
+    setSelectedIndustry(industry);
+    if (industry && websiteUrl) {
+      setShowIndustrySelection(false);
+      setShowLoading(true);
+      
+      // Continue with full analysis using the selected industry category
+      try {
+        await analyzePage(websiteUrl, pageType, false, industry.name);
+      } catch (error) {
+        console.error('Error continuing analysis with industry:', error);
+        setShowLoading(false);
+      }
+    }
+  }, [websiteUrl, pageType, analyzePage]);
+
   // Handle analysis completion
   useEffect(() => {
-    if (flow === 'homepage-analysis' && analysisResult && !analysisLoading) {
+    if (flow === 'homepage-analysis' && analysisResult && !analysisLoading && !showIndustrySelection) {
       // Analysis completed
       
       // Analysis completed successfully, show 100% progress then navigate to report page
@@ -145,7 +180,7 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
         }
       }, 1500);
     }
-  }, [flow, analysisResult, analysisLoading, router]);
+  }, [flow, analysisResult, analysisLoading, router, showIndustrySelection]);
 
   // Handle analysis error
   useEffect(() => {
@@ -249,9 +284,9 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
 
 
 
-  const isHomepage = activeTab === 'homepage'
+  const isHomepage = pageType === 'homepage'
   
-  if (showLoading || (flow === 'homepage-analysis' && analysisLoading)) {
+  if (showLoading || (flow === 'homepage-analysis' && analysisLoading) || showIndustrySelection) {
     return (
       <AnalysisLoadingScreen
         pageType={pageType}
@@ -261,9 +296,13 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
         analysisLoading={analysisLoading}
         currentQuote={currentQuote}
         progress={progress}
+        showIndustrySelection={showIndustrySelection}
+        selectedIndustry={selectedIndustry}
+        onIndustrySelect={handleIndustrySelect}
       />
     );
   }
+
 
   // Render homepage analysis content if flow is homepage-analysis and we have results
   const renderHomepageContent = () => {
@@ -275,7 +314,7 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
       return (
         <div className="text-center py-12">
           <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">Analyzing {PAGE_TITLES[pageType]}</h3>
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">Analyzing {pageType === 'homepage' ? 'Homepage' : pageType === 'collection' ? 'Collection Page' : pageType === 'product' ? 'Product Page' : 'Cart Page'}</h3>
           <p className="text-gray-600">Capturing screenshot and analyzing with AI...</p>
         </div>
       );
@@ -299,48 +338,21 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
     }
 
     if (analysisResult) {
-      // Use the PagewiseAnalysisResult data directly - no conversion needed
-      const reportData = {
-        [pageType]: analysisResult
-      };
+      // Redirect to the report page instead of showing the report here
+      useEffect(() => {
+        const reportUrl = `/report/${analysisResult.slug}?pageType=${pageType}&url=${encodeURIComponent(websiteUrl || '')}`;
+        router.push(reportUrl);
+      }, [analysisResult, pageType, websiteUrl, router]);
 
       return (
-        <div className="space-y-2 relative">
-          <OverallSummary
-            report={reportData}
-            analysisInProgress={{}}
-            setShowModal={() => { }}
-            noViewReport={true}
-            websiteUrl={websiteUrl}
-            reportUrl={analysisResult.slug}
-          />
-
-          <div className="rounded-lg overflow-hidden sticky top-0 z-10">
-            <div className="report__tabs">
-              {Object.entries(PAGE_TITLES).map(([key, title]) => (
-                <button
-                  key={key}
-                  className={`report__tab ${activeTab === key ? 'active' : ''}`}
-                  onClick={() => setActiveTab(key)}
-                >
-                  {(title as string).replace('Page', '')}
-                </button>
-              ))}
+        <div className="min-h-screen bg-green-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-8 h-8 border-2 border-green-600 border-t-transparent rounded-full animate-spin"></div>
             </div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Analysis Complete!</h2>
+            <p className="text-gray-600">Redirecting you to your detailed report...</p>
           </div>
-
-          {/* Show analysis report only for the analyzed page type */}
-          {activeTab === pageType && (
-            <AnalysisReport
-              report={reportData}
-              activeTab={pageType}
-              setActiveTab={() => { }}
-              setShowModal={() => { }}
-            />
-          )}
-
-          {/* Show blurred content for tabs that don't have analysis results */}
-          {activeTab !== pageType && renderBlurredContent()}
         </div>
       );
     }
@@ -348,17 +360,6 @@ const AnalyzingPageContent = memo(function AnalyzingPageContent() {
     return null;
   };
 
-  // Render blurred content for other tabs or when flow is payment
-  const renderBlurredContent = () => {
-    return (
-      <BlurredContent 
-        activeTab={activeTab}
-        pageType={pageType}
-        analysisResult={analysisResult}
-        onPaymentClick={handlePaymentClick}
-      />
-    );
-  };
 
   // Show loading state while checking authentication
   if (authLoading) {

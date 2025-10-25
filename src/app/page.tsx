@@ -3,30 +3,21 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import UrlForm from '../components/home/UrlForm';
-import StatusDisplay from '../components/report/StatusDisplay';
-import ScreenshotDisplay from '../components/report/ScreenshotDisplay';
-import AnalysisReport from '../components/report/AnalysisReport';
-import OverallSummary from '../components/report/OverallSummary';
-import DownloadModal from '../components/report/DownloadModal';
-import ScreenshotModal from '../components/report/ScreenshotModal';
 import FormModal from '../components/layout/FormModal';
 import { useAnalysis } from '../hooks/useAnalysis';
 import HeroArea from '@/components/home/HeroArea';
-import ReportLoading from '@/components/report/ReportLoading';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import authService from '../services/authService';
 import PricingSection from '../components/home/PricingSection';
 import WhatYouGetSection from '../components/home/WhatYouGetSection';
 import AboutSections from '../components/home/AboutSections';
 import FAQSection from '../components/home/FAQSection';
-import ConversionQuotes from '../components/report/ConversionQuotes';
 import Calandly from '@/components/home/Calandly';
 import BeforeAfter from '@/components/home/BeforeAfter';
 import { config } from '@/config/config';
 import FloatingButton from '@/components/ui/FloatingButton';
 import CountdownTimer from '@/components/ui/CountdownTimer';
 // import { CountdownTimer } from './payment/page';
-import { PagewiseAnalysisResult } from '@/hooks/useHomepageAnalysis';
 import AnalyticsService from '@/services/analyticsService';
 
 
@@ -39,10 +30,6 @@ interface UserInfo {
 interface StatusMessage {
   description: string;
   step: number;
-}
-
-interface Report {
-  [key: string]: PagewiseAnalysisResult;
 }
 
 const CRO_QUOTES = [
@@ -67,7 +54,6 @@ const STEP_MESSAGES: Record<string, string> = {
 
 export default function Home() {
   const router = useRouter();
-  const [selectedScreenshot, setSelectedScreenshot] = useState<{ pageType: string, url: string } | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(true);
   const [showFormModal, setShowFormModal] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
@@ -77,27 +63,18 @@ export default function Home() {
     url,
     setUrl,
     loading,
-    report,
     error,
-    activeTab,
-    setActiveTab,
     status,
-    showModal,
-    setShowModal,
     successMessage,
-    screenshotUrls,
-    screenshotsInProgress,
-    analysisComplete,
-    analysisInProgress,
     userInfo,
     elapsedTime,
     timerActive,
-    downloadLoading,
     currentReportId,
     reportUrl,
     autoSaveEnabled,
     currentStep,
     steps,
+    report,
     handleSubmit,
     handleUserInfoSubmit,
     handleUserInfoChange,
@@ -139,6 +116,7 @@ export default function Home() {
       return () => clearInterval(quoteInterval);
     }
   }, [loading]);
+
 
   // Calculate progress percentage based on status
   const calculateProgress = () => {
@@ -264,19 +242,6 @@ export default function Home() {
     router.push(paymentUrl);
   };
 
-  // Keyboard support for screenshot modal
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && selectedScreenshot) {
-        setSelectedScreenshot(null);
-      }
-    };
-
-    if (selectedScreenshot) {
-      document.addEventListener('keydown', handleKeyDown);
-      return () => document.removeEventListener('keydown', handleKeyDown);
-    }
-  }, [selectedScreenshot]);
 
   return (
     <div className="min-h-screen bg-green-50 relative overflow-hidden">
@@ -486,59 +451,7 @@ export default function Home() {
           </>
         )}
 
-        {report &&
-
-          <main className="space-y-8">
-
-            {error && (
-              <div className="max-w-4xl mx-auto bg-red-50 border border-red-200 rounded-lg p-4" role="alert">
-                <div className="flex items-center gap-2 text-red-800">
-                  <span className="text-red-500">⚠️</span>
-                  {error}
-                </div>
-              </div>
-            )}
-
-            {<ReportLoading
-              message={status ? statusMessages[status]?.description || status : 'Initializing analysis...'}
-              showProgress={true}
-              progress={analysisComplete ? 100 : calculateProgress()}
-              report={report}
-            />}
-
-            {report && Object.keys(report).length > 0 && (
-              <OverallSummary
-                report={report}
-                analysisInProgress={analysisInProgress}
-                setShowModal={setShowModal}
-              />
-            )}
-
-            {report && Object.keys(report).length > 0 && (
-              <AnalysisReport
-                report={report}
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-                setShowModal={setShowModal}
-              />
-            )}
-          </main>}
       </div>
-
-      <DownloadModal
-        showModal={showModal}
-        setShowModal={setShowModal}
-        userInfo={userInfo}
-        handleUserInfoChange={handleUserInfoChange}
-        handleUserInfoSubmit={handleUserInfoSubmit}
-        downloadLoading={downloadLoading}
-        reportUrl={reportUrl}
-      />
-
-      <ScreenshotModal
-        selectedScreenshot={selectedScreenshot}
-        setSelectedScreenshot={setSelectedScreenshot}
-      />
 
       <FormModal
         totalProblems={0}

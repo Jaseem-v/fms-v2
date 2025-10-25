@@ -1497,23 +1497,27 @@
         position: relative;
 
     }
+
     &__name {
         color: #000;
         font-family: "Instrument Sans";
         font-size: 14px;
         font-style: normal;
         font-weight: 600;
-        line-height: 123%; /* 17.22px */
+        line-height: 123%;
+        /* 17.22px */
 
-    
+
     }
+
     &__company {
         color: #5E5E5E;
         font-family: "Instrument Sans";
         font-size: 14px;
         font-style: normal;
         font-weight: 400;
-        line-height: 123%; /* 17.22px */
+        line-height: 123%;
+        /* 17.22px */
 
     }
 
@@ -1523,7 +1527,145 @@
         font-size: 14px;
         font-style: normal;
         font-weight: 400;
-        line-height: 123%; /* 17.22px */
+        line-height: 123%;
+        /* 17.22px */
 
+    }
+}
+
+.loading-bar {
+    &.active {
+        background: #41A563;
+    }
+}
+
+.category-capsule {
+    display: flex;
+    padding: 10px 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    border-radius: 53px;
+    background: #F2F3F5;
+
+
+    color: #000;
+    text-align: center;
+    font-family: "Instrument Sans";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+
+    @media (max-width: 480px) {
+        font-size: 15px;
+        padding: 10px 15px;
+    }
+
+    &.active,
+    &:hover {
+
+        background: #D5FFB9;
+    }
+}
+
+.loding-bar-indicator {
+    color: #000;
+    font-family: "Instrument Sans";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.loading-header {
+    color: #000;
+    text-align: center;
+    font-family: "Instrument Sans";
+    font-size: 36px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.loding-bar-sub-header {
+    color: #000;
+    text-align: center;
+    font-family: "Instrument Sans";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.loading-step-label {
+    color: #319352;
+    font-family: "Instrument Sans";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+/* Sticky Free Audit Button */
+.sticky-button {
+    z-index: 9999 !important;
+    /* background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%) !important; */
+    border: none !important;
+    /* width: 34px !important; */
+    /* min-height: 87px !important; */
+    transition: all .3s !important;
+    position: fixed !important;
+    top: 50% !important;
+    right: 0 !important;
+    transform: translateY(-50%) translateX(30%) rotate(-90deg) !important;
+    box-shadow: -4px 0 20px #14b8a64d !important;
+    white-space: nowrap;
+    padding: 10px 12px;
+    border-radius: 12px 12px 0 0;
+    /* color: #fff; */
+    background: #41A563;
+    cursor: pointer;
+    line-height: 1;
+
+    &:hover {
+        background: #41a56288;
+
+        box-shadow: -6px 0 25px rgba(20, 184, 166, 0.4) !important;
+        // transform: translateY(-50%) translateX(-5px) !important;
+    }
+
+    &:active {
+        // transform: translateY(-50%) translateX(-2px) !important;
+    }
+}
+
+.popup-features {
+    &__list {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    &__item {
+        display: flex;
+        padding: 8.57px 10.284px;
+        align-items: center;
+        gap: 8.57px;
+        border-radius: 42.85px;
+        border: 0.674px solid rgba(0, 0, 0, 0.50);
+        
+
+        color: var(--p-color-text);
+        font-feature-settings: 'liga' off, 'clig' off;
+        font-family: Inter;
+        font-size: 12.855px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 14.12px;
+        /* 109.841% */
     }
 }

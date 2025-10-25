@@ -9,145 +9,57 @@ export interface Industry {
   updatedAt: string;
 }
 
-export interface CreateIndustryRequest {
-  name: string;
-  description?: string;
-}
-
-export interface UpdateIndustryRequest {
-  name?: string;
-  description?: string;
-  isActive?: boolean;
-}
-
-export interface IndustryResponse {
-  success: boolean;
-  data: Industry | Industry[];
-  count?: number;
-  message?: string;
-  error?: string;
-}
-
 class IndustryService {
   private baseUrl: string;
 
   constructor() {
-    this.baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000/api';
+    this.baseUrl = config.backendUrl;
   }
 
+  async getAllIndustries(): Promise<Industry[]> {
+    try {
+      const url = `${this.baseUrl}/industries`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-  async getAllIndustries(includeInactive: boolean = false): Promise<Industry[]> {
-    const url = new URL(`${this.baseUrl}/industries`);
-    if (includeInactive) {
-      url.searchParams.append('includeInactive', 'true');
-    }
-
-    const response = await fetch(url.toString());
-    
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to fetch industries');
-    }
-
-    const data: IndustryResponse = await response.json();
-    return data.data as Industry[];
-  }
-
-  async getIndustryById(id: string): Promise<Industry> {
-    const response = await fetch(`${this.baseUrl}/industries/${id}`);
-    
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to fetch industry');
-    }
-
-    const data: IndustryResponse = await response.json();
-    return data.data as Industry;
-  }
-
-  async createIndustry(industryData: CreateIndustryRequest): Promise<Industry> {
-    const token = localStorage.getItem('authToken');
-    
-    const response = await fetch(`${this.baseUrl}/industries`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(industryData)
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to create industry');
-    }
-
-    const data: IndustryResponse = await response.json();
-    return data.data as Industry;
-  }
-
-  async updateIndustry(id: string, industryData: UpdateIndustryRequest): Promise<Industry> {
-    const token = localStorage.getItem('authToken');
-    
-    const response = await fetch(`${this.baseUrl}/industries/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(industryData)
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to update industry');
-    }
-
-    const data: IndustryResponse = await response.json();
-    return data.data as Industry;
-  }
-
-  async deleteIndustry(id: string): Promise<void> {
-    const token = localStorage.getItem('authToken');
-    
-    const response = await fetch(`${this.baseUrl}/industries/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to delete industry');
+      const result = await response.json();
+      return result.data || [];
+    } catch (error) {
+      console.error('[INDUSTRY SERVICE] Error fetching industries:', error);
+      throw error;
     }
   }
 
-  async searchIndustries(query: string): Promise<Industry[]> {
-    const url = new URL(`${this.baseUrl}/industries/search`);
-    url.searchParams.append('q', query);
+  async getIndustryById(id: string): Promise<Industry | null> {
+    try {
+      const response = await fetch(`${this.baseUrl}/industries/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-    const response = await fetch(url.toString());
-    
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to search industries');
+      if (!response.ok) {
+        if (response.status === 404) {
+          return null;
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return result.data || null;
+    } catch (error) {
+      console.error('[INDUSTRY SERVICE] Error fetching industry by ID:', error);
+      throw error;
     }
-
-    const data: IndustryResponse = await response.json();
-    return data.data as Industry[];
-  }
-
-  async getIndustryCount(): Promise<number> {
-    const response = await fetch(`${this.baseUrl}/industries/count`);
-    
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to get industry count');
-    }
-
-    const data: IndustryResponse = await response.json();
-    return data.count || 0;
   }
 }
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import formService, { FormData } from '@/services/formService';
 import { normalizeUrl } from '@/utils/settingsUtils';
 import AnalyticsService from '@/services/analyticsService';
@@ -22,7 +23,13 @@ interface Testimonial {
   rating: number;
 }
 
+type PageType = 'collection' | 'product' | 'cart';
+
 export default function FormModal({ isOpen, onClose, websiteUrl, isSampleReport = false, pageType = 'homepage', totalProblems }: FormModalProps) {
+  const router = useRouter();
+  const [currentStep, setCurrentStep] = useState(1);
+  const [selectedPageType, setSelectedPageType] = useState<PageType | null>(null);
+  const [pageUrl, setPageUrl] = useState('');
   const [formData, setFormData] = useState<FormData>({
     name: '',
     websiteUrl: normalizeUrl(websiteUrl),
@@ -46,21 +53,24 @@ export default function FormModal({ isOpen, onClose, websiteUrl, isSampleReport 
       rating: 5
     },
     {
-      id: 2,
-      name: "Elizabeth Clay",
-      company: "tilleyandme.com US",
-      text: "The audit highlighted 20+ key issues blocking sales. After applying the fixes, my sales jumped 10% in just 3 weeks. Best $99 I've ever spent!",
+      id: 5,
+      name: "Purifit",
+      company: "India",
+      text: `Two audits that were very useful for us were the CRO audit and the App audit.
+The CRO audit was especially helpful in getting our store conversion-ready for BFCM.
+We had been using a lot of apps, and our store had become slow. They analyzed everything and helped remove unnecessary apps, making the store much smoother now.`,
+      rating: 5
+    },
+    {
+      id: 6,
+      name: "Charlie Suede",
+      company: "United States",
+      text: `This tool & this team helped our store to be fully ready for BFCM.
+They audit across CRO, SEO & Apps was really helpful to find out issues and fix them.`,
       rating: 5
     },
     {
       id: 3,
-      name: "Labin Atheeq Rahman",
-      company: "Thrive Media",
-      text: "CRO audits used to take hours. With FixMyStore, I just drop a link and get a clear, actionable report, making presentations and pitches effortless.",
-      rating: 5
-    },
-    {
-      id: 4,
       name: "Steve",
       company: "Ecom Capital",
       text: "I recommend FixMyStore to all my clients. The clear audit and actionable steps made changes easy—and boosted my store's performance!",
@@ -81,12 +91,28 @@ export default function FormModal({ isOpen, onClose, websiteUrl, isSampleReport 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
-
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+  };
+
+  const handlePageTypeSelect = (pageType: PageType) => {
+    setSelectedPageType(pageType);
+    setError(null);
+  };
+
+  const handleNextStep = () => {
+    if (!selectedPageType) {
+      setError('Please select a page type');
+      return;
+    }
+    if (!pageUrl.trim()) {
+      setError('Please enter a URL');
+      return;
+    }
+    setError(null);
+    setCurrentStep(2);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -104,11 +130,9 @@ export default function FormModal({ isOpen, onClose, websiteUrl, isSampleReport 
           AnalyticsService.extractWebsiteName(normalizeUrl(websiteUrl)),
         );
 
-        setSuccess(true);
-        setTimeout(() => {
-          // Refresh the page after successful submission
-          window.location.reload();
-        }, 2000);
+        // Redirect to analyzing page with selected page type and URL
+        const analyzingUrl = `/analyzing?pageType=${selectedPageType}&url=${encodeURIComponent(normalizeUrl(pageUrl))}`;
+        router.push(analyzingUrl);
       } else {
         setError(response.message);
       }
@@ -119,83 +143,188 @@ export default function FormModal({ isOpen, onClose, websiteUrl, isSampleReport 
     }
   };
 
+  const handleBackStep = () => {
+    setCurrentStep(1);
+    setError(null);
+  };
+
   if (!isOpen || isSampleReport) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full overflow-hidden">
+    <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4" style={{zIndex:50000}}>
+      <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg shadow-xl max-w-4xl w-full overflow-hidden">
         {!success ? (
           <div className="flex h-[600px] lead-form__container relative">
             {/* Left Section - Lead Generation Form */}
             <div className="flex-1 p-4 md:p-8 flex flex-col justify-center">
-              <div className="text-center mb-8">
-                <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                  <span className="lead-form__subtitle">WAIT!</span><br />
-                  <span className="lead-form__title">YOUR STORE IS</span><br />
-                  <span className="lead-form__title">LOSING REVENUE!</span>
-                </h1>
-                <p className="lead-form__description mt-4">
-                  We already spotted {totalProblems} problems hurting your sales. Want to uncover even more?
-                </p>
-                <p className="lead-form__bottom-title mt-4">
-                  Get one more page audit for FREE
-                </p>
-              </div>
+              {currentStep === 1 ? (
+                <>
+                  <div className="text-center mb-8">
+                    <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                      <span className="lead-form__subtitle">NEED MORE IN DEPTH</span><br />
+                      <span className="lead-form__title">ACCURATE AUDIT?</span>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-gray-700 bg-white"
-                    placeholder="Name:"
-                  />
-                </div>
-
-                <div>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-gray-700 bg-white"
-                    placeholder="Email:"
-                  />
-                </div>
-
-                {error && (
-                  <div className="bg-red-50 border border-red-200 rounded-md p-3">
-                    <p className="text-red-600 text-sm">{error}</p>
+                    </h1>
+                    {/* <p className="lead-form__description mt-4">
+                      Choose one page for FREE Audit!
+                    </p> */}
                   </div>
-                )}
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full px-6 py-3 bg-gray-900 text-white font-bold rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  {loading ? 'Submitting...' : 'Get your Audit'}
-                </button>
+                  <div className="space-y-4">
+                    {/* Page Type Selection */}
+                    {/* <div className="space-y-3">
+                      {(['collection', 'product', 'cart'] as PageType[]).map((pageType) => (
+                        <div
+                          key={pageType}
+                          className={`border-2 rounded-lg transition-all bg-white shadow-sm ${selectedPageType === pageType
+                              ? 'border-gray-900 bg-gray-50 shadow-md'
+                              : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
+                            }`}
+                        >
+                          <div
+                            onClick={() => handlePageTypeSelect(pageType)}
+                            className="p-4 cursor-pointer"
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="font-medium text-gray-900">
+                                {getPageTypeText(pageType)}
+                              </span>
+                              {selectedPageType === pageType && (
+                                <div className="w-6 h-6 bg-gray-900 rounded-full flex items-center justify-center">
+                                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                  </svg>
+                                </div>
+                              )}
+                            </div>
+                          </div>
 
-                <p className="text-sm text-gray-600 text-center mt-2">
-                  100% privacy, no spam, just insights.
-                </p>
-              </form>
+                          {selectedPageType === pageType && (
+                            <div className="px-4 pb-4">
+                              <input
+                                type="url"
+                                value={pageUrl}
+                                onChange={(e) => setPageUrl(e.target.value)}
+                                placeholder={`Enter your ${getPageTypeText(pageType).toLowerCase()} URL`}
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-gray-700 bg-white"
+                                onClick={(e) => e.stopPropagation()}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div> */}
+
+                    {error && (
+                      <div className="bg-red-50 border border-red-200 rounded-md p-3">
+                        <p className="text-red-600 text-sm">{error}</p>
+                      </div>
+                    )}
+
+                    <button
+                      onClick={() => {
+                        window.open('https://apps.shopify.com/fix-my-store-1', '_blank');
+                      }}
+                      // disabled={!selectedPageType || !pageUrl.trim()}
+                      className="download-button w-full mb-10 "
+                    >
+                      Install Shopify App »
+                    </button>
+
+                    <div className="popup-features__list">
+                      <div className="popup-features__item">
+                        Conversion flow
+                      </div>
+                      <div className="popup-features__item">
+                        SEO performance
+                      </div>
+                      <div className="popup-features__item">
+                        App Audit
+                      </div>
+                      <div className="popup-features__item">
+                        Mobile experience
+                      </div>
+                      <div className="popup-features__item">
+                        Page speed
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="text-center mb-8">
+                    <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                      <span className="lead-form__subtitle">Enter your details</span><br />
+                      <span className="lead-form__title">to get FREE Audit</span><br />
+                      <span className="lead-form__title">instantly!</span>
+                    </h1>
+                  </div>
+
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-gray-700 bg-white"
+                        placeholder="Name:"
+                      />
+                    </div>
+
+                    <div>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-gray-700 bg-white"
+                        placeholder="Email:"
+                      />
+                    </div>
+
+                    {error && (
+                      <div className="bg-red-50 border border-red-200 rounded-md p-3">
+                        <p className="text-red-600 text-sm">{error}</p>
+                      </div>
+                    )}
+
+                    <div className="flex space-x-3">
+                      <button
+                        type="button"
+                        onClick={handleBackStep}
+                        className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-50 transition-colors"
+                      >
+                        Back
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className="flex-1 px-6 py-3 bg-gray-900 text-white font-bold rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      >
+                        {loading ? 'Submitting...' : 'Get your Audit »'}
+                      </button>
+                    </div>
+
+                    <p className="text-sm text-gray-600 text-center mt-2">
+                      100% privacy, no spam, just insights.
+                    </p>
+                  </form>
+                </>
+              )}
               <div className="flex justify-center mt-4 md:hidden">
-                <div className="hero__details-trust bg-white" style={{ background:"#fff" }}>
+                <div className="hero__details-trust bg-white" style={{ background: "#fff" }}>
                   <div className="hero__details-trust-icon">
-                    <img src="/user/1.png" alt="trust" className='w-12 h-12 rounded-full'/>
-                    <img src="/user/2.png" alt="trust" className='w-12 h-12 rounded-full'/>
-                    <img src="/user/3.png" alt="trust" className='w-12 h-12 rounded-full'/>
+                    <img src="/user/2.png" alt="trust" className='w-12 h-12 rounded-full' />
+                    <img src="/user/4.png" alt="trust" className='w-12 h-12 rounded-full' />
+                    <img src="/user/3.png" alt="trust" className='w-12 h-12 rounded-full' />
                   </div>
                   <div className="hero__details-trust-text">
-                  Trusted by Shopify Store Owners
+                    Trusted by Shopify Store Owners
                   </div>
                 </div>
               </div>
@@ -218,18 +347,16 @@ export default function FormModal({ isOpen, onClose, websiteUrl, isSampleReport 
             </button>
 
             {/* Right Section - Testimonials */}
-            <div className="flex-1  pr-10 relative testimonial__container hidden md:block">
-
-
+            <div className="flex-1 pr-10 relative testimonial__container hidden md:block">
               <div className="h-full overflow-y-auto pr-2">
                 <div className="space-y-4">
                   {testimonials.map((testimonial) => (
-                    <div key={testimonial.id} className="bg-white rounded-lg p-4 shadow-md">
+                    <div key={testimonial.id} className="bg-white rounded-lg p-4 shadow-lg border border-gray-100">
                       <div className="flex items-center mb-3">
                         <img src={`/user/${testimonial.id - 1}.png`} className="w-12 h-12 bg-gray-300 rounded-full mr-3 flex-shrink-0"></img>
                         <div>
-                          <h4 className="testimonial__name">{testimonial.name}</h4>
-                          <p className="testimonial__company">{testimonial.company}</p>
+                          <h4 className="font-semibold text-gray-900 text-sm">{testimonial.name}</h4>
+                          <p className="text-gray-600 text-xs">{testimonial.company}</p>
                           <div className="flex text-yellow-400 mt-1">
                             {[...Array(testimonial.rating)].map((_, i) => (
                               <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 20 20">
@@ -239,7 +366,7 @@ export default function FormModal({ isOpen, onClose, websiteUrl, isSampleReport 
                           </div>
                         </div>
                       </div>
-                      <p className="testimonial__description">
+                      <p className="text-gray-700 text-sm leading-relaxed">
                         "{testimonial.text}"
                       </p>
                     </div>

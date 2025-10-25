@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import reportService from '../services/reportService';
 import settingsService from '../services/settingsService';
 import { stepwiseAnalysisService } from '../services/stepwiseAnalysisService';
-import { PagewiseAnalysisResult } from './useHomepageAnalysis';
+import { PagewiseAnalysisResult } from './usePagewiseAnalysis';
 import { normalizeUrl } from '@/utils/settingsUtils';
 import AnalyticsService from '../services/analyticsService';
 

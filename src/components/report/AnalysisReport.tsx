@@ -1,6 +1,6 @@
 'use client';
 
-import { PagewiseAnalysisResult } from '@/hooks/useHomepageAnalysis';
+import { PagewiseAnalysisResult } from '@/hooks/usePagewiseAnalysis';
 import { useState } from 'react';
 import BlurredContent from './BlurredContent';
 import Link from 'next/link';
@@ -34,6 +34,7 @@ interface AnalysisReportProps {
   setActiveTab: (tab: string) => void;
   setShowModal: (show: boolean) => void;
   isSampleReport?: boolean;
+  onChecklistOpened?: () => void;
 }
 
 const backendUrl = process.env.NEXT_PUBLIC_IMAGE_PATH_URL || 'http://localhost:4000';
@@ -47,7 +48,7 @@ const PAGE_TITLES: Record<string, string> = {
 
 
 
-export default function AnalysisReport({ report, activeTab, setActiveTab, setShowModal, isSampleReport }: AnalysisReportProps) {
+export default function AnalysisReport({ report, activeTab, setActiveTab, setShowModal, isSampleReport, onChecklistOpened }: AnalysisReportProps) {
   const [selectedImage, setSelectedImage] = useState<ImageReference | null>(null);
   const [selectedAppReference, setSelectedAppReference] = useState<AppReference | null>(null);
   const [selectedScreenshot, setSelectedScreenshot] = useState<string | null>(null);
@@ -70,11 +71,16 @@ export default function AnalysisReport({ report, activeTab, setActiveTab, setSho
   const toggleItem = (page: string, itemIndex: number) => {
     const itemKey = `${page}-${itemIndex}`;
     const newExpandedItems = new Set(expandedItems);
+    const wasExpanded = newExpandedItems.has(itemKey);
 
-    if (newExpandedItems.has(itemKey)) {
+    if (wasExpanded) {
       newExpandedItems.delete(itemKey);
     } else {
       newExpandedItems.add(itemKey);
+      // Track when a checklist is opened (expanded)
+      if (onChecklistOpened) {
+        onChecklistOpened();
+      }
     }
 
     setExpandedItems(newExpandedItems);
