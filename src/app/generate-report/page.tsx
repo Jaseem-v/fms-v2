@@ -29,6 +29,7 @@ function GenerateReportContent() {
   const [openedChecklists, setOpenedChecklists] = useState(0);
   const [showGreenButton, setShowGreenButton] = useState(false);
   const [showFormModal, setShowFormModal] = useState(false);
+  const [hasDismissedModal, setHasDismissedModal] = useState(false);
 
   // Helper function to get queue position from localStorage
   const getQueuePositionFromStorage = (orderId: string): number | null => {
@@ -89,7 +90,7 @@ function GenerateReportContent() {
   const handleChecklistOpened = () => {
     setOpenedChecklists(prev => {
       const newCount = prev + 1;
-      if (newCount >= 3 && !showFormModal) {
+      if (newCount >= 3 && !showFormModal && !hasDismissedModal) {
         setShowFormModal(true);
       }
       return newCount;
@@ -99,6 +100,7 @@ function GenerateReportContent() {
   // Handle FormModal close - show green button when modal is closed
   const handleFormModalClose = () => {
     setShowFormModal(false);
+    setHasDismissedModal(true);
     setShowGreenButton(true);
   };
 

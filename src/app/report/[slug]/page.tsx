@@ -56,6 +56,7 @@ export default function ReportPage() {
 
   // FormModal state
   const [showFormModal, setShowFormModal] = useState(false);
+  const [hasDismissedModal, setHasDismissedModal] = useState(false);
 
   // Checklist tracking state
   const [openedChecklists, setOpenedChecklists] = useState(0);
@@ -136,7 +137,7 @@ export default function ReportPage() {
   const handleChecklistOpened = () => {
     setOpenedChecklists(prev => {
       const newCount = prev + 1;
-      if (newCount >= 3 && !showFormModal) {
+      if (newCount >= 3 && !showFormModal && !hasDismissedModal) {
         setShowFormModal(true);
       }
       return newCount;
@@ -146,6 +147,7 @@ export default function ReportPage() {
   // Handle FormModal close - show green button when modal is closed
   const handleFormModalClose = () => {
     setShowFormModal(false);
+    setHasDismissedModal(true);
     setShowGreenButton(true);
   };
 
