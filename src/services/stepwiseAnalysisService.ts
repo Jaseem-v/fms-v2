@@ -578,12 +578,22 @@ class StepwiseAnalysisService {
   }): Promise<{success: boolean, data: {slug: string}}> {
     try {
       // Storing analysis and generating slug
+      
+      // Include auth token if available
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+      };
+      
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('authToken');
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+      }
 
       const response = await fetch(`${this.baseUrl}/stepwise-analysis/store-analysis`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify(analysisData),
       });
 
