@@ -1407,8 +1407,9 @@
 .who-is-it-for {
     &__item {
         border-radius: 10px;
-        background: #EDFFCE;
+        // background: #EDFFCE;
         padding: 20px;
+        padding-top: 0;
     }
 }
 

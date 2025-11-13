@@ -19,6 +19,11 @@ import FloatingButton from '@/components/ui/FloatingButton';
 import CountdownTimer from '@/components/ui/CountdownTimer';
 // import { CountdownTimer } from './payment/page';
 import AnalyticsService from '@/services/analyticsService';
+import { HowItWorks } from '@/components/app-detection/HowItWorks';
+import ServicesSection from '@/components/home/ServicesSection';
+import WhyFixSection from '@/components/home/WhyFixSection';
+import Testimonial from '@/components/home/Testimonial';
+import { WhoIsItFor } from '@/components/app-detection/WhoIsItFor';
 
 
 interface UserInfo {
@@ -210,7 +215,7 @@ export default function Home() {
       if (response.ok) {
         const settingsData = await response.json();
         const serverFlow = settingsData.data?.flow || 'payment';
-        
+
         if (serverFlow === 'homepage-analysis') {
           // Redirect to analyzing page for homepage analysis
           const analysisUrl = `/analyzing?url=${encodeURIComponent(url)}`;
@@ -244,7 +249,7 @@ export default function Home() {
 
 
   return (
-    <div className="min-h-screen bg-green-50 relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden">
 
 
       {/* Schema Markup */}
@@ -300,19 +305,19 @@ export default function Home() {
         }}
       />
 
-      <div className="announcment-bar">
+      {/* <div className="announcment-bar">
         <p>
           Limited time - ${config.pricing.mainPrice} Only - Offer ends in
           <CountdownTimer />
         </p>
-      </div>
+      </div> */}
 
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=&quot;25&quot; height=&quot;25&quot; viewBox=&quot;0 0 25 25&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cpath d=&quot;M1 1h1v1H1V1zm0 23h1v1H1v-1zm23 0h1v1h-1v-1zm0-23h1v1h-1V1z&quot; stroke=&quot;%23e5e7eb&quot; stroke-width=&quot;0.5&quot;/%3E%3C/svg%3E')] opacity-30"></div>
 
 
 
-      <div className="relative z-10  px-4 py-12 min-h-screen flex flex-col justify-center  main-contaier">
+      <div className="relative z-10  min-h-screen  main-contaier main-contaier-homepage">
 
 
         {
@@ -324,115 +329,18 @@ export default function Home() {
           />
         }
 
-        {loading && (
-          <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 relative overflow-hidden">
-            {/* Animated background pattern */}
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23f0f9ff&quot; fill-opacity=&quot;0.4&quot;%3E%3Ccircle cx=&quot;30&quot; cy=&quot;30&quot; r=&quot;2&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-60"></div>
-            
-            {/* Floating elements */}
-            <div className="absolute top-20 left-10 w-20 h-20 bg-green-200 rounded-full opacity-20 animate-pulse"></div>
-            <div className="absolute top-40 right-20 w-16 h-16 bg-blue-200 rounded-full opacity-30 animate-bounce"></div>
-            <div className="absolute bottom-40 left-20 w-12 h-12 bg-purple-200 rounded-full opacity-25 animate-pulse"></div>
-            <div className="absolute bottom-20 right-10 w-24 h-24 bg-yellow-200 rounded-full opacity-20 animate-bounce"></div>
-
-            <div className="relative z-10 px-4 py-12 min-h-screen flex flex-col justify-center items-center">
-              {/* Main loading container */}
-              <div className="max-w-2xl mx-auto text-center">
-                {/* Animated icon */}
-                <div className="mb-8">
-                  <div className="w-24 h-24 mx-auto mb-6 relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-blue-500 rounded-full animate-pulse"></div>
-                    <div className="absolute inset-2 bg-white rounded-full flex items-center justify-center">
-                      <svg className="w-12 h-12 text-green-600 animate-spin" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Dynamic quote */}
-                <div className="mb-8">
-                  <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4 leading-tight">
-                    {currentQuote}
-                  </h1>
-                  <p className="text-lg text-gray-600">
-                    Analyzing your store for conversion opportunities
-                  </p>
-                </div>
-
-                {/* Progress bar */}
-                <div className="mb-8">
-                  <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                    <div 
-                      className="h-full bg-gradient-to-r from-green-400 to-blue-500 rounded-full transition-all duration-500 ease-out"
-                      style={{ width: `${Math.min(calculateProgress(), 100)}%` }}
-                    ></div>
-                  </div>
-                  <p className="text-sm text-gray-500 mt-2">
-                    {Math.round(calculateProgress())}% Complete
-                  </p>
-                </div>
-
-                {/* Stepwise Progress Indicator - Redesigned */}
-                {loading && (
-                  <div className="mt-8">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      {steps.map((step, index) => {
-                        const isActive = currentStep === step.name;
-                        const isCompleted = step.completed;
-                        
-                        return (
-                          <div key={step.name} className="flex flex-col items-center space-y-2">
-                            <div className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
-                              isCompleted 
-                                ? 'bg-green-500 text-white scale-110' 
-                                : isActive 
-                                  ? 'bg-blue-500 text-white scale-110 animate-pulse shadow-lg' 
-                                  : 'bg-gray-200 text-gray-500'
-                            }`}>
-                              {isCompleted ? '✓' : index + 1}
-                            </div>
-                            <span className={`text-xs text-center font-medium transition-colors duration-300 ${
-                              isCompleted 
-                                ? 'text-green-600' 
-                                : isActive 
-                                  ? 'text-blue-600' 
-                                  : 'text-gray-400'
-                            }`}>
-                              {STEP_MESSAGES[step.name]}
-                            </span>
-                            {isActive && (
-                              <div className="w-2 h-2 bg-blue-500 rounded-full animate-ping"></div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {/* Motivational message */}
-                <div className="mt-8 p-4 bg-white/50 backdrop-blur-sm rounded-lg border border-white/20">
-                  <p className="text-sm text-gray-600 italic">
-                    "The best time to optimize your store was yesterday. The second best time is now."
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-
-
 
         {!loading && !report && (
           <>
-            <WhatYouGetSection />
-            <BeforeAfter />
+            <HowItWorks />
+            <ServicesSection />
+            <WhoIsItFor/>
+            <WhyFixSection/>
+            {/* <WhatYouGetSection /> */}
+            {/* <BeforeAfter /> */}
             <AboutSections />
-            <PricingSection />
-            <div className='mt-15'>
+            {/* <PricingSection /> */}
+            {/* <div className='mt-15'>
               <div className="text-center mb-12 flex flex-col gap-8">
                 <h2 className="section-header__title">
                   The CRO Team Behind Million-Dollar Shopify Plus Stores
@@ -444,7 +352,9 @@ export default function Home() {
                 </p>
               </div>
               <Calandly />
-            </div>
+            </div> */}
+
+            <Testimonial />
             <FAQSection />
 
 

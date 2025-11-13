@@ -207,8 +207,7 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
         if (!isSplitPages) {
             return (
                 <>
-                    Your store is leaking, <br />
-                    Let's fix it
+                    Discover what’s blocking sales
                 </>
             );
         }
@@ -245,8 +244,7 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
             default:
                 return (
                     <>
-                        Your store is leaking, <br />
-                        Let's fix it
+                        Discover what’s blocking sales
                     </>
                 );
         }
@@ -254,7 +252,7 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
 
     const getMobileTitleContent = () => {
         if (!isSplitPages) {
-            return 'Your store is leaking, Let\'s fix it!';
+            return 'Discover what’s blocking sales';
         }
 
         switch (type) {
@@ -273,7 +271,7 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
 
     const getDescriptionContent = () => {
         if (!isSplitPages) {
-            return 'Discover what\'s blocking your store sales. Fix your store now!';
+            return 'We help to find issues in a store, fix them, and increase sales.';
         }
 
         switch (type) {
@@ -310,65 +308,66 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
     };
 
     return (
-        <div className='hero__content' id='payment'>
-            <div className="hero__details">
-                <div className="hero__details-trust">
-                    <div className="hero__details-trust-icon">
-                        <img src="/icons/1.svg" alt="trust" />
-                        <img src="/icons/2.svg" alt="trust" />
-                        <img src="/icons/3.svg" alt="trust" />
+        <div className="hero">
+            <div className='hero__content' id='payment'>
+                <div className="hero__details">
+                    <div className="hero__details-trust">
+                        <div className="hero__details-trust-icon">
+                            <img src="/icons/1.svg" alt="trust" />
+                            <img src="/icons/2.svg" alt="trust" />
+                            <img src="/icons/3.svg" alt="trust" />
+                        </div>
+                        <div className="hero__details-trust-text">
+                            25+ Shopify stores optimized this month
+                        </div>
                     </div>
-                    <div className="hero__details-trust-text">
-                        25+ Shopify stores optimized this month
-                    </div>
+                    <h1 className='hero__details-title hidden md:block'>
+                        {getTitleContent()}
+                    </h1>
+                    <h1 className='hero__details-title  md:hidden'>
+                        {getMobileTitleContent()}
+                    </h1>
+                    <p className='hero__details-description'>
+                        {getDescriptionContent()}
+                    </p>
                 </div>
-                <h1 className='hero__details-title hidden md:block'>
-                    {getTitleContent()}
-                </h1>
-                <h1 className='hero__details-title  md:hidden'>
-                    {getMobileTitleContent()}
-                </h1>
-                <p className='hero__details-description'>
-                    {getDescriptionContent()}
-                </p>
-            </div>
 
 
-            <div className="hero__input-wrapper" ref={inputWrapperRef}>
-                <form
-                    className={`hero__input-container ${isSticky ? 'hero__input-container--sticky' : ''}`}
-                    onSubmit={handleSubmit}
-                    ref={inputContainerRef}
-                >
-                    <input
-                        ref={inputRef}
-                        type="text"
-                        name='siteUrl'
-                        placeholder={getPlaceholderText()}
-                        className={`hero__input-field ${urlError ? 'hero__input-field--error' : ''}`}
-                        value={url}
-                        onChange={handleUrlChange}
-                    />
+                <div className="hero__input-wrapper" ref={inputWrapperRef}>
+                    <form
+                        className={`hero__input-container ${isSticky ? 'hero__input-container--sticky' : ''}`}
+                        onSubmit={handleSubmit}
+                        ref={inputContainerRef}
+                    >
+                        <input
+                            ref={inputRef}
+                            type="text"
+                            name='siteUrl'
+                            placeholder={getPlaceholderText()}
+                            className={`hero__input-field ${urlError ? 'hero__input-field--error' : ''}`}
+                            value={url}
+                            onChange={handleUrlChange}
+                        />
 
-                    <button className='hero__input-button' type='submit' disabled={loading}>
-                        {loading ? 'Analyzing...' : getButtonText()}
+                        <button className='hero__input-button' type='submit' disabled={loading}>
+                            {loading ? 'Analyzing...' : getButtonText()}
 
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <path d="M13 17L18 12L13 7M6 17L11 12L6 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                    </button>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M13 17L18 12L13 7M6 17L11 12L6 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
 
-                </form>
+                    </form>
 
-                {urlError && (
-                    <div className="hero__input-error">
-                        {urlError}
-                    </div>
-                )}
+                    {urlError && (
+                        <div className="hero__input-error">
+                            {urlError}
+                        </div>
+                    )}
 
 
 
-                <div className='hero__input-guarantee'>
+                    {/* <div className='hero__input-guarantee'>
                     <span>
                         {isSplitPages ? "FREE Audit" : ("$" + config.pricing.mainPrice + " One Time Payment")}
                     </span>
@@ -391,9 +390,9 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
                     <span>
                         {isSplitPages ? "Increase Sales" : "One-on-One Consultation"}
                     </span>
-                </div>
+                </div> */}
 
-                <div className="text-center flex items-center justify-center gap-2 w-max mx-auto">
+                    {/* <div className="text-center flex items-center justify-center gap-2 w-max mx-auto">
                     <Link
                         href="/report/sitteer-com-1754311226618-955541-yhb6og?isSampleReport=true"
                         // onClick={handleSeeSample}
@@ -408,22 +407,45 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
 
                     </Link>
 
+                </div> */}
+                    <div className="hero__gradient-bg">
+
+                    </div>
+
+
                 </div>
 
 
 
-            </div>
 
 
 
 
 
+                <div className="hero__services">
+                    <div className="hero__services-item hero__services-item--green">
+                        <h3 className="hero__services-title">CRO Audit</h3>
+                        <p className="hero__services-description">Turn more visitors into buyers</p>
+                    </div>
+                    <div className="hero__services-item hero__services-item--blue">
+                        <h3 className="hero__services-title">GEO performance</h3>
+                        <p className="hero__services-description">Get discovered on ChatGPT</p>
+                    </div>
+                    <div className="hero__services-item hero__services-item--green">
+                        <h3 className="hero__services-title">App setup</h3>
+                        <p className="hero__services-description">Remove performance blockers</p>
+                    </div>
+                    <div className="hero__services-item hero__services-item--purple">
+                        <h3 className="hero__services-title">Mobile experience</h3>
+                        <p className="hero__services-description">Optimize for every device</p>
+                    </div>
+                    <div className="hero__services-item hero__services-item--yellow">
+                        <h3 className="hero__services-title">Page speed</h3>
+                        <p className="hero__services-description">Load faster, Sell faster</p>
+                    </div>
+                </div>
 
-            <div className="hero__gradient-bg">
-
-            </div>
-
-            {/* <ul className="hero__pages-list">
+                {/* <ul className="hero__pages-list">
 
                 {pages.map((page, index) => (
                     <li className={`hero__pages-item ${activePage === index ? 'active' : ''}`} key={index} onMouseEnter={() => handleMouseEnter(index)} onMouseLeave={handleMouseLeave}>
@@ -439,10 +461,11 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
 
             </ul> */}
 
-            <div className="flex justify-center">
-                <img src="https://cdn-daoob.nitrocdn.com/LCiYkAjyMYQllcWpSRewurPZnOGNoosN/assets/images/optimized/rev-5e03d09/arulmjoseph.com/wp-content/uploads/2024/08/Shopify-Partner.png" alt="" style={{ width: "250px" }} />
-            </div>
+                <div className="flex justify-center">
+                    <img src="https://cdn-daoob.nitrocdn.com/LCiYkAjyMYQllcWpSRewurPZnOGNoosN/assets/images/optimized/rev-5e03d09/arulmjoseph.com/wp-content/uploads/2024/08/Shopify-Partner.png" alt="" style={{ width: "250px" }} />
+                </div>
 
+            </div>
         </div>
     )
 }

@@ -159,7 +159,7 @@ const AboutSections: React.FC = () => {
   };
 
   return (
-    <div className="bg-green-50">
+    <div className="who-we-are">
       {/* Who we are? Section */}
       <section className="py-16 pb-0">
         <div className="container mx-auto px-4 max-w-6xl">
@@ -169,42 +169,57 @@ const AboutSections: React.FC = () => {
             </h2>
           </div>
 
-          <div className="flex flex-col lg:flex-row items-center gap-8">
-            <div className="flex-1 text-center lg:text-left">
-              <div className="flex gap-4 items-center about__company">
-                <div className=" min-w-16 w-16 h-16 bg-orange-500 rounded-full  items-center justify-center text-white text-xl font-bold overflow-hidden">
-                  <img src="/conversionAb.png" alt="AZ" />
+          <div className="about-cards">
+            <div className="about-cards__grid">
+              {/* Card 1: ConversionAB */}
+              <div className="about-cards__card">
+                <div className="about-cards__tags">
+                  <span className="about-cards__tag about-cards__tag--blue">Shopify agency</span>
+                  <span className="about-cards__tag about-cards__tag--orange">Conversion focused</span>
+                  <span className="about-cards__tag about-cards__tag--purple">2024</span>
                 </div>
-                <p className="about__description">
-                  At ConversionAB, we’ve helped many Shopify Plus brands generate $100K+ in revenue boosting conversion rates and optimizing offers.
-                </p>
-              </div>
-              <div className="flex gap-4 items-center mt-6 about__company" style={{ marginTop: '20px' }}>
-                <div className=" min-w-16 w-16 h-16 bg-blue-500 rounded-full  items-center justify-center text-white text-xl font-bold overflow-hidden">
-                  <img src="/final-apps.png" alt="AZ" />
+                <div className="about-cards__image-area about-cards__image-area--orange">
+                  {/* <div className="about-cards__logo"> */}
+                    <img src="/about/cab.png" alt="ConversionAB" />
+                  {/* </div> */}
                 </div>
-                <p className="about__description">
-                  We run Final Apps, creating powerful Shopify apps to simplify store management.
-                  4 out of our 10 apps carry the official Shopify badge.
-
-                </p>
+                <div className="about-cards__content">
+                  <h3 className="about-cards__title">ConversionAB</h3>
+                  <p className="about-cards__description">
+                    We are the team behind ConversionAB, where we help Shopify stores improve sales by increasing conversion rate and improving offers.
+                  </p>
+                  <a href="https://conversionab.com" target="_blank" rel="noopener noreferrer" className="about-cards__link">
+                    conversionab.com
+                  </a>
+                </div>
               </div>
 
-
+              {/* Card 2: Final Apps */}
+              <div className="about-cards__card">
+                <div className="about-cards__tags">
+                  <span className="about-cards__tag about-cards__tag--blue">Shopify app studio</span>
+                  <span className="about-cards__tag about-cards__tag--orange">25+ Apps</span>
+                  <span className="about-cards__tag about-cards__tag--purple">2019</span>
+                </div>
+                <div className="about-cards__image-area about-cards__image-area--blue">
+                  {/* <div className="about-cards__logo"> */}
+                    <img src="/about/finalapps.png" alt="Final Apps" />
+                  {/* </div> */}
+                </div>
+                <div className="about-cards__content">
+                  <h3 className="about-cards__title">Final Apps</h3>
+                  <p className="about-cards__description">
+                    We also own Final Apps, where we create powerful Shopify apps designed to simplify store management and enhance everyday operations.
+                  </p>
+                  <a href="https://finalapps.com" target="_blank" rel="noopener noreferrer" className="about-cards__link">
+                    finalapps.com
+                  </a>
+                </div>
+              </div>
             </div>
-
-            {/* <div className=" flex-row gap-4 lg:flex-col hidden md:flex">
-              <div className="w-16 h-16 bg-orange-500 rounded-full overflow-hidden flex items-center justify-center text-white text-xl font-bold">
-                <img src="/conversionAb.png" alt="AZ" />
-              </div>
-              <div className="w-16 h-16 bg-blue-500 rounded-full overflow-hidden flex items-center justify-center text-white text-xl font-bold" >
-                <img src="/final-apps.png" alt="AZ" />
-              </div>
-            </div> */}
           </div>
-
         </div>
-        <div className='about__stats-container'>
+        {/* <div className='about__stats-container'>
 
           <div className='container mx-auto  max-w-6xl'>
             <div className="about__stats ">
@@ -223,7 +238,7 @@ const AboutSections: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </section>
 
       {/* Testimonials Section */}
@@ -281,7 +296,7 @@ const AboutSections: React.FC = () => {
       </section> */}
 
       {/* Who is this for? Section */}
-      <section className="py-16 pb-0">
+      {/* <section className="py-16 pb-0">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-4">
             <h2 className="section-header__title">
@@ -303,10 +318,10 @@ const AboutSections: React.FC = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Risk-Free Purchase Section */}
-      <section className="py-16 pb-0">
+      {/* <section className="py-16 pb-0">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-4">
             <h2 className="section-header__title">
@@ -328,7 +343,7 @@ const AboutSections: React.FC = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
     </div>
   );
 };

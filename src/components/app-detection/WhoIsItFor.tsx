@@ -12,29 +12,29 @@ export function WhoIsItFor() {
   const audiences = [
     {
       icon: Store,
-      title: "Shopify Merchants",
-      description: "Research competitors tech stacks and improve your own store or replicate winning strategies."
+      title: "Shopify Store Owners",
+      description: "Find opportunities to improve the overall performance and sales of a store."
     },
     {
       icon: Code,
-      title: "Developers",
-      description: "Quickly extract app, theme and product data for client projects."
+      title: "Agency Owners",
+      description: "Help clients increase revenue by fixing what’s blocking sales."
     },
     {
       icon: Truck,
-      title: "Drop shippers",
-      description: "Find winning products and reveal apps and theme behind successful drop shipping stores."
+      title: "Dropshippers",
+      description: "Optimize the store to turn every click into a sale. Increase ROAS to its best."
     },
     {
       icon: BarChart3,
-      title: "Market Researchers",
-      description: "Discover the hottest trending themes, apps, and products in the market."
+      title: "Marketers",
+      description: "Discover what’s wrong with marketing and fix it."
     }
   ];
 
   return (
     <section className="py-16 ">
-      <div className="max-w-2xl mx-auto px-4">
+      <div className="max-w-4xl mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -47,7 +47,7 @@ export function WhoIsItFor() {
           </h2>
         </motion.div>
 
-        <div className="flex flex-col  gap-8 ">
+        <div className="flex flex-col  gap-8  md:grid md:grid-cols-2 ">
           {audiences.map((audience, index) => (
             <motion.div
               key={audience.title}
@@ -55,7 +55,7 @@ export function WhoIsItFor() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className={"flex items-center gap-4 " + (index % 2 === 0 ? "flex-row-reverse" : "flex-row")}
+              className={"flex  gap-4 items-start " }
             >
               {/* Icon */}
               <div className=" bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 audiance__icon">

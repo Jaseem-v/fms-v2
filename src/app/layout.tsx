@@ -9,6 +9,7 @@ import FloatingButton from "@/components/ui/FloatingButton";
 import "./font.css";
 import "../style/style.scss"
 import "../style/ui.scss"
+import "../style/homepage.scss"
 import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });

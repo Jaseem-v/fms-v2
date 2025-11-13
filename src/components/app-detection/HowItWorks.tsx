@@ -13,22 +13,22 @@ export function HowItWorks() {
     {
       number: 1,
       title: "Enter Your Store URL",
-      description: "Paste any Shopify store link into the tool."
+      description: "Simply paste the store URL you want to find issues with."
     },
     {
       number: 2,
       title: "Get a Smart Report",
-      description: "Our system analyzes the site and detects the apps it’s running."
+      description: "Finalize which sections are to be fixed."
     },
     {
       number: 3,
       title: "Optimize Your Store",
-      description: "See the full list of apps used for every use case"
+      description: "Get proper recommendations based on the areas you selected."
     }
   ];
 
   return (
-    <section className="py-16 pt-0">
+    <section className="py-16 how-it-works">
       <div className="max-w-5xl mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
