@@ -13,17 +13,17 @@ export function HowItWorks() {
     {
       number: 1,
       title: "Enter Your Store URL",
-      description: "Simply paste the store URL you want to find issues with."
+      description: "Simply paste the store URL to identify what’s blocking sales."
     },
     {
       number: 2,
       title: "Get a Smart Report",
-      description: "Finalize which sections are to be fixed."
+      description: "Choose which types of checking to be done. "
     },
     {
       number: 3,
       title: "Optimize Your Store",
-      description: "Get proper recommendations based on the areas you selected."
+      description: "Receive personalized recommendations to fix what’s blocking."
     }
   ];
 

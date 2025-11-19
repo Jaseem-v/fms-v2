@@ -207,7 +207,7 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
         if (!isSplitPages) {
             return (
                 <>
-                    Discover what’s blocking sales
+                    Let AI Find What’s Blocking Sales
                 </>
             );
         }
@@ -244,7 +244,7 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
             default:
                 return (
                     <>
-                        Discover what’s blocking sales
+                        Let AI Find What’s Blocking Sales
                     </>
                 );
         }
@@ -252,7 +252,7 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
 
     const getMobileTitleContent = () => {
         if (!isSplitPages) {
-            return 'Discover what’s blocking sales';
+            return 'Let AI Find What’s Blocking Sales';
         }
 
         switch (type) {
@@ -271,7 +271,7 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
 
     const getDescriptionContent = () => {
         if (!isSplitPages) {
-            return 'We help to find issues in a store, fix them, and increase sales.';
+            return 'We help to identify what’s blocking sales in a Shopify store and fix it.';
         }
 
         switch (type) {
@@ -318,7 +318,8 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
                             <img src="/icons/3.svg" alt="trust" />
                         </div>
                         <div className="hero__details-trust-text">
-                            25+ Shopify stores optimized this month
+                        25+ Shopify stores audited by AI so far.
+
                         </div>
                     </div>
                     <h1 className='hero__details-title hidden md:block'>

@@ -39,7 +39,7 @@ const services: ServiceCard[] = [
       </defs>
     </svg>,
     title: 'GEO Performance',
-    description: 'Action plan to help get ranked on inside ChatGPT & LLM models.',
+    description: 'Action plan to help your store rank better inside ChatGPT & other AI models.',
     iconBgColor: '#B7FFF1',
     iconColor: '#00695C'
   },
@@ -57,8 +57,8 @@ const services: ServiceCard[] = [
         </clipPath>
       </defs>
     </svg>,
-    title: 'App Setup',
-    description: 'Suggestions on which apps to keep and remove to fasten store performance.',
+    title: 'AI App Performance Audit',
+    description: 'Find heavy or unnecessary apps that hurt speed and block conversions.',
     iconBgColor: '#D6FFCF',
     iconColor: '#2E7D32'
   },
@@ -74,7 +74,7 @@ const services: ServiceCard[] = [
       </defs>
     </svg>,
     title: 'Mobile experience',
-    description: 'Ensure the store is compatible with mobile devices for easy navigation.',
+    description: 'Fix issues that affect mobile shoppers and improve your store’s mobile usability.',
     iconBgColor: '#DBE4FF',
     iconColor: '#7B1FA2'
   },
@@ -83,7 +83,7 @@ const services: ServiceCard[] = [
       <path d="M8.66667 21.3333H1.33333C0.597333 21.3333 0 20.736 0 20C0 19.264 0.597333 18.6667 1.33333 18.6667H7.95333L10.224 15.26C10.4867 14.8653 10.9467 14.6293 11.416 14.6693C11.8907 14.6987 12.3133 14.9787 12.5267 15.404L15.4987 21.3493L16.8907 19.2613C17.1387 18.8907 17.5547 18.668 18 18.668H24C24.736 18.668 25.3333 19.2653 25.3333 20.0013C25.3333 20.7373 24.736 21.3347 24 21.3347H18.7133L16.4427 24.7413C16.1947 25.1133 15.7773 25.3347 15.3333 25.3347C15.3053 25.3347 15.2773 25.3347 15.2507 25.332C14.776 25.3027 14.3533 25.0227 14.14 24.5973L11.168 18.652L9.776 20.74C9.528 21.1107 9.112 21.3333 8.66667 21.3333ZM29.3333 13.98V25.3333C29.3333 29.0093 26.3427 32 22.6667 32H9.33333C5.65733 32 2.66667 29.0093 2.66667 25.3333C2.66667 24.5973 3.264 24 4 24C4.736 24 5.33333 24.5973 5.33333 25.3333C5.33333 27.5387 7.128 29.3333 9.33333 29.3333H22.6667C24.872 29.3333 26.6667 27.5387 26.6667 25.3333V13.98C26.6667 13.7627 26.656 13.5467 26.636 13.3333H20C17.7947 13.3333 16 11.5387 16 9.33333V2.69733C15.7867 2.67733 15.5707 2.66667 15.3533 2.66667H9.33333C7.128 2.66667 5.33333 4.46133 5.33333 6.66667V14.6667C5.33333 15.4027 4.736 16 4 16C3.264 16 2.66667 15.4027 2.66667 14.6667V6.66667C2.66667 2.99067 5.65733 0 9.33333 0H15.3533C17.8467 0 20.1893 0.970667 21.9533 2.73333L26.6 7.38C28.3627 9.14267 29.3333 11.4867 29.3333 13.98ZM25.788 10.6667C25.4973 10.1613 25.1387 9.68933 24.7147 9.26667L20.068 4.62C19.644 4.196 19.1733 3.83733 18.668 3.54667V9.33467C18.668 10.0693 19.2667 10.668 20.0013 10.668H25.7893L25.788 10.6667Z" fill="black" />
     </svg>,
     title: 'Page Speed',
-    description: 'Ensure store loads as fast as possible, so as not to miss a single dollar from customers.',
+    description: 'Identify what slows down your store and get steps to improve loading time.',
     iconBgColor: '#FFF3C2',
     iconColor: '#F57F17'
   }
@@ -98,7 +98,7 @@ const ServicesSection = () => {
           What can we fix?
           </h2>
           <p className="section-header__description max-w-sm mx-auto">
-          We help you rank on ChatGPT, with suggestions to increase conversion to help you remove unnecessary apps that block performance. 
+          Our AI tool analyzes your entire store to boost conversions, improve your ChatGPT & SEO visibility, speed up performance, and remove apps that slow things down.
 
           </p>
         </div>

@@ -10,41 +10,26 @@ const FAQSection: React.FC<{ isSplitPage?: boolean, type?: 'home' | 'collection'
       case 'home':
         return [
           {
-            question: "Why should I audit my homepage?",
-            answer: "Your homepage is the first impression. If it's unclear or cluttered, visitors leave without exploring your products."
+            question: "1. What does FixMyStore audit in my Shopify store?",
+            answer: "FixMyStore uses AI to scan your entire store for CRO issues, SEO gaps, mobile UX problems, page speed blockers, and app performance risks. You get a complete view of everything stopping visitors from converting."
           },
           {
-            question: "How long does the audit take?",
-            answer: "Most audits complete in 2-3 minutes, depending on your store size."
+            question: "2. How does the ChatGPT & AI SEO audit help my store rank in AI models?",
+            answer: "Our AI evaluates your store the same way large language models like ChatGPT interpret content. It checks structure, clarity, metadata, product descriptions, and semantic signals — helping your store appear more often in AI search results and product recommendations."
           },
           {
-            question: "How detailed will the homepage audit be?",
-            answer: "We review hero section, navigation, banners, CTAs, value proposition, and overall trust signals."
+            question: "3.  Will the audit affect my theme, code, or store performance?",
+            answer: "No. FixMyStore doesn’t touch your theme, code, or apps. The entire audit is external and AI-driven, so your store stays safe, unaffected, and exactly the way it is."
           },
           {
-            question: "Can I see what a good homepage looks like?",
-            answer: "Yes, we include screenshots from high-converting Shopify stores as references."
+            question: "4. How accurate are the AI suggestions, and what if I need help implementing them?",
+            answer: "The recommendations are generated using AI trained on high-converting Shopify stores. Every issue is clearly explained and prioritized. If a fix needs deeper technical work, our expert team can assist with implementation."
           },
           {
-            question: "Do I need to install anything?",
-            answer: "No installation required. Just enter your store URL and we'll do the rest."
+            question: "5. Can FixMyStore identify issues caused by apps, scripts, and slow performance?",
+            answer: "Yes. Our system detects heavy apps, unused scripts, large assets, and performance bottlenecks. You’ll know exactly what’s slowing your store down — and how to fix it."
           },
-          {
-            question: "Do you offer refund?",
-            answer: "Yes, if you don't find our report + resources not valuable, you can request for refund. No questions asked."
-          },
-          {
-            question: "How accurate is the audit?",
-            answer: "Our tool analyzes your store using industry best practices. Since we don't have access to internal data, the report may have limitations. We recommend cross-checking insights for your specific needs."
-          },
-          {
-            question: "Is the audit free?",
-            answer: "No, because we are sure that this is a valuable resource and you can increase your sales by applying these to your website."
-          },
-          {
-            question: "Can I get help implementing the recommendations?",
-            answer: "Yes, we can help you implement the recommendations. However, please note that additional charges may apply for expert support and implementation assistance."
-          }
+
         ];
 
       case 'collection':
@@ -186,37 +171,26 @@ const FAQSection: React.FC<{ isSplitPage?: boolean, type?: 'home' | 'collection'
       default:
         return [
           {
-            question: "How long does the audit take?",
-            answer: "Most audits complete in 2-3 minutes, depending on your store size."
+            question: "1. What does FixMyStore audit in my Shopify store?",
+            answer: "FixMyStore uses AI to scan your entire store for CRO issues, SEO gaps, mobile UX problems, page speed blockers, and app performance risks. You get a complete view of everything stopping visitors from converting."
           },
           {
-            question: "Do I need to install anything?",
-            answer: "No installation required. Just enter your store URL and we'll do the rest."
+            question: "2. How does the ChatGPT & AI SEO audit help my store rank in AI models?",
+            answer: "Our AI evaluates your store the same way large language models like ChatGPT interpret content. It checks structure, clarity, metadata, product descriptions, and semantic signals — helping your store appear more often in AI search results and product recommendations."
           },
           {
-            question: "Do you offer refund?",
-            answer: "Yes, if you don't find our report + resources not valuable, you can request for refund. No questions asked."
+            question: "3.  Will the audit affect my theme, code, or store performance?",
+            answer: "No. FixMyStore doesn’t touch your theme, code, or apps. The entire audit is external and AI-driven, so your store stays safe, unaffected, and exactly the way it is."
           },
           {
-            question: "How detailed is the report?",
-            answer: "Every page type is broken down with precise recommendations, detailed explanations, real-world brand examples, and app suggestions for resolving the issues."
+            question: "4. How accurate are the AI suggestions, and what if I need help implementing them?",
+            answer: "The recommendations are generated using AI trained on high-converting Shopify stores. Every issue is clearly explained and prioritized. If a fix needs deeper technical work, our expert team can assist with implementation."
           },
           {
-            question: "What if my store is password protected?",
-            answer: "The tool works with public stores only. Remove password protection temporarily for the audit."
+            question: "5. Can FixMyStore identify issues caused by apps, scripts, and slow performance?",
+            answer: "Yes. Our system detects heavy apps, unused scripts, large assets, and performance bottlenecks. You’ll know exactly what’s slowing your store down — and how to fix it."
           },
-          {
-            question: "How accurate is the audit?",
-            answer: "Our audits are crafted using proven CRO frameworks and industry best practices, the same principles used by top-performing eCommerce brands. While the analysis doesn't include internal store data, every recommendation is designed to be practical and easy to validate against the store's unique goals."
-          },
-          {
-            question: "Is the audit free?",
-            answer: "No, our audits are a paid service as they deliver high-value, actionable insights based on proven CRO strategies. Applying these recommendations can directly improve store conversions and increase sales, making it a worthwhile investment."
-          },
-          {
-            question: "Can I get help implementing the recommendations?",
-            answer: "Absolutely. Our CRO experts can handle the implementation for you, ensuring every change is done right. Implementation is available as an add-on service, with pricing based on the level of support required."
-          }
+
         ];
     }
   };
