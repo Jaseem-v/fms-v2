@@ -244,17 +244,17 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
 
     const handleContinue = () => {
         setShowServicesModal(false);
-        
+
         // Continue with normal flow - submit the form
         const normalizedUrl = normalizeUrl(url);
-        
+
         // Track URL entry and FixMyStore click
         AnalyticsService.trackUrlEntry(normalizedUrl, AnalyticsService.extractWebsiteName(normalizedUrl));
         AnalyticsService.trackFixMyStoreClick(normalizedUrl, AnalyticsService.extractWebsiteName(normalizedUrl));
-        
+
         // Update the URL state with the normalized version
         setUrl(normalizedUrl);
-        
+
         // Create a synthetic event and call onSubmit
         const syntheticEvent = new Event('submit') as unknown as React.FormEvent;
         onSubmit(syntheticEvent);
@@ -413,30 +413,36 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
 
 
                 <div className="hero__input-wrapper" ref={inputWrapperRef}>
-                    <form
-                        className={`hero__input-container ${isSticky ? 'hero__input-container--sticky' : ''}`}
-                        onSubmit={handleSubmit}
-                        ref={inputContainerRef}
-                    >
-                        <input
-                            ref={inputRef}
-                            type="text"
-                            name='siteUrl'
-                            placeholder={getPlaceholderText()}
-                            className={`hero__input-field ${urlError ? 'hero__input-field--error' : ''}`}
-                            value={url}
-                            onChange={handleUrlChange}
-                        />
+                    <div className='relative'>
+                        <form
+                            className={`hero__input-container ${isSticky ? 'hero__input-container--sticky' : ''} z-10 relative`}
+                            onSubmit={handleSubmit}
+                            ref={inputContainerRef}
+                        >
+                            <input
+                                ref={inputRef}
+                                type="text"
+                                name='siteUrl'
+                                placeholder={getPlaceholderText()}
+                                className={`hero__input-field ${urlError ? 'hero__input-field--error' : ''}`}
+                                value={url}
+                                onChange={handleUrlChange}
+                            />
 
-                        <button className='hero__input-button' type='submit' disabled={loading}>
-                            {loading ? 'Analyzing...' : getButtonText()}
+                            <button className='hero__input-button' type='submit' disabled={loading}>
+                                {loading ? 'Analyzing...' : getButtonText()}
 
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M13 17L18 12L13 7M6 17L11 12L6 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </button>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M13 17L18 12L13 7M6 17L11 12L6 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                        </form>
 
-                    </form>
+                        <div className="hero__gradient-bg">
+
+                        </div>
+
+                    </div>
 
                     {urlError && (
                         <div className="hero__input-error">
@@ -446,50 +452,48 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
 
 
 
-                    {/* <div className='hero__input-guarantee'>
-                    <span>
-                        {isSplitPages ? "FREE Audit" : ("$" + config.pricing.mainPrice + " One Time Payment")}
-                    </span>
-                    <span className='hidden md:block'>
-                        •
-                    </span>
-                    <span className='md:hidden'>
-                        |
-                    </span>
-                    <span>
-                        {isSplitPages ? `${type ? type.charAt(0).toUpperCase() + type.slice(1) : ''} Page Audit` : " Full Store Audit"}
+                    {isSplitPages && <div className='hero__input-guarantee'>
+                        <span>
+                            {isSplitPages ? "FREE Audit" : ("$" + config.pricing.mainPrice + " One Time Payment")}
+                        </span>
+                        <span className='hidden md:block'>
+                            •
+                        </span>
+                        <span className='md:hidden'>
+                            |
+                        </span>
+                        <span>
+                            {isSplitPages ? `${type ? type.charAt(0).toUpperCase() + type.slice(1) : ''} Page Audit` : " Full Store Audit"}
 
-                    </span>
-                    <span className='hidden md:block'>
-                        •
-                    </span>
-                    <span className='md:hidden'>
-                        |
-                    </span>
-                    <span>
-                        {isSplitPages ? "Increase Sales" : "One-on-One Consultation"}
-                    </span>
-                </div> */}
+                        </span>
+                        <span className='hidden md:block'>
+                            •
+                        </span>
+                        <span className='md:hidden'>
+                            |
+                        </span>
+                        <span>
+                            {isSplitPages ? "Increase Sales" : "One-on-One Consultation"}
+                        </span>
+                    </div>}
 
-                    {/* <div className="text-center flex items-center justify-center gap-2 w-max mx-auto">
-                    <Link
-                        href="/report/sitteer-com-1754311226618-955541-yhb6og?isSampleReport=true"
-                        // onClick={handleSeeSample}
-                        className="link-btn"
-                    >
-                        <div className="link-btn__icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
-                                <path d="M0.71875 5.39844H9.46875M9.46875 5.39844L5.09375 1.02344M9.46875 5.39844L5.09375 9.77344" stroke="white" stroke-width="1.27312" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </div>
-                        See Sample Audit
+                    {isSplitPages && <div className="text-center flex items-center justify-center gap-2 w-max mx-auto">
+                        <Link
+                            href="/report/sitteer-com-1754311226618-955541-yhb6og?isSampleReport=true"
+                            // onClick={handleSeeSample}
+                            className="link-btn"
+                        >
+                            <div className="link-btn__icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
+                                    <path d="M0.71875 5.39844H9.46875M9.46875 5.39844L5.09375 1.02344M9.46875 5.39844L5.09375 9.77344" stroke="white" stroke-width="1.27312" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            See Sample Audit
 
-                    </Link>
+                        </Link>
 
-                </div> */}
-                    <div className="hero__gradient-bg">
+                    </div>}
 
-                    </div>
 
 
                 </div>
@@ -501,7 +505,7 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
 
 
 
-                <div className="hero__services">
+                {!isSplitPages && <div className="hero__services">
                     <div className="hero__services-item hero__services-item--green">
                         <h3 className="hero__services-title">AI CRO Audit                        </h3>
                         <p className="hero__services-description">Turn more visitors into customers</p>
@@ -523,23 +527,23 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
                         <h3 className="hero__services-title">Page speed</h3>
                         <p className="hero__services-description">Load faster, Sell faster</p>
                     </div>
-                </div>
+                </div>}
 
-                {/* <ul className="hero__pages-list">
+              { isSplitPages && <ul className="hero__pages-list">
 
-                {pages.map((page, index) => (
-                    <li className={`hero__pages-item ${activePage === index ? 'active' : ''}`} key={index} onMouseEnter={() => handleMouseEnter(index)} onMouseLeave={handleMouseLeave}>
-                        <h2 className='hero__pages-item-icon'>
-                            {page.icon}
-                        </h2>
-                        <h4 className="hero__pages-item-text">
-                            Analyzing <br />
-                            {page.text}
-                        </h4>
-                    </li>
-                ))}
+                    {pages.map((page, index) => (
+                        <li className={`hero__pages-item ${activePage === index ? 'active' : ''}`} key={index} onMouseEnter={() => handleMouseEnter(index)} onMouseLeave={handleMouseLeave}>
+                            <h2 className='hero__pages-item-icon'>
+                                {page.icon}
+                            </h2>
+                            <h4 className="hero__pages-item-text">
+                                Analyzing <br />
+                                {page.text}
+                            </h4>
+                        </li>
+                    ))}
 
-            </ul> */}
+                </ul>}
 
                 <div className="flex justify-center">
                     <img src="https://cdn-daoob.nitrocdn.com/LCiYkAjyMYQllcWpSRewurPZnOGNoosN/assets/images/optimized/rev-5e03d09/arulmjoseph.com/wp-content/uploads/2024/08/Shopify-Partner.png" alt="" style={{ width: "250px" }} />
@@ -575,19 +579,17 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
                                     {services.map((service) => (
                                         <div
                                             key={service.id}
-                                            className={`border-2 rounded-lg transition-all ${
-                                                service.isSelected
-                                                    ? 'border-gray-900 bg-gray-50 shadow-md'
-                                                    : 'bg-white shadow-sm border-gray-200 opacity-75'
-                                            }`}
+                                            className={`border-2 rounded-lg transition-all ${service.isSelected
+                                                ? 'border-gray-900 bg-gray-50 shadow-md'
+                                                : 'bg-white shadow-sm border-gray-200 opacity-75'
+                                                }`}
                                         >
                                             <div className="p-4">
                                                 <div className={`flex ${service.isLocked ? 'flex sm:flex-row sm:items-start sm:justify-between items-center justify-center' : 'items-center justify-between'} gap-3`}>
                                                     <div className="flex-1">
                                                         <div className="flex items-center gap-3 mb-2">
-                                                            <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
-                                                                service.isSelected ? 'bg-gray-900' : 'bg-gray-400'
-                                                            }`}>
+                                                            <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${service.isSelected ? 'bg-gray-900' : 'bg-gray-400'
+                                                                }`}>
                                                                 {service.isSelected ? (
                                                                     <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                                                                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />

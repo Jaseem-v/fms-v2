@@ -49,11 +49,11 @@ function CollectionPageContent() {
 
     return (
         <div className="min-h-screen relative overflow-hidden">
-            <div className="announcment-bar">
+            {/* <div className="announcment-bar">
                 <p>
                     Get an audit for FREE
                 </p>
-            </div>
+            </div> */}
 
             {/* Background Pattern */}
             <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=&quot;25&quot; height=&quot;25&quot; viewBox=&quot;0 0 25 25&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cpath d=&quot;M1 1h1v1H1V1zm0 23h1v1H1v-1zm23 0h1v1H1v-1zm0-23h1v1h-1V1z&quot; stroke=&quot;%23e5e7eb&quot; stroke-width=&quot;0.5&quot;/%3E%3C/svg%3E')] opacity-30"></div>

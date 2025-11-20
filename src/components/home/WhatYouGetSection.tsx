@@ -12,7 +12,7 @@ const WhatYouGetSection = ({ isSplitPage = false }: { isSplitPage?: boolean }) =
   };
 
   return (
-    <section className=" bg-green-50 pb-0 py-6">
+    <section className=" pb-0 py-6">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-4">
           <h2 className="section-header__title">
