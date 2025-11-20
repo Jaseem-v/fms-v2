@@ -15,7 +15,7 @@ const chatMessages: ChatMessage[] = [
   {
     id: 1,
     name: 'Devon Carter',
-    avatar: '👨',
+    avatar: '/user/6.png',
     message: "Mobile users keep dropping off halfway through checkout. What's going on? 😩",
     timestamp: '10:42 AM',
     label: 'low-performance'
@@ -23,7 +23,7 @@ const chatMessages: ChatMessage[] = [
   {
     id: 2,
     name: 'Sarah John',
-    avatar: '👩',
+    avatar: '/user/8.png',
     message: "Why are my product pages getting views but no one's checking out? 🤔",
     timestamp: '10:42 AM',
     label: 'low-performance'
@@ -31,7 +31,7 @@ const chatMessages: ChatMessage[] = [
   {
     id: 3,
     name: 'Emma Sebastien',
-    avatar: '👩',
+    avatar: '/user/7.png',
     message: 'Our store takes forever to load lately, customers are complaining. 😠⏳',
     timestamp: '10:42 AM',
     label: 'low-performance'
@@ -39,7 +39,7 @@ const chatMessages: ChatMessage[] = [
   {
     id: 4,
     name: 'Emily Parker',
-    avatar: '👩',
+    avatar: '/user/12.png',
     message: "I think we have too many Shopify apps, but I don't know which ones to remove. 😅",
     timestamp: '10:42 AM',
     label: 'worried-owners'
@@ -47,7 +47,7 @@ const chatMessages: ChatMessage[] = [
   {
     id: 5,
     name: 'Liam Alen',
-    avatar: '👨',
+    avatar: '/user/9.png',
     message: 'We keep spending on ads, but conversions are flat. 😔',
     timestamp: '10:42 AM',
     label: 'worried-owners'
@@ -55,7 +55,7 @@ const chatMessages: ChatMessage[] = [
   {
     id: 6,
     name: 'Lucius Marcus Reed',
-    avatar: '👨',
+    avatar: '/user/10.png',
     message: "SEO looks fine to me, but we're nowhere on Google results 🤨",
     timestamp: '10:42 AM',
     label: 'unsure-fix'
@@ -63,7 +63,7 @@ const chatMessages: ChatMessage[] = [
   {
     id: 7,
     name: 'Stephy Mariya Noah',
-    avatar: '👩',
+    avatar: '/user/12.png',
     message: 'Our store takes forever to load lately, customers are complaining. 😠⏳',
     timestamp: '10:42 AM',
     label: 'unsure-fix'
@@ -119,7 +119,7 @@ const WhyFixSection = () => {
             <div className="why-fix-section__messages">
               {chatMessages.map((msg) => (
                 <div key={msg.id} className="why-fix-section__message" data-label={msg.label}>
-                  <div className="why-fix-section__message-avatar">{msg.avatar}</div>
+                  <div className="why-fix-section__message-avatar"><img src={msg.avatar} alt={msg.name} /></div>
                   <div className="why-fix-section__message-content">
                     <div className="why-fix-section__message-header">
                       <span className="why-fix-section__message-name">{msg.name}</span>

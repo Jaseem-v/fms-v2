@@ -204,7 +204,7 @@ const FAQSection: React.FC<{ isSplitPage?: boolean, type?: 'home' | 'collection'
   return (
     <section className="py-16  px-4">
       <div className="container mx-auto max-w-4xl">
-        <div className="text-center mb-4">
+        <div className="text-center mb-14">
           <h2 className="section-header__title">
             Frequently Asked Questions
           </h2>

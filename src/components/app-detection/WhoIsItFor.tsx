@@ -8,29 +8,16 @@
 import { motion } from 'framer-motion';
 import { Store, Code, Truck, BarChart3 } from 'lucide-react';
 
-export function WhoIsItFor() {
-  const audiences = [
-    {
-      icon: Store,
-      title: "Shopify Store Owners",
-      description: "Find opportunities to improve the overall performance and sales of a store."
-    },
-    {
-      icon: Code,
-      title: "Agency Owners",
-      description: "Help clients increase revenue by fixing what’s blocking sales."
-    },
-    {
-      icon: Truck,
-      title: "Dropshippers",
-      description: "Optimize the store to turn every click into a sale. Increase ROAS to its best."
-    },
-    {
-      icon: BarChart3,
-      title: "Marketers",
-      description: "Discover what’s wrong with marketing and fix it."
-    }
-  ];
+export function WhoIsItFor(
+  {audiences}: {audiences: {
+    icon: any;
+    title: string;
+    description: string;
+  }[]}
+) {
+  
+
+  
 
   return (
     <section className="py-16 ">

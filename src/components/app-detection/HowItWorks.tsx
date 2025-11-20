@@ -7,26 +7,15 @@
 
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import { JSX } from 'react';
 
-export function HowItWorks() {
-  const steps = [
-    {
-      number: 1,
-      title: "Enter Your Store URL",
-      description: "Simply paste the store URL to identify what’s blocking sales."
-    },
-    {
-      number: 2,
-      title: "Get a Smart Report",
-      description: "Choose which types of checking to be done. "
-    },
-    {
-      number: 3,
-      title: "Optimize Your Store",
-      description: "Receive personalized recommendations to fix what’s blocking."
-    }
-  ];
-
+export function HowItWorks({steps}: {steps: {
+  number: number;
+  title: string;
+  description: string;
+  icon: JSX.Element;
+}[]}) {
+ 
   return (
     <section className="py-16 how-it-works">
       <div className="max-w-5xl mx-auto px-4">
@@ -42,7 +31,7 @@ export function HowItWorks() {
           </h2>
         </motion.div>
 
-        <div className="flex flex-col lg:flex-row justify-center gap-16 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 items-center content-center justify-center">
           {steps.map((step, index) => (
           
               <motion.div
@@ -50,10 +39,10 @@ export function HowItWorks() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.2 }}
                 viewport={{ once: true }}
-                className="flex flex-col max-w-sm how-it-works__item"
+                className="flex flex-col max-w-sm how-it-works__item mx-auto"
               >
                 {/* Step Number Circle */}
-               <img src={`/app-detection-steps/${step.number}.svg`} alt=""  className='how-it-works__icon'/>
+               {step.icon}
 
                 {/* Step Content */}
                 <h3 className="sub-item__title mt-4">
@@ -62,6 +51,10 @@ export function HowItWorks() {
                 <p className="sub-item__description">
                   {step.description}
                 </p>
+
+                <div className='how-it-works__step-number'>
+                  {step.number}
+                </div>
               </motion.div>
 
          

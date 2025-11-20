@@ -1,29 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import UrlForm from '../components/home/UrlForm';
-import FormModal from '../components/layout/FormModal';
-import { useAnalysis } from '../hooks/useAnalysis';
 import HeroArea from '@/components/home/HeroArea';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import authService from '../services/authService';
-import PricingSection from '../components/home/PricingSection';
-import WhatYouGetSection from '../components/home/WhatYouGetSection';
+import FloatingButton from '@/components/ui/FloatingButton';
+import { config } from '@/config/config';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import AboutSections from '../components/home/AboutSections';
 import FAQSection from '../components/home/FAQSection';
-import Calandly from '@/components/home/Calandly';
-import BeforeAfter from '@/components/home/BeforeAfter';
-import { config } from '@/config/config';
-import FloatingButton from '@/components/ui/FloatingButton';
-import CountdownTimer from '@/components/ui/CountdownTimer';
+import FormModal from '../components/layout/FormModal';
+import { useAnalysis } from '../hooks/useAnalysis';
 // import { CountdownTimer } from './payment/page';
-import AnalyticsService from '@/services/analyticsService';
 import { HowItWorks } from '@/components/app-detection/HowItWorks';
+import { WhoIsItFor } from '@/components/app-detection/WhoIsItFor';
 import ServicesSection from '@/components/home/ServicesSection';
 import WhyFixSection from '@/components/home/WhyFixSection';
-import Testimonial from '@/components/home/Testimonial';
-import { WhoIsItFor } from '@/components/app-detection/WhoIsItFor';
+import { BarChart3, Code, Store, Truck } from 'lucide-react';
 
 
 interface UserInfo {
@@ -57,55 +48,66 @@ const STEP_MESSAGES: Record<string, string> = {
   'analyze_checklist': 'Generating personalized recommendations...'
 };
 
+const HowItWorksSteps  = [
+  {
+    number: 1,
+    title: "Enter Your Store URL",
+    description: "Simply paste the store URL to identify what’s blocking sales.",
+    icon: <img src="/HowItWorks/1.png" alt="" className='how-it-works__icon' />
+  },
+  {
+    number: 2,
+    title: "Get a Smart Report",
+    description: "Choose which types of checking to be done. ",
+    icon: <img src="/HowItWorks/2.png" alt="" className='how-it-works__icon' />
+  },
+  {
+    number: 3,
+    title: "Optimize Your Store",
+    description: "Get personalized fixes and action steps.",
+    icon: <img src="/HowItWorks/3.png" alt="" className='how-it-works__icon' />
+  }
+];
+
+const audiences = [
+  {
+    icon: Store,
+    title: "Shopify Store Owners",
+    description: "Find opportunities to improve the overall performance and sales of a store."
+  },
+  {
+    icon: Code,
+    title: "Agency Owners",
+    description: "Help clients increase revenue by fixing what’s blocking sales."
+  },
+  {
+    icon: Truck,
+    title: "Dropshippers",
+    description: "Optimize the store to turn every click into a sale. Increase ROAS to its best."
+  },
+  {
+    icon: BarChart3,
+    title: "Marketers",
+    description: "Discover what’s wrong with marketing and fix it."
+  }
+];
+
 export default function Home() {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(true);
   const [showFormModal, setShowFormModal] = useState(false);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [currentQuote, setCurrentQuote] = useState(CRO_QUOTES[0]);
 
   const {
     url,
-    setUrl,
     loading,
-    error,
     status,
-    successMessage,
-    userInfo,
-    elapsedTime,
-    timerActive,
-    currentReportId,
-    reportUrl,
-    autoSaveEnabled,
-    currentStep,
-    steps,
     report,
     handleSubmit,
-    handleUserInfoSubmit,
-    handleUserInfoChange,
     handleUrlChange,
-    formatTime,
     statusMessages,
-    startAnalysisAfterPayment,
-    startStepwiseAnalysis,
   } = useAnalysis();
 
-  // Check authentication status on component mount
-  // useEffect(() => {
-  //   const checkAuth = async () => {
-  //     try {
-  //       const result = await authService.verifyToken();
-  //       setIsAuthenticated(result.valid);
-  //     } catch (error) {
-  //       console.error('Auth check error:', error);
-  //       setIsAuthenticated(false);
-  //     } finally {
-  //       setIsCheckingAuth(false);
-  //     }
-  //   };
-
-  //   checkAuth();
-  // }, []);
+ 
 
   // Cycle through CRO quotes during analysis
   useEffect(() => {
@@ -326,15 +328,16 @@ export default function Home() {
             setUrl={handleUrlChange}
             loading={loading}
             onSubmit={handleFormSubmit}
+            servicesChooseModal={true}
           />
         }
 
 
         {!loading && !report && (
           <>
-            <HowItWorks />
+            <HowItWorks steps={HowItWorksSteps} />
             <ServicesSection />
-            <WhoIsItFor/>
+            <WhoIsItFor audiences={audiences} />
             <WhyFixSection/>
             {/* <WhatYouGetSection /> */}
             {/* <BeforeAfter /> */}
@@ -354,7 +357,7 @@ export default function Home() {
               <Calandly />
             </div> */}
 
-            <Testimonial />
+            {/* <Testimonial /> */}
             <FAQSection />
 
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { config } from '@/config/config';
 import { normalizeUrl } from '@/utils/settingsUtils';
 import AnalyticsService from '@/services/analyticsService';
@@ -13,6 +14,7 @@ interface HeroAreaProps {
     isSplitPages?: boolean;
     type?: 'homepage' | 'collection' | 'product' | 'cart';
     placeholder?: string;
+    servicesChooseModal?: boolean;
 }
 
 const pages = [
@@ -43,6 +45,45 @@ const sampleSites = [
     'huel.com'
 ];
 
+// Services for the modal
+const services = [
+    {
+        id: 'cro-audit',
+        title: 'AI CRO Audit',
+        description: 'Turn more visitors into customers',
+        isSelected: true,
+        isLocked: false
+    },
+    {
+        id: 'app-audit',
+        title: 'App Audit',
+        description: 'Remove unwanted apps',
+        isSelected: false,
+        isLocked: true
+    },
+    {
+        id: 'mobile-experience',
+        title: 'Mobile Experience',
+        description: 'Ensure easy browsing on mobiles',
+        isSelected: false,
+        isLocked: true
+    },
+    {
+        id: 'seo-audit',
+        title: 'AI SEO Audit',
+        description: 'Get discovered on ChatGPT',
+        isSelected: false,
+        isLocked: true
+    },
+    {
+        id: 'page-speed',
+        title: 'Page Speed',
+        description: 'Load faster, Sell faster',
+        isSelected: false,
+        isLocked: true
+    }
+];
+
 // Helper function to normalize URL by adding https:// if no protocol is present
 
 
@@ -64,14 +105,16 @@ const validateUrl = (url: string): boolean => {
     }
 };
 
-export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages, type, placeholder }: HeroAreaProps) {
+export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages, type, placeholder, servicesChooseModal }: HeroAreaProps) {
 
+    const router = useRouter();
     const [activePage, setActivePage] = useState<number | null>(null);
     const [urlError, setUrlError] = useState<string>('');
     const [isSticky, setIsSticky] = useState<boolean>(false);
     const [typingText, setTypingText] = useState<string>('');
     const [currentSiteIndex, setCurrentSiteIndex] = useState<number>(0);
     const [isTyping, setIsTyping] = useState<boolean>(true);
+    const [showServicesModal, setShowServicesModal] = useState<boolean>(false);
     const inputWrapperRef = useRef<HTMLDivElement>(null);
     const inputContainerRef = useRef<HTMLFormElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -159,6 +202,17 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
+        // If services modal should be shown, show it instead of submitting
+        if (servicesChooseModal && !showServicesModal) {
+            setShowServicesModal(true);
+            return;
+        }
+
+        // If modal is open, don't submit
+        if (showServicesModal) {
+            return;
+        }
+
         // Clear previous error
         setUrlError('');
 
@@ -180,6 +234,30 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
 
         // Call the original onSubmit with the original event
         onSubmit(e);
+    };
+
+    const handleUnlockService = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        router.push('/pricing');
+    };
+
+    const handleContinue = () => {
+        setShowServicesModal(false);
+        
+        // Continue with normal flow - submit the form
+        const normalizedUrl = normalizeUrl(url);
+        
+        // Track URL entry and FixMyStore click
+        AnalyticsService.trackUrlEntry(normalizedUrl, AnalyticsService.extractWebsiteName(normalizedUrl));
+        AnalyticsService.trackFixMyStoreClick(normalizedUrl, AnalyticsService.extractWebsiteName(normalizedUrl));
+        
+        // Update the URL state with the normalized version
+        setUrl(normalizedUrl);
+        
+        // Create a synthetic event and call onSubmit
+        const syntheticEvent = new Event('submit') as unknown as React.FormEvent;
+        onSubmit(syntheticEvent);
     };
 
     const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -207,7 +285,7 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
         if (!isSplitPages) {
             return (
                 <>
-                    Let AI Find What’s Blocking Sales
+                    Shopify AI Store Audit
                 </>
             );
         }
@@ -230,7 +308,7 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
             case 'product':
                 return (
                     <>
-                        Stop Losing Sales on <br />
+                        Stop Losing Sales on
                         Your Product Page
                     </>
                 );
@@ -244,7 +322,7 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
             default:
                 return (
                     <>
-                        Let AI Find What’s Blocking Sales
+                        Shopify AI Store Audit
                     </>
                 );
         }
@@ -252,7 +330,7 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
 
     const getMobileTitleContent = () => {
         if (!isSplitPages) {
-            return 'Let AI Find What’s Blocking Sales';
+            return 'Shopify AI Store Audit';
         }
 
         switch (type) {
@@ -265,13 +343,13 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
             case 'cart':
                 return 'High Cart Abandonment? Let\'s Fix Your Cart Page.';
             default:
-                return 'Your store is leaking, Let\'s fix it!';
+                return 'Shopify AI Store Audit';
         }
     };
 
     const getDescriptionContent = () => {
         if (!isSplitPages) {
-            return 'We help to identify what’s blocking sales in a Shopify store and fix it.';
+            return 'Powered by AI. Reviewed by humans. Trusted by store owners';
         }
 
         switch (type) {
@@ -284,7 +362,7 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
             case 'cart':
                 return `Your cart page is the last step before checkout. A small tweak could save thousands in lost revenue.`;
             default:
-                return 'Discover what\'s blocking your store sales. Fix your store now!';
+                return 'DPowered by AI. Reviewed by humans. Trusted by store owners.';
         }
     };
 
@@ -318,7 +396,7 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
                             <img src="/icons/3.svg" alt="trust" />
                         </div>
                         <div className="hero__details-trust-text">
-                        25+ Shopify stores audited by AI so far.
+                            25+ Shopify stores audited by AI so far.
 
                         </div>
                     </div>
@@ -425,20 +503,21 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
 
                 <div className="hero__services">
                     <div className="hero__services-item hero__services-item--green">
-                        <h3 className="hero__services-title">CRO Audit</h3>
-                        <p className="hero__services-description">Turn more visitors into buyers</p>
+                        <h3 className="hero__services-title">AI CRO Audit                        </h3>
+                        <p className="hero__services-description">Turn more visitors into customers</p>
                     </div>
-                    <div className="hero__services-item hero__services-item--blue">
-                        <h3 className="hero__services-title">GEO performance</h3>
-                        <p className="hero__services-description">Get discovered on ChatGPT</p>
-                    </div>
-                    <div className="hero__services-item hero__services-item--green">
-                        <h3 className="hero__services-title">App setup</h3>
-                        <p className="hero__services-description">Remove performance blockers</p>
+
+                    <div className="hero__services-item  hero__services-item--blue">
+                        <h3 className="hero__services-title">App Audit</h3>
+                        <p className="hero__services-description">Remove unwanted apps</p>
                     </div>
                     <div className="hero__services-item hero__services-item--purple">
-                        <h3 className="hero__services-title">Mobile experience</h3>
-                        <p className="hero__services-description">Optimize for every device</p>
+                        <h3 className="hero__services-title">Mobile Experience</h3>
+                        <p className="hero__services-description">Ensure easy browsing on mobiles</p>
+                    </div>
+                    <div className="hero__services-item ">
+                        <h3 className="hero__services-title">AI SEO Audit</h3>
+                        <p className="hero__services-description">Get discovered on ChatGPT</p>
                     </div>
                     <div className="hero__services-item hero__services-item--yellow">
                         <h3 className="hero__services-title">Page speed</h3>
@@ -467,6 +546,88 @@ export default function HeroArea({ url, setUrl, loading, onSubmit, isSplitPages,
                 </div>
 
             </div>
+
+            {/* Services Selection Modal */}
+            {showServicesModal && (
+                <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4" style={{ zIndex: 50000 }}>
+                    <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg shadow-xl max-w-3xl w-full overflow-hidden">
+                        <div className="flex  lead-form__container relative">
+                            <div className="flex-1 p-4 md:p-8 flex flex-col justify-center">
+                                {/* Header */}
+                                <div className="text-center mb-6 md:mb-8">
+                                    <h1 className="text-4xl font-bold text-gray-900 mb-2 flex-col md:flex-row gap-2 text-left">
+                                        <span className="lead-form__subtitle">CHOOSE YOUR</span><br />
+                                        <span className="lead-form__title">SERVICES</span>
+                                    </h1>
+                                </div>
+
+                                <button
+                                    onClick={() => setShowServicesModal(false)}
+                                    className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 transition-colors z-10"
+                                >
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+
+                                {/* Services List */}
+                                <div className="space-y-4 mb-6">
+                                    {services.map((service) => (
+                                        <div
+                                            key={service.id}
+                                            className={`border-2 rounded-lg transition-all ${
+                                                service.isSelected
+                                                    ? 'border-gray-900 bg-gray-50 shadow-md'
+                                                    : 'bg-white shadow-sm border-gray-200 opacity-75'
+                                            }`}
+                                        >
+                                            <div className="p-4">
+                                                <div className={`flex ${service.isLocked ? 'flex sm:flex-row sm:items-start sm:justify-between items-center justify-center' : 'items-center justify-between'} gap-3`}>
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center gap-3 mb-2">
+                                                            <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                                                service.isSelected ? 'bg-gray-900' : 'bg-gray-400'
+                                                            }`}>
+                                                                {service.isSelected ? (
+                                                                    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                                    </svg>
+                                                                ) : (
+                                                                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                                    </svg>
+                                                                )}
+                                                            </div>
+                                                            <h3 className="text-lg font-semibold text-gray-900 instrument-sans">{service.title}</h3>
+                                                        </div>
+                                                        <p className="text-gray-600 ml-9 hidden md:block">{service.description}</p>
+                                                    </div>
+                                                    {service.isLocked && (
+                                                        <button
+                                                            onClick={handleUnlockService}
+                                                            className="ml-0 sm:ml-4 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium whitespace-nowrap w-auto sm:w-auto"
+                                                        >
+                                                            Unlock
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Continue Button */}
+                                <button
+                                    onClick={handleContinue}
+                                    className="download-button w-full mt-6"
+                                >
+                                    Continue with AI CRO Audit »
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

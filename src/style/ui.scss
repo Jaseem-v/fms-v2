@@ -1216,9 +1216,45 @@
     }
 
     &__item {
+    position: relative;
+
         @media (max-width: 768px) {
             max-width: 256px;
         }
+    }
+
+    &__step-number {
+        color: #000;
+        text-align: center;
+        font-family: "Instrument Sans";
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 123%;
+        /* 19.68px */
+
+        display: flex;
+        width: 30px;
+        height: 30px;
+        padding: 10px 15px;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+        aspect-ratio: 1/1;
+
+        border-radius: 23.5px;
+        background: #C9FFC1;
+
+        /* card new */
+        box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.15), 0 7.821px 39.106px 0 rgba(0, 0, 0, 0.04), 0 1.955px 4.888px 0 rgba(0, 0, 0, 0.05);
+
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        transform: translate(-50%, -50%);
     }
 }
 
@@ -1241,7 +1277,7 @@
         color: #101314;
         // text-align: center;
         font-family: "Instrument Sans";
-        font-size: clamp(16px, 2.5vw, 20px);
+        font-size: clamp(16px, 2.5vw, 17px);
         font-style: normal;
         font-weight: 400;
         line-height: 123%;
@@ -1658,7 +1694,7 @@
         gap: 8.57px;
         border-radius: 42.85px;
         border: 0.674px solid rgba(0, 0, 0, 0.50);
-        
+
 
         color: var(--p-color-text);
         font-feature-settings: 'liga' off, 'clig' off;

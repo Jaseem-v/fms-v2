@@ -16,8 +16,56 @@ import { WhyPickingRight } from '@/components/app-detection/WhyPickingRight';
 import { WhoIsItFor } from '@/components/app-detection/WhoIsItFor';
 import { ApiService } from '@/lib/api';
 import FAQSection from '@/components/home/FAQSection';
+import { BarChart3, Code, Store, Truck } from 'lucide-react';
 
 type AppState = 'idle' | 'loading' | 'error';
+
+
+const HowItWorksSteps  = [
+  {
+    number: 1,
+    title: "Enter Your Store URL",
+    description: "Paste any Shopify store link into the tool.",
+    icon: <img src="/app-detection-steps/1.svg" alt="" className='how-it-works__icon' />
+  },
+  {
+    number: 2,
+    title: "We scan behind the scenes",
+    description: "We scan behind the scenesOur system analyzes the site and detects the apps it’s running. ",
+    icon: <img src="/app-detection-steps/2.svg" alt="" className='how-it-works__icon' />
+  },
+  {
+    number: 3,
+    title: "Get the full list of Apps",
+    description: "See the full list of apps used for every use case",
+    icon: <img src="/app-detection-steps/3.svg" alt="" className='how-it-works__icon' />
+  }
+];
+
+const audiences = [
+  {
+    icon: Store,
+    title: "Shopify Merchants",
+    description: "Research competitors tech stacks and improve your own store or replicate winning strategies."
+  },
+  {
+    icon: Code,
+    title: "Developers",
+    description: "Quickly extract app, theme and product data for client projects."
+  },
+  {
+    icon: Truck,
+    title: "Drop Shippers",
+    description: "Find winning products and reveal apps and theme behind successful drop shipping stores."
+  },
+  {
+    icon: BarChart3,
+    title: "Market Researchers",
+    description: "Discover the hottest trending themes, apps, and products in the market."
+  }
+];
+
+
 
 export default function Home() {
   const router = useRouter();
@@ -162,7 +210,9 @@ export default function Home() {
         </div>
 
         {/* How It Works Section */}
-        <HowItWorks />
+        <HowItWorks 
+        steps={HowItWorksSteps}
+        />
 
         {/* Why Optimize Apps Section */}
         {/* <WhyOptimize /> */}
@@ -171,7 +221,7 @@ export default function Home() {
         <WhyPickingRight />
 
         {/* Who Is It For Section */}
-        <WhoIsItFor />
+        <WhoIsItFor audiences={audiences} />
 
         <div className="pb-20">
           <FAQSection type="app-detection" />

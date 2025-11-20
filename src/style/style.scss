@@ -1720,7 +1720,7 @@ body main {
         &__title {
             color: #101314;
             font-family: "Instrument Sans";
-            font-size: 30px;
+            font-size: 24px;
             font-style: normal;
             font-weight: 400;
             line-height: 110%;
@@ -1741,7 +1741,7 @@ body main {
         }
 
         &__description {
-            color: #101314;
+            color: #101314c7;
             font-family: "Instrument Sans";
             font-size: 20px;
             font-style: normal;
@@ -2055,6 +2055,10 @@ body main {
 
     @media (max-width: 380px) {
         padding: 30px 15px;
+
+        &-homepage {
+            padding: 0;
+        }
     }
 }
 

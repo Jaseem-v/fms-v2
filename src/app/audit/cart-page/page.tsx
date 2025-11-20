@@ -48,7 +48,7 @@ function CartPageContent() {
 
 
     return (
-        <div className="min-h-screen bg-green-50 relative overflow-hidden">
+        <div className="min-h-screen relative overflow-hidden">
             <div className="announcment-bar">
                 <p>
                     Get an audit for FREE
